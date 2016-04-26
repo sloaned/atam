@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:appcompat="http://schemas.android.com/apk/res-auto"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/action_home"
+        android:title=""
+        appcompat:showAsAction="always"
+        android:icon="@drawable/ata"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:title=""
+        appcompat:actionViewClass="android.support.v7.widget.SearchView"
+        appcompat:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_cancel_search"
+        android:title="Cancel"
+        appcompat:showAsAction="always" />
+
+</menu>
