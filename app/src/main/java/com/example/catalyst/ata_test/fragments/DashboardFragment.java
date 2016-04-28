@@ -1,6 +1,7 @@
 package com.example.catalyst.ata_test.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -52,6 +53,13 @@ public class DashboardFragment extends Fragment {
 
         Log.d(TAG, "in the dashboard fragment!!!!!!!!!");
 
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettings();
+            }
+        });
+
         return homeView;
     }
 
@@ -66,6 +74,16 @@ public class DashboardFragment extends Fragment {
         }
         dbHelper.close();
         adapter.notifyDataSetChanged();
+    }
+
+    public void openSettings() {
+        Log.d(TAG, "open Settings!!!!!");
+        DialogFragment dialog = SettingsFragment.newInstance();
+        if (dialog.getDialog() != null) {
+            dialog.getDialog().setCanceledOnTouchOutside(true);
+        }
+        dialog.show(getFragmentManager(), "dialog");
+
     }
 
 }

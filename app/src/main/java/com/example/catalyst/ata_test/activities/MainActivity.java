@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.data.DBHelper;
@@ -49,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-    /*
+
         if (!loggedIn()) {
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        } else {    */
+        } else {
             deleteDatabase(UserContract.DATABASE_NAME);
             SQLiteDatabase db = openOrCreateDatabase(UserContract.DATABASE_NAME, MODE_PRIVATE, null);
             DBHelper dbHelper = new DBHelper(this);
@@ -62,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
             dbHelper.close();
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
-      //  }
+        }
     }
 
     private boolean loggedIn() {
         String loggedInUser = prefs.getString(SharedPreferencesConstants.PREFS_USER, null);
-
+        Log.d(TAG, "loggedInUser = " + loggedInUser);
         if (loggedInUser == null || loggedInUser.equals(null)) {
             return false;
         }
