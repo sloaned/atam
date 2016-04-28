@@ -347,6 +347,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return users;
     }
 
+    public ArrayList<User> searchUsers(String query) {
+        ArrayList<User> results = new ArrayList<User>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + UserContract.UserEntry.TABLE_NAME + " WHERE " + UserContract.UserEntry.COLUMN_USER_FIRST_NAME + " LIKE '%" + query + "%' OR " +
+                UserContract.UserEntry.COLUMN_USER_LAST_NAME + " LIKE '%" + query + "%'", null);
+        res.moveToFirst();
+        while (res.isAfterLast() == false) {
+            User user = new User();
+            user.setFirstName(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_FIRST_NAME)));
+            user.setLastName(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_LAST_NAME)));
+            results.add(user);
+
+            res.moveToNext();
+        }
+        res.close();
+        db.close();
+
+        return results;
+    }
+
 
     public void setSampleData() {
         User bob = new User(1, "Bob", "Jenkins", "A hero with mad tennis skillz", "Developer 1");

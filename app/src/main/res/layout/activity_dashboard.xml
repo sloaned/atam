@@ -21,7 +21,13 @@
     </android.support.v7.widget.Toolbar>
 
 
-    <include layout="@layout/content_dashboard"/>
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listView"
+        android:layout_below="@+id/toolbar"
+        class="com.example.catalyst.ata_test.fragments.DashboardFragment" />
+
 
 
 </RelativeLayout>
