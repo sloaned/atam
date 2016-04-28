@@ -1,90 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_columnWeight="10">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/user_info_area"
-        android:orientation="horizontal"
-        android:layout_weight="3">
-
-        <ImageView
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:src="@drawable/defaultuser"
-            android:id="@+id/profile_pic"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:id="@+id/user_info_text_area"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/user_name"
-                android:text="User Name"
-                android:textSize="20sp"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="5dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:id="@+id/edit_bio_button"
-                android:src="@drawable/editbutton"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Developer 1"
-                android:textSize="14sp"
-                android:textColor="#a6a6a6"
-                android:layout_below="@+id/user_name"
-                android:id="@+id/user_role"
-                android:layout_marginLeft="5dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/user_role"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="10dp"
-                android:id="@+id/user_bio"
-                android:text="I eat tacos and watch reruns of The A-Team."
-                android:textSize="16sp" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
+              android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/tabs_info">
+        android:layout_columnWeight="10"
+        android:id="@+id/profile_content">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_info_area"
+            android:orientation="horizontal"
+            android:layout_weight="3">
+
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:src="@drawable/defaultuser"
+                android:id="@+id/profile_pic"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:id="@+id/user_info_text_area"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/user_name"
+                    android:text="User Name"
+                    android:textSize="20sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="5dp" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/edit_bio_button"
+                    android:src="@drawable/editbutton"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Developer 1"
+                    android:textSize="14sp"
+                    android:textColor="#a6a6a6"
+                    android:layout_below="@+id/user_name"
+                    android:id="@+id/user_role"
+                    android:layout_marginLeft="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/user_role"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/user_bio"
+                    android:text="I eat tacos and watch reruns of The A-Team."
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/tabs_info"
+            android:layout_weight="5">
+
+
+        </LinearLayout>
 
     </LinearLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/bottom_bar"
+        android:background="#c0c0c0"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_weight="1"
         android:orientation="horizontal"
         android:id="@+id/bottom_bar"
         android:layout_alignParentBottom="true"
@@ -205,9 +221,6 @@
 
         </RelativeLayout>
 
-
-
-
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

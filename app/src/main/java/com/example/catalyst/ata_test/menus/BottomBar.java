@@ -94,7 +94,7 @@ public class BottomBar {
             mContext.startActivity(intent);
             ((Activity)mContext).overridePendingTransition(0, 0);
         }
-        
+
     }
 
     public void openDashboard() {
