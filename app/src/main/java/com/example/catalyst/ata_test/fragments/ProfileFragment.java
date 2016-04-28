@@ -1,6 +1,7 @@
 package com.example.catalyst.ata_test.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/28/2016.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements EditBioFragment.BioChangeListener {
 
     private static final String TAG = ProfileFragment.class.getSimpleName();
     private BottomBar bottomBar = new BottomBar();
@@ -40,9 +41,33 @@ public class ProfileFragment extends Fragment {
         ButterKnife.bind(this, profileView);
         profileView = bottomBar.getBottomBar(getActivity(), profileView);
 
+        editBioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openEditBioFragment();
+            }
+        });
+
 
         return profileView;
     }
+
+
+    public void openEditBioFragment() {
+        String bio = userBio.getText().toString();
+        DialogFragment dialog = EditBioFragment.newInstance(bio, this);
+        if (dialog.getDialog() != null) {
+            dialog.getDialog().setCanceledOnTouchOutside(true);
+        }
+        dialog.show(getFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void changeBio(String bio) {
+        userBio.setText(bio);
+    }
+
+
 
 
 
