@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
+import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Team;
 
 import java.util.ArrayList;
@@ -32,33 +33,22 @@ public class DashboardFragment extends Fragment {
 
     private DashboardAdapter adapter;
     @Bind(android.R.id.list)ListView listView;
-    @Bind(R.id.bottom_bar)LinearLayout bottomBar;
-    @Bind(R.id.home_button)RelativeLayout homeButton;
-    @Bind(R.id.my_profile_button) RelativeLayout profileButton;
-    @Bind(R.id.feed_button) RelativeLayout feedButton;
-    @Bind(R.id.settings_button) RelativeLayout settingsButton;
     private View homeView;
     private ArrayList<String> mTeams = new ArrayList<String>();
+    private BottomBar bottomBar = new BottomBar();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeView = inflater.inflate(R.layout.content_dashboard, null);
         ButterKnife.bind(this, homeView);
 
+        homeView = bottomBar.getBottomBar(getActivity(), homeView);
+
         adapter = new DashboardAdapter(getActivity(), mTeams);
 
         listView.setAdapter(adapter);
 
         getTasks();
-
-        Log.d(TAG, "in the dashboard fragment!!!!!!!!!");
-
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSettings();
-            }
-        });
 
         return homeView;
     }
@@ -74,16 +64,6 @@ public class DashboardFragment extends Fragment {
         }
         dbHelper.close();
         adapter.notifyDataSetChanged();
-    }
-
-    public void openSettings() {
-        Log.d(TAG, "open Settings!!!!!");
-        DialogFragment dialog = SettingsFragment.newInstance();
-        if (dialog.getDialog() != null) {
-            dialog.getDialog().setCanceledOnTouchOutside(true);
-        }
-        dialog.show(getFragmentManager(), "dialog");
-
     }
 
 }
