@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
 import com.example.catalyst.ata_test.menus.TopBar;
 
@@ -34,7 +35,9 @@ public class DashboardActivity extends AppCompatActivity {
     private View listView;
     private TopBar topBar;
 
-    @Override
+    private static final String TAG = DashboardActivity.class.getSimpleName();
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);

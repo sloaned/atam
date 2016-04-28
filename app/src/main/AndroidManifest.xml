@@ -35,6 +35,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.catalyst.ata_test.activities.MainActivity"/>
         </activity>
+        <activity android:name=".activities.ProfileActivity"
+                  android:parentActivityName=".activities.MainActivity">
+                  <meta-data
+                      android:name="android.support.PARENT_ACTIVITY"
+                      android:value="com.example.catalyst.ata_test.activities.MainActivity" />
+
+        </activity>
+
         <activity
             android:name=".activities.SearchActivity"
             android:label=""
