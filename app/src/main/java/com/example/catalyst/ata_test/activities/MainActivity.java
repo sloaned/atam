@@ -6,12 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.data.DBHelper;
 import com.example.catalyst.ata_test.data.UserContract;
-import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 /**
  * Created by dsloane on 4/22/2016.
@@ -31,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = prefs.edit();
+        
 
         if (!loggedIn()) {
 
@@ -67,11 +66,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean loggedIn() {
-        String loggedInUser = prefs.getString(SharedPreferencesConstants.PREFS_USER, null);
-        Log.d(TAG, "loggedInUser = " + loggedInUser);
-        if (loggedInUser == null || loggedInUser.equals(null)) {
-            return false;
-        }
+//        String loggedInUser = prefs.getString(SharedPreferencesConstants.PREFS_USER, null);
+//        Log.d(TAG, "loggedInUser = " + loggedInUser);
+//        if (loggedInUser == null || loggedInUser.equals(null)) {
+//            return false;
+//        }
         return true;
     }
 }

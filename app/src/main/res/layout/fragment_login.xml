@@ -12,8 +12,40 @@
     <WebView
         android:id="@+id/loginView"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"></WebView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:foregroundGravity="center"
+        android:progressDrawable="@drawable/circular_progress_bar"
+
+        />
+
+    <LinearLayout
+        android:id="@+id/atalogo"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:weightSum="10"
+        android:gravity="center"
+        android:layout_centerInParent="true"
         >
-    </WebView>
+
+        <ImageView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+
+            android:src="@drawable/ata"
+            />
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>
