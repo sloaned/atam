@@ -66,11 +66,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean loggedIn() {
-//        String loggedInUser = prefs.getString(SharedPreferencesConstants.PREFS_USER, null);
-//        Log.d(TAG, "loggedInUser = " + loggedInUser);
-//        if (loggedInUser == null || loggedInUser.equals(null)) {
-//            return false;
-//        }
         return true;
     }
 }

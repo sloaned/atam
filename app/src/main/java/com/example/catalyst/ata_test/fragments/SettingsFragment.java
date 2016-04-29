@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.audiofx.BassBoost;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,10 +11,11 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.MainActivity;
+import com.example.catalyst.ata_test.activities.LoginActivity;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import butterknife.Bind;
@@ -55,7 +55,10 @@ public class SettingsFragment extends DialogFragment {
             public void onClick(View v) {
                 Log.d(TAG, "logout button clicked!!!!!");
                 mEditor.putString(SharedPreferencesConstants.PREFS_USER, null).apply();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+
+                CookieManager.getInstance().removeAllCookie();
+
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
             }
         });

@@ -42,11 +42,11 @@ public class LoginActivityFragment extends Fragment {
         final ProgressBar spinner = (ProgressBar)content.findViewById(R.id.progressBar);
         final WebView loginView = (WebView)content.findViewById(R.id.loginView);
 
+        loginView.getSettings().setDomStorageEnabled(true);
+
         //Setting non-webview views to invisible
         logoContainer.setVisibility(View.INVISIBLE);
         spinner.setVisibility(View.INVISIBLE);
-
-        //CookieManager.getInstance().removeAllCookie();
 
         loginView.setWebViewClient(new WebViewClient() {
 
