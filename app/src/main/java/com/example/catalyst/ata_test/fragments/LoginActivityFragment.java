@@ -42,6 +42,7 @@ public class LoginActivityFragment extends Fragment {
         final ProgressBar spinner = (ProgressBar)content.findViewById(R.id.progressBar);
         final WebView loginView = (WebView)content.findViewById(R.id.loginView);
 
+        //Allows the cookie to be saved
         loginView.getSettings().setDomStorageEnabled(true);
 
         //Setting non-webview views to invisible
@@ -76,10 +77,12 @@ public class LoginActivityFragment extends Fragment {
 
                 //This if/else statments stops the user from redirecting to
                 //ATA's home page, and instead loads our home page/dashboard.
-                if (url.contains(NetworkConstants.ATA_LOGIN)) {
-                    //do nothing, because the page is about to redirect
-                } else if (url.contains(NetworkConstants.ATA_BASE)) {
-                    cookies = cookies.replace("JSESSIONID=", "");
+
+                if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
+
+                    if (cookies != null) {
+                        cookies = cookies.replace("JSESSIONID=", "");
+                    }
 
                     mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
 

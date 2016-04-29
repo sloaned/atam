@@ -15,4 +15,9 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }
