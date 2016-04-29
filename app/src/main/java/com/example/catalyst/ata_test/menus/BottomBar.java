@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.DashboardActivity;
+import com.example.catalyst.ata_test.activities.FeedActivity;
 import com.example.catalyst.ata_test.activities.ProfileActivity;
 import com.example.catalyst.ata_test.fragments.SettingsFragment;
 
@@ -47,6 +48,13 @@ public class BottomBar {
             @Override
             public void onClick(View v) {
                 openDashboard();
+            }
+        });
+
+        feedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFeed();
             }
         });
 
@@ -102,6 +110,16 @@ public class BottomBar {
 
         } else {
             Intent intent = new Intent(mContext, DashboardActivity.class);
+            mContext.startActivity(intent);
+            ((Activity)mContext).overridePendingTransition(0, 0);
+        }
+    }
+
+    public void openFeed() {
+        if (mContext instanceof FeedActivity) {
+
+        } else {
+            Intent intent = new Intent(mContext, FeedActivity.class);
             mContext.startActivity(intent);
             ((Activity)mContext).overridePendingTransition(0, 0);
         }

@@ -1,17 +1,12 @@
 package com.example.catalyst.ata_test.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.DashboardAdapter;
@@ -39,7 +34,7 @@ public class DashboardFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeView = inflater.inflate(R.layout.content_dashboard, null);
+        homeView = inflater.inflate(R.layout.fragment_dashboard, null);
         ButterKnife.bind(this, homeView);
 
         homeView = bottomBar.getBottomBar(getActivity(), homeView);

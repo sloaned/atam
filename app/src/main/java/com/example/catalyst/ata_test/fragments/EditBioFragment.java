@@ -57,7 +57,13 @@ public class EditBioFragment extends DialogFragment {
                 Log.d(TAG, bio);
                 callback.changeBio(bio);
             }
-        });
+        })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
 
         return builder.create();
     }

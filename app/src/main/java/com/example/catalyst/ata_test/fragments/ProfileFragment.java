@@ -1,17 +1,22 @@
 package com.example.catalyst.ata_test.fragments;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.adapters.TabAdapter;
 import com.example.catalyst.ata_test.menus.BottomBar;
 
 import butterknife.Bind;
@@ -33,6 +38,12 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
     @Bind(R.id.user_role) TextView userRole;
     @Bind(R.id.edit_bio_button) ImageView editBioButton;
     @Bind(R.id.user_bio) TextView userBio;
+    @Bind(R.id.tab_layout) TabLayout profileTabs;
+
+
+   // private Fragment kudosTab = new KudosTabFragment();
+   // private Fragment reviewsTab = new ReviewsTabFragment();
+  //  private Fragment teamsTab = new TeamsTabFragment();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +58,41 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
                 openEditBioFragment();
             }
         });
+
+        profileTabs.addTab(profileTabs.newTab().setText("KUDOS"));
+        profileTabs.addTab(profileTabs.newTab().setText("REVIEWS"));
+        profileTabs.addTab(profileTabs.newTab().setText("TEAMS"));
+        profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
+        final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount());
+        Log.d(TAG, "viewPager = " + viewPager);
+        Log.d(TAG, "adapter = " + adapter);
+
+
+        Log.d(TAG, "number of tabs = " + profileTabs.getTabCount());
+
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
+
+        profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+                Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG, "tab unselected = " + tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "tab reselected = " + tab.getText());
+            }
+        });
+
 
 
         return profileView;

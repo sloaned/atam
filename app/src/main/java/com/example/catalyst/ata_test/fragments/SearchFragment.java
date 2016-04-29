@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.adapters.SearchResultAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
-import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ public class SearchFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        resultView = inflater.inflate(R.layout.content_search, null);
+        resultView = inflater.inflate(R.layout.fragment_search, null);
         ButterKnife.bind(this, resultView);
 
         adapter = new SearchResultAdapter(getActivity(), results);
