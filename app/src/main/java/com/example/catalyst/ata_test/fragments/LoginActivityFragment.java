@@ -33,11 +33,11 @@ public class LoginActivityFragment extends Fragment {
 
         View content = inflater.inflate(R.layout.fragment_login, container, false);
 
-        //Initilizing shared preferences to save the session id.
+        //initialize shared preferences to save the session id.
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = prefs.edit();
 
-        //initilizing the views
+        //initialize the views
         final LinearLayout logoContainer = (LinearLayout)content.findViewById(R.id.atalogo);
         final ProgressBar spinner = (ProgressBar)content.findViewById(R.id.progressBar);
         final WebView loginView = (WebView)content.findViewById(R.id.loginView);
@@ -47,7 +47,6 @@ public class LoginActivityFragment extends Fragment {
         spinner.setVisibility(View.INVISIBLE);
 
         //CookieManager.getInstance().removeAllCookie();
-        //loginView.getSettings().setJavaScriptEnabled(true);
 
         loginView.setWebViewClient(new WebViewClient() {
 
@@ -58,16 +57,12 @@ public class LoginActivityFragment extends Fragment {
                 //this method should return false;
 
                 if (urlConection.startsWith("http://localhost")) {
-                    System.out.println("Started with the LocalHost!!!");
-                    urlConection = urlConection.replace("http://localhost", "http://pc30122.catalystsolves.com");
+                    //Replaces any local host address with the correct network address
+                    urlConection = urlConection.replace("http://localhost", NetworkConstants.DEV_NETWORK_ADDRESS);
                     loginView.loadUrl(urlConection);
-
-                    String cookies = android.webkit.CookieManager.getInstance().getCookie(urlConection);
-                    System.out.println("Cookie: " + cookies);
-
                     return true;
                 } else {
-                    System.out.println("Did not start with a local host!");
+
                     return false;
                 }
             }

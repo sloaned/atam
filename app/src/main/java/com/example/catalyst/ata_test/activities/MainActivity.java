@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = prefs.edit();
-        
+
 
         if (!loggedIn()) {
 

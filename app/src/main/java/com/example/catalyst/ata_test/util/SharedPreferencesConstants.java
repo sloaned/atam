@@ -7,4 +7,5 @@ public class SharedPreferencesConstants {
 
     public static final String PREFS_USER = "username";
     public static final String JESESSIONID = "jesesionid";
+
 }
