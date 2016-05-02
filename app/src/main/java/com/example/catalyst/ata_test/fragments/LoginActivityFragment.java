@@ -26,6 +26,11 @@ public class LoginActivityFragment extends Fragment {
 
     private SharedPreferences prefs;
     private SharedPreferences.Editor mEditor;
+    private String urlConnection;
+
+    LinearLayout logoContainer;
+    ProgressBar spinner;
+    WebView loginView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,9 +43,9 @@ public class LoginActivityFragment extends Fragment {
         mEditor = prefs.edit();
 
         //initialize the views
-        final LinearLayout logoContainer = (LinearLayout)content.findViewById(R.id.atalogo);
-        final ProgressBar spinner = (ProgressBar)content.findViewById(R.id.progressBar);
-        final WebView loginView = (WebView)content.findViewById(R.id.loginView);
+        logoContainer = (LinearLayout) content.findViewById(R.id.atalogo);
+        spinner = (ProgressBar) content.findViewById(R.id.progressBar);
+        loginView = (WebView) content.findViewById(R.id.loginView);
 
         //Allows the cookie to be saved
         loginView.getSettings().setDomStorageEnabled(true);
@@ -49,46 +54,34 @@ public class LoginActivityFragment extends Fragment {
         logoContainer.setVisibility(View.INVISIBLE);
         spinner.setVisibility(View.INVISIBLE);
 
+
         loginView.setWebViewClient(new WebViewClient() {
 
-            public boolean shouldOverrideUrlLoading(WebView view, String urlConection) {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-                //this if/else statement is need because the servers are on local host.
-                //If servers are remote, this if else statement should be removed, and
-                //this method should return false;
+                urlConnection = url;
 
-                if (urlConection.startsWith("http://localhost")) {
-                    //Replaces any local host address with the correct network address
-                    urlConection = urlConection.replace("http://localhost", NetworkConstants.DEV_NETWORK_ADDRESS);
-                    loginView.loadUrl(urlConection);
-                    return true;
-                } else {
+                boolean override = checkUrlForLocalHost(urlConnection);
+                //Replaces any local host address with the correct network address
 
-                    return false;
+                if(override){
+                    view.loadUrl(urlConnection);
                 }
+
+                return override;
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
 
-                //Grabbing the cookie to get the jessionid
-                String cookies = android.webkit.CookieManager.getInstance().getCookie(url);
-
-                //This if/else statments stops the user from redirecting to
-                //ATA's home page, and instead loads our home page/dashboard.
-
-                if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
-
-                    if (cookies != null) {
-                        cookies = cookies.replace("JSESSIONID=", "");
-                    }
-
-                    mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
+                //If the user sucessfully logs in, then they get redirected to the app dashboard
+                if(loginSuccessful(url)) {
 
                     //Setting the view to invisible for a nicer user experince.
-                    loginView.setVisibility(View.GONE);
-                    loginView.stopLoading();
+                    view.setVisibility(View.GONE);
+                    view.stopLoading();
 
                     //sets the container for the logo to
                     //visible, so the user sees the ATA logo.
@@ -98,17 +91,50 @@ public class LoginActivityFragment extends Fragment {
                     spinner.setVisibility(View.VISIBLE);
                     spinner.bringToFront();
 
-                    //Redirecting the user the mobile app home activity.
                     Intent homePage = new Intent(getActivity(), MainActivity.class);
                     startActivity(homePage);
                 }
             }
         });
-
         loginView.loadUrl(NetworkConstants.ATA_LOGIN);
 
         return content;
     }
+
+
+    public boolean checkUrlForLocalHost(String url) {
+        //this if/else statement is need because the servers are on local host.
+        //If servers are remote, this if else statement should be removed, and
+        //this method should return false;
+        if (url.startsWith("http://localhost")) {
+            urlConnection = urlConnection.replace("http://localhost", NetworkConstants.DEV_NETWORK_ADDRESS);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean loginSuccessful(String url) {
+
+        if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
+
+            //Grabbing the cookie to get the jessionid
+            String cookies = android.webkit.CookieManager.getInstance().getCookie(url);
+
+            if (cookies != null) {
+                cookies = editCookieString(cookies);
+            }
+
+            mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
+            return true;
+        }
+        return false;
+    }
+
+    public String editCookieString(String cookies) {
+        return cookies.replace("JSESSIONID=", "");
+    }
+
 }
 
 
