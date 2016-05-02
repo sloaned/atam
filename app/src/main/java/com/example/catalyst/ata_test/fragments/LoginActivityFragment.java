@@ -76,8 +76,15 @@ public class LoginActivityFragment extends Fragment {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
 
+                //Grabbing the cookie to get the jessionid
+                String cookies = android.webkit.CookieManager.getInstance().getCookie(url);
+
+                if (cookies != null) {
+                    cookies = editCookieString(cookies);
+                }
+
                 //If the user sucessfully logs in, then they get redirected to the app dashboard
-                if(loginSuccessful(url)) {
+                if(loginSuccessful(url, cookies)) {
 
                     //Setting the view to invisible for a nicer user experince.
                     view.setVisibility(View.GONE);
@@ -114,16 +121,9 @@ public class LoginActivityFragment extends Fragment {
         }
     }
 
-    public boolean loginSuccessful(String url) {
+    public boolean loginSuccessful(String url, String cookies) {
 
         if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
-
-            //Grabbing the cookie to get the jessionid
-            String cookies = android.webkit.CookieManager.getInstance().getCookie(url);
-
-            if (cookies != null) {
-                cookies = editCookieString(cookies);
-            }
 
             mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
             return true;
