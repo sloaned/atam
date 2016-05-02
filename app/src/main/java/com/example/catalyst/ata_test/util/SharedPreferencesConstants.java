@@ -6,4 +6,6 @@ package com.example.catalyst.ata_test.util;
 public class SharedPreferencesConstants {
 
     public static final String PREFS_USER = "username";
+    public static final String JESESSIONID = "jesesionid";
+
 }
