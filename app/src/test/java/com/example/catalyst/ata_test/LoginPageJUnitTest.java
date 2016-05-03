@@ -22,21 +22,24 @@ public class LoginPageJUnitTest {
     private static final String BASE_URL = NetworkConstants.ATA_BASE;
     private static final String LOGIN_URL = NetworkConstants.ATA_LOGIN;
 
-    private android.webkit.CookieManager cm;
-    private CookieManager instance;
-
+    private CookieManager cm;;
     private LoginActivityFragment loginFragment;
     private SharedPreferences pref;
+    private SharedPreferences.Editor pEditor;
 
     @Before
     public void setup() {
         loginFragment = new LoginActivityFragment();
         pref = Mockito.mock(SharedPreferences.class);
-        cm = Mockito.mock(android.webkit.CookieManager.class);
+        pEditor = Mockito.mock(SharedPreferences.Editor.class);
+        cm = Mockito.mock(CookieManager.class);
+
     }
 
     @Test
     public void testPositiveForLocalHost() {
+
+        loginFragment.setUrlConnection("http://localhost:8090/login");
         Assert.assertTrue(loginFragment.checkUrlForLocalHost("http://localhost:8090/login"));
     }
 
@@ -47,9 +50,34 @@ public class LoginPageJUnitTest {
 
     @Test
     public void testLoginLogicPositive() {
+        loginFragment.setCookieManager(cm);
+        loginFragment.setmEditor(pEditor);
+        loginFragment.setPrefs(pref);
 
-        Mockito.doNothing().when(pref.edit().putString("", "")).apply();
-        Assert.assertTrue(loginFragment.loginSuccessful(NetworkConstants.ATA_BASE, ""));
-
+        Mockito.when(cm.getCookie(Mockito.anyString())).thenReturn("JSESSIONID=nothingimportant");
+        Mockito.when(pEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(pEditor);
+        Assert.assertTrue(loginFragment.loginSuccessful(BASE_URL));
     }
+
+    @Test
+    public void testLoginLogicNegative(){
+        loginFragment.setCookieManager(cm);
+        loginFragment.setmEditor(pEditor);
+        loginFragment.setPrefs(pref);
+
+        Mockito.when(cm.getCookie(Mockito.anyString())).thenReturn("JSESSIONID=nothingimportant");
+        Mockito.when(pEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(pEditor);
+        Assert.assertFalse(loginFragment.loginSuccessful(LOGIN_URL));
+    }
+
+    @Test
+    public void editCookieString(){
+        String uneditedCookie = "JSESSIONID=ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String editedCookie = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        Assert.assertEquals(loginFragment.editCookieString(uneditedCookie), editedCookie);
+    }
+
+
+
 }

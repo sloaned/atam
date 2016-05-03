@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
  */
 public class LoginActivityFragment extends Fragment {
 
+    private CookieManager cookieManager;
     private SharedPreferences prefs;
     private SharedPreferences.Editor mEditor;
     private String urlConnection;
@@ -35,6 +37,8 @@ public class LoginActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        cookieManager = android.webkit.CookieManager.getInstance();
 
         View content = inflater.inflate(R.layout.fragment_login, container, false);
 
@@ -76,15 +80,9 @@ public class LoginActivityFragment extends Fragment {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
 
-                //Grabbing the cookie to get the jessionid
-                String cookies = android.webkit.CookieManager.getInstance().getCookie(url);
-
-                if (cookies != null) {
-                    cookies = editCookieString(cookies);
-                }
 
                 //If the user sucessfully logs in, then they get redirected to the app dashboard
-                if(loginSuccessful(url, cookies)) {
+                if(loginSuccessful(url)) {
 
                     //Setting the view to invisible for a nicer user experince.
                     view.setVisibility(View.GONE);
@@ -108,22 +106,28 @@ public class LoginActivityFragment extends Fragment {
         return content;
     }
 
-
     public boolean checkUrlForLocalHost(String url) {
         //this if/else statement is need because the servers are on local host.
         //If servers are remote, this if else statement should be removed, and
         //this method should return false;
         if (url.startsWith("http://localhost")) {
-            urlConnection = urlConnection.replace("http://localhost", NetworkConstants.DEV_NETWORK_ADDRESS);
+            this.urlConnection = this.urlConnection.replace("http://localhost", NetworkConstants.DEV_NETWORK_ADDRESS);
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean loginSuccessful(String url, String cookies) {
+    public boolean loginSuccessful(String url) {
 
         if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
+
+            //Grabbing the cookie to get the jessionid
+            String cookies = cookieManager.getCookie(url);
+
+            if (cookies != null) {
+                cookies = editCookieString(cookies);
+            }
 
             mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
             return true;
@@ -135,6 +139,22 @@ public class LoginActivityFragment extends Fragment {
         return cookies.replace("JSESSIONID=", "");
     }
 
+    //Getters and setter for testing.
+    public void setCookieManager(CookieManager cookieManager) {
+        this.cookieManager = cookieManager;
+    }
+
+    public void setUrlConnection(String urlConnection) {
+        this.urlConnection = urlConnection;
+    }
+
+    public void setPrefs(SharedPreferences prefs) {
+        this.prefs = prefs;
+    }
+
+    public void setmEditor(SharedPreferences.Editor mEditor) {
+        this.mEditor = mEditor;
+    }
 }
 
 
