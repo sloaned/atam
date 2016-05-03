@@ -48,4 +48,34 @@ public class BottomBarNavTest {
         onView(withId(R.id.feed_title))
                 .check(matches(withText(notifications)));
     }
+
+    @Test
+    public void openSettings() {
+        onView(withId(R.id.settings_button))
+                .perform(click());
+
+        String logout = "LOG OUT";
+
+        onView(withId(R.id.logout_button))
+                .check(matches(withText(logout)));
+    }
+
+    @Test
+    public void leaveAndReturnToDashboard() {
+        onView(withId(R.id.my_profile_button))
+                .perform(click());
+
+        String username = "User Name";
+
+        onView(withId(R.id.user_name))
+                .check(matches(withText(username)));
+
+        onView(withId(R.id.home_button))
+                .perform(click());
+
+        String title = "My Teams";
+
+        onView(withId(R.id.dashboard_title))
+                .check(matches(withText(title)));
+    }
 }
