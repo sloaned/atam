@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.adapters.SearchResultAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
-import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.network.ApiCaller;
 
 import java.util.ArrayList;
 
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/27/2016.
  */
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements ApiCaller.UpdateSearchListener {
 
     private static final String TAG = SearchFragment.class.getSimpleName();
 
@@ -35,10 +34,12 @@ public class SearchFragment extends Fragment {
     private View resultView;
     private ArrayList<User> results = new ArrayList<User>();
 
+    private ArrayList<User> users = new ArrayList<User>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        resultView = inflater.inflate(R.layout.content_search, null);
+        resultView = inflater.inflate(R.layout.fragment_search, null);
         ButterKnife.bind(this, resultView);
 
         adapter = new SearchResultAdapter(getActivity(), results);
@@ -47,6 +48,9 @@ public class SearchFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         String query = intent.getStringExtra(SearchManager.QUERY);
+
+        ApiCaller caller = new ApiCaller(getActivity(), this);
+        caller.getAllUsers();
 
         searchUsers(query);
 
@@ -57,14 +61,16 @@ public class SearchFragment extends Fragment {
 
     public void searchUsers(String query) {
         results.clear();
-        DBHelper dbHelper = new DBHelper(getActivity());
 
-        ArrayList<User> users = dbHelper.searchUsers(query);
         for (User user : users) {
             Log.d(TAG, "getting " + user.getFirstName());
             results.add(user);
         }
-        dbHelper.close();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshUsers(ArrayList<User> users) {
+        this.users = users;
     }
 }

@@ -9,6 +9,7 @@
     tools:context=".fragments.LoginActivityFragment"
     tools:showIn="@layout/activity_login">
 
+
     <WebView
         android:id="@+id/loginView"
         android:layout_width="match_parent"
@@ -44,8 +45,6 @@
             android:src="@drawable/ata"
             />
 
-
     </LinearLayout>
-
 
 </RelativeLayout>

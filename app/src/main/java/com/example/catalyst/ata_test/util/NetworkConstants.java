@@ -10,7 +10,7 @@ public class NetworkConstants {
     //10.0.2.2:9999 <-- genymotion
 
 
-    public static final String DEV_NETWORK_ADDRESS = "http://pc30122.catalystsolves.com";
+    public static final String DEV_NETWORK_ADDRESS = "http://pc30120.catalystsolves.com";  // Dan Sloane's computer
 
     //When deployed, change this to the web address
     public static final String ATA_BASE =  DEV_NETWORK_ADDRESS + ":8090";

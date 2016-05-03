@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ATAM.iml" filepath="$PROJECT_DIR$/ATAM.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/apperture-mobile-application.iml" filepath="$PROJECT_DIR$/apperture-mobile-application.iml" />
     </modules>
   </component>
 </project>

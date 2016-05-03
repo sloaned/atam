@@ -376,6 +376,7 @@ public class DBHelper extends SQLiteOpenHelper {
         User travis = new User(4, "Travis", "Spindle", "Call me if you want to learn how to dance", "Tech Lead");
         User heather = new User(5, "Heather", "Carmichael", "once got a hole in one in mini golf", "Developer 1");
         User blaine = new User(6, "Blaine", "Edwards", "bold and brave", "Developer 1");
+        User brad = new User(7, "Brad", "Larson", "Brad Dad", "Developer 69");
 
         addUser(bob);
         addUser(lucy);
@@ -383,6 +384,7 @@ public class DBHelper extends SQLiteOpenHelper {
         addUser(travis);
         addUser(heather);
         addUser(blaine);
+        addUser(brad);
 
         ArrayList<User> lunchmeatTeam = new ArrayList<User>();
         lunchmeatTeam.add(bob);

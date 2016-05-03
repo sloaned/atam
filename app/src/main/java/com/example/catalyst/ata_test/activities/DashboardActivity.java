@@ -25,86 +25,39 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
+import com.example.catalyst.ata_test.menus.TopBar;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private SearchView searchView;// = (SearchView) findViewById(R.id.action_search);
-    private View view;
+    private SearchView searchView;
+    private View listView;
+    private TopBar topBar;
 
-    @Override
+    private static final String TAG = DashboardActivity.class.getSimpleName();
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
         searchView = (SearchView) findViewById(R.id.action_search);
-        view = findViewById(R.id.listView);
-        //view.requestFocus();
+        listView = findViewById(R.id.listView);
 
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint("Search for users and teams...");
+        topBar = new TopBar();
 
-
-
-       // searchView.clearFocus();
-
-        SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
-        search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
-       // search_text.clearFocus();
-
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-                    intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, "");
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                }
-            }
-        });
-
-        // getCurrentFocus().clearFocus();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-                intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, query);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!newText.equals("")) {
-                    Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-                    intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, newText);
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
-            }
-        });
+        searchView = topBar.getTopBar(this, searchView);
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        searchView.post(new Runnable() {
-            @Override
-            public void run() {
-                searchView.setQuery("", true);
-            }
-        });
 
-        view.requestFocus();
+        topBar.clearSearch();
+
+        listView.requestFocus();
     }
 
 

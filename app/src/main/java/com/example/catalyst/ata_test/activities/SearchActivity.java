@@ -21,6 +21,7 @@ import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.SearchResultAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
 import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.network.ApiCaller;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/26/2016.
  */
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements ApiCaller.UpdateSearchListener {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
@@ -39,6 +40,7 @@ public class SearchActivity extends AppCompatActivity {
     @Bind(android.R.id.list)ListView listView;
     private View resultView;
     private ArrayList<User> results = new ArrayList<User>();
+    private ArrayList<User> users = new ArrayList<User>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +48,10 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        // toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
         final SearchView searchView = (SearchView) findViewById(R.id.action_search);
+
+        ApiCaller caller = new ApiCaller(this, null);
+        caller.getAllUsers();
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint("Search for users and teams...");
@@ -117,15 +119,19 @@ public class SearchActivity extends AppCompatActivity {
 
     public void searchUsers(String query) {
         results.clear();
-        DBHelper dbHelper = new DBHelper(this);
-
-        ArrayList<User> users = dbHelper.searchUsers(query);
+        query = query.toLowerCase();
         for (User user : users) {
-            Log.d(TAG, "getting " + user.getFirstName());
-            results.add(user);
+            String name = user.getFirstName().toLowerCase() + " " + user.getLastName().toLowerCase();
+            if ((user.getFirstName() != null && user.getLastName() != null) && name.contains(query)) {
+                results.add(user);
+            }
         }
-        dbHelper.close();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshUsers(ArrayList<User> users) {
+        this.users = users;
     }
 
 }
