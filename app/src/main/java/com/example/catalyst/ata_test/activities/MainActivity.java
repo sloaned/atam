@@ -37,11 +37,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
-            deleteDatabase(UserContract.DATABASE_NAME);
+           /* deleteDatabase(UserContract.DATABASE_NAME);
             SQLiteDatabase db = openOrCreateDatabase(UserContract.DATABASE_NAME, MODE_PRIVATE, null);
             DBHelper dbHelper = new DBHelper(this);
             dbHelper.setSampleData();
-            dbHelper.close();
+            dbHelper.close();  */
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
         }
@@ -56,18 +56,18 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
-            deleteDatabase(UserContract.DATABASE_NAME);
-            SQLiteDatabase db = openOrCreateDatabase(UserContract.DATABASE_NAME, MODE_PRIVATE, null);
-            DBHelper dbHelper = new DBHelper(this);
-            dbHelper.setSampleData();
-            dbHelper.close();
+            // deleteDatabase(UserContract.DATABASE_NAME);
+           // SQLiteDatabase db = openOrCreateDatabase(UserContract.DATABASE_NAME, MODE_PRIVATE, null);
+            //DBHelper dbHelper = new DBHelper(this);
+            //dbHelper.setSampleData();
+            //dbHelper.close();
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
         }
     }
 
     private boolean loggedIn() {
-        String loggedInUser = prefs.getString(SharedPreferencesConstants.PREFS_USER, null);
+        String loggedInUser = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
         Log.d(TAG, "loggedInUser = " + loggedInUser);
         if (loggedInUser == null || loggedInUser.equals(null)) {
             return false;

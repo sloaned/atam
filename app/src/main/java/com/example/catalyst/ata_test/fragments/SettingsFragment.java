@@ -12,9 +12,11 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.activities.LoginActivity;
 import com.example.catalyst.ata_test.activities.MainActivity;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
@@ -55,7 +57,10 @@ public class SettingsFragment extends DialogFragment {
             public void onClick(View v) {
                 Log.d(TAG, "logout button clicked!!!!!");
                 mEditor.putString(SharedPreferencesConstants.PREFS_USER, null).apply();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+
+                CookieManager.getInstance().removeAllCookie();
+
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
             }
         });

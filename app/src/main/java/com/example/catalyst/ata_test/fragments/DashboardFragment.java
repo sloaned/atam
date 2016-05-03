@@ -13,6 +13,7 @@ import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
 import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Team;
+import com.example.catalyst.ata_test.network.ApiCaller;
 
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/27/2016.
  */
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements ApiCaller.UpdateDashboardListener {
 
     private static final String TAG = DashboardFragment.class.getSimpleName();
 
@@ -43,21 +44,23 @@ public class DashboardFragment extends Fragment {
 
         listView.setAdapter(adapter);
 
-        getTasks();
+        getTeams();
 
         return homeView;
     }
 
-    public void getTasks() {
+    public void getTeams() {
         mTeams.clear();
-        DBHelper dbHelper = new DBHelper(getActivity());
+        ApiCaller caller = new ApiCaller(getActivity(), this);
+        caller.getAllTeams();
+    }
 
-        ArrayList<Team> teams = dbHelper.getTeams();
+    @Override
+    public void refreshTeams(ArrayList<Team> teams) {
         for (Team team : teams) {
             Log.d(TAG, "getting " + team.getName());
             mTeams.add(team.getName());
         }
-        dbHelper.close();
         adapter.notifyDataSetChanged();
     }
 
