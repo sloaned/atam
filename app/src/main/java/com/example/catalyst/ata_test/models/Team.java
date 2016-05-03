@@ -1,11 +1,12 @@
 package com.example.catalyst.ata_test.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by dsloane on 4/22/2016.
  */
-public class Team {
+public class Team implements Serializable {
     private int id;
     private String name;
     private boolean active;
