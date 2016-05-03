@@ -37,4 +37,15 @@ public class BottomBarNavTest {
         onView(withId(R.id.user_name))
                 .check(matches(withText(username)));
     }
+
+    @Test
+    public void goToFeed() {
+        onView(withId(R.id.feed_button))
+                .perform(click());
+
+        String notifications = "Notifications";
+
+        onView(withId(R.id.feed_title))
+                .check(matches(withText(notifications)));
+    }
 }
