@@ -121,7 +121,8 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
         results.clear();
         query = query.toLowerCase();
         for (User user : users) {
-            if ((user.getFirstName() != null && user.getLastName() != null) && (user.getFirstName().toLowerCase().contains(query) || user.getLastName().toLowerCase().contains(query))) {
+            String name = user.getFirstName().toLowerCase() + " " + user.getLastName().toLowerCase();
+            if ((user.getFirstName() != null && user.getLastName() != null) && name.contains(query)) {
                 results.add(user);
             }
         }
