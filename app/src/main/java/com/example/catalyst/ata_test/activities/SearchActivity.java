@@ -95,10 +95,6 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
             }
         });
 
-
-        Log.d(TAG, "here in the SearchActivity!");
-
-
         adapter = new SearchResultAdapter(this, results);
 
         listView.setAdapter(adapter);
@@ -127,8 +123,6 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
             searchUsers(query);
         }
 
-
-
     }
 
     public void cancelSearch() {
@@ -153,7 +147,5 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
     public void refreshUsers(ArrayList<User> users) {
         this.users = users;
     }
-
-
 
 }

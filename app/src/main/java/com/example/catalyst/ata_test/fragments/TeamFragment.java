@@ -57,10 +57,7 @@ public class TeamFragment extends Fragment {
 
             teamMemberListView.setAdapter(adapter);
 
-            
         }
-
-
 
         return teamView;
     }

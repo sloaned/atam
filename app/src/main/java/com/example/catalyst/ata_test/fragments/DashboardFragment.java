@@ -50,7 +50,6 @@ public class DashboardFragment extends Fragment implements ApiCaller.UpdateDashb
         caller = new ApiCaller(getActivity(), this);
 
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -69,7 +68,6 @@ public class DashboardFragment extends Fragment implements ApiCaller.UpdateDashb
 
     public void getTeams() {
         mTeams.clear();
-       // ApiCaller caller = new ApiCaller(getActivity(), this);
         caller.getAllTeams();
     }
 

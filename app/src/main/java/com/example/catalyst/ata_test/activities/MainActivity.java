@@ -38,11 +38,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
-           /* deleteDatabase(UserContract.DATABASE_NAME);
-            SQLiteDatabase db = openOrCreateDatabase(UserContract.DATABASE_NAME, MODE_PRIVATE, null);
-            DBHelper dbHelper = new DBHelper(this);
-            dbHelper.setSampleData();
-            dbHelper.close();  */
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
         }
@@ -57,11 +52,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
-            // deleteDatabase(UserContract.DATABASE_NAME);
-           // SQLiteDatabase db = openOrCreateDatabase(UserContract.DATABASE_NAME, MODE_PRIVATE, null);
-            //DBHelper dbHelper = new DBHelper(this);
-            //dbHelper.setSampleData();
-            //dbHelper.close();
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
         }

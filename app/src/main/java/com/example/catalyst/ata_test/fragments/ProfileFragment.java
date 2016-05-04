@@ -69,11 +69,6 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
 
         final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
         final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount());
-        Log.d(TAG, "viewPager = " + viewPager);
-        Log.d(TAG, "adapter = " + adapter);
-
-
-        Log.d(TAG, "number of tabs = " + profileTabs.getTabCount());
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
@@ -106,8 +101,6 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
             }
 
         }
-
-
 
         return profileView;
     }

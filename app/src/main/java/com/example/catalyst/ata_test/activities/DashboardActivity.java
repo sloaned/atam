@@ -48,7 +48,6 @@ public class DashboardActivity extends AppCompatActivity {
         topBar = new TopBar();
 
         searchView = topBar.getTopBar(this, searchView);
-
     }
 
     @Override
@@ -56,8 +55,6 @@ public class DashboardActivity extends AppCompatActivity {
         super.onResume();
 
         topBar.clearSearch();
-
-        listView.requestFocus();
     }
 
 

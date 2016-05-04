@@ -27,6 +27,8 @@ public class ProfileActivity extends AppCompatActivity {
         topBar = new TopBar();
 
         searchView = topBar.getTopBar(this, searchView);
+
+        searchView.clearFocus();
     }
 
     @Override
