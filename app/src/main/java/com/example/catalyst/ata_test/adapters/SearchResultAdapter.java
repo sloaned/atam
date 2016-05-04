@@ -61,6 +61,7 @@ public class SearchResultAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_search_results, null);
             holder.name = (TextView) convertView.findViewById(R.id.user_name);
+            holder.title = (TextView) convertView.findViewById(R.id.user_title);
 
             convertView.setTag(holder);
         } else {
@@ -68,6 +69,7 @@ public class SearchResultAdapter extends BaseAdapter {
         }
         User u = resultList.get(position);
         holder.name.setText(u.getFirstName() + " " + u.getLastName());
+        holder.title.setText(u.getTitle());
 
         return convertView;
     }
@@ -76,5 +78,6 @@ public class SearchResultAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         TextView name;
+        TextView title;
     }
 }
