@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     private SearchResultAdapter adapter;
+    final ApiCaller caller = new ApiCaller(this, null);
 
     @Bind(android.R.id.list)ListView listView;
     private View resultView;
@@ -48,10 +51,16 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                caller.getAllUsers();
+            }
+        };
+        new Thread(runnable).start();
+
         final SearchView searchView = (SearchView) findViewById(R.id.action_search);
 
-        ApiCaller caller = new ApiCaller(this, null);
-        caller.getAllUsers();
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint("Search for users and teams...");
@@ -94,6 +103,17 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
 
         listView.setAdapter(adapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                User user = (User) adapter.getItem(position);
+
+                Intent intent = new Intent(SearchActivity.this, ProfileActivity.class)
+                        .putExtra("User", user);
+                startActivity(intent);
+            }
+        });
+
         Intent intent = getIntent();
         final String query = intent.getStringExtra(SearchManager.QUERY);
         if (!query.equals("")) {
@@ -133,5 +153,7 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
     public void refreshUsers(ArrayList<User> users) {
         this.users = users;
     }
+
+
 
 }

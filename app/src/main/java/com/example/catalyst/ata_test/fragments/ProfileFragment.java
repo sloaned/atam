@@ -1,5 +1,6 @@
 package com.example.catalyst.ata_test.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.TabAdapter;
 import com.example.catalyst.ata_test.menus.BottomBar;
+import com.example.catalyst.ata_test.models.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,12 +32,13 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
     private static final String TAG = ProfileFragment.class.getSimpleName();
     private BottomBar bottomBar = new BottomBar();
     private View profileView;
+    private User user;
 
     @Bind(R.id.user_info_area)LinearLayout userInfoArea;
     @Bind(R.id.user_info_text_area) RelativeLayout userInfoTextArea;
     @Bind(R.id.profile_pic) ImageView profilePic;
     @Bind(R.id.user_name) TextView username;
-    @Bind(R.id.user_role) TextView userRole;
+    @Bind(R.id.user_title) TextView userTitle;
     @Bind(R.id.edit_bio_button) ImageView editBioButton;
     @Bind(R.id.user_bio) TextView userBio;
     @Bind(R.id.tab_layout) TabLayout profileTabs;
@@ -92,6 +95,17 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
                 Log.d(TAG, "tab reselected = " + tab.getText());
             }
         });
+
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.hasExtra("User")) {
+            user = (User) intent.getSerializableExtra("User");
+            username.setText(user.getFirstName() + " " + user.getLastName());
+            userTitle.setText(user.getTitle());
+            if (user.getDescription() != null) {
+                userBio.setText(user.getDescription());
+            }
+
+        }
 
 
 

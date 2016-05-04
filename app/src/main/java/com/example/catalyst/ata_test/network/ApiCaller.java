@@ -87,7 +87,7 @@ public class ApiCaller {
 
 
     public void getAllUsers() {
-        String url = BASE_URL + "users";
+        String url = BASE_URL + "users?size=3000";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -104,6 +104,12 @@ public class ApiCaller {
                         User user = new User();
                         user.setFirstName(jsonUser.getString("firstName"));
                         user.setLastName(jsonUser.getString("lastName"));
+                        user.setTitle(jsonUser.getString("title"));
+                        user.setEmail(jsonUser.getString("email"));
+                        if (!jsonUser.getString("profileDescription").equals("null")) {
+                            user.setDescription(jsonUser.getString("profileDescription"));
+                        }
+
                         Log.d(TAG, "user name = " + user.getFirstName());
                         users.add(user);
                     }
@@ -127,7 +133,7 @@ public class ApiCaller {
     }
 
     public void getAllTeams() {
-        String url = BASE_URL + "teams";
+        String url = BASE_URL + "teams?size=3000000";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
