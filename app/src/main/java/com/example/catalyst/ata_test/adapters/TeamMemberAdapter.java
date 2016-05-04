@@ -1,6 +1,7 @@
 package com.example.catalyst.ata_test.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class TeamMemberAdapter extends BaseAdapter {
         }
         User user = memberList.get(position);
         holder.name.setText(user.getFirstName() + " " + user.getLastName());
+        Log.d(TAG, "now adding " + user.getFirstName() + " " + user.getLastName());
 
         return convertView;
     }

@@ -51,6 +51,12 @@ public class TeamFragment extends Fragment {
             teamName.setText(team.getName());
             teamDescription.setText(team.getDescription());
 
+            memberList = team.getUserList();
+
+            adapter = new TeamMemberAdapter(getActivity(), memberList);
+
+            teamMemberListView.setAdapter(adapter);
+
             
         }
 

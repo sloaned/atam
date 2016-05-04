@@ -3,7 +3,6 @@ package com.example.catalyst.ata_test.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
@@ -13,19 +12,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.catalyst.ata_test.AppController;
-import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.activities.SearchActivity;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
-import com.example.catalyst.ata_test.fragments.SearchFragment;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
-import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -45,12 +40,17 @@ public class ApiCaller {
     private static UpdateSearchListener searchCallback;
     //private static DashboardFragment mDashboardFragment;
 
+
+    private ArrayList<User> teamMembers = new ArrayList<User>();
+
     private static SharedPreferences prefs;
 
     private SharedPreferences.Editor mEditor;
 
     public interface UpdateDashboardListener {
         void refreshTeams(ArrayList<Team> teams);
+        void viewTeam(Team team);
+        void getTeamMembers(Team team);
     }
 
     public interface UpdateSearchListener {
@@ -143,13 +143,12 @@ public class ApiCaller {
                         JSONObject jsonTeam = teamsList.getJSONObject(i);
                         Team team = new Team();
                         team.setName(jsonTeam.getString("name"));
-                        Log.d(TAG, "team name = " + team.getName());
+                        team.setId(jsonTeam.getString("id"));
                         teams.add(team);
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
-                Log.d(TAG, "callback = " + dashboardCallback);
 
                 dashboardCallback.refreshTeams(teams);
             }
@@ -159,6 +158,95 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    public void getTeamById(String id) {
+        String url = BASE_URL + "teams/" + id + "/";
+
+        Log.d(TAG, "team url = " + url);
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                Team team = new Team();
+                try {
+                    team.setId(response.getString("id"));
+                    team.setName(response.getString("name"));
+                    team.setDescription(response.getString("description"));
+                    team.setActive(response.getBoolean("active"));
+                    JSONArray memberList = response.getJSONArray("userList");
+                    ArrayList<User> members = new ArrayList<User>();
+                    for (int i = 0; i < memberList.length(); i++) {
+                        JSONObject member = memberList.getJSONObject(i);
+                        String memberId = member.getString("userId");
+                        User user = new User();
+                        user.setId(memberId);
+                        members.add(user);
+                       // getUserById(memberId);
+                    }
+
+                    team.setUserList(members);
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+                if (mFragment instanceof DashboardFragment) {
+                    dashboardCallback.getTeamMembers(team);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+
+        });
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    public void getTeamMembers(Team team) {
+        teamMembers.clear();
+        for (User user : team.getUserList()) {
+            getUserById(user.getId());
+        }
+        team.setUserList(teamMembers);
+        dashboardCallback.viewTeam(team);
+    }
+
+    public void getUserById(String id) {
+        String url = BASE_URL + "users/" + id + "/";
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                User user = new User();
+                try {
+                    user.setId(response.getString("id"));
+                    user.setFirstName(response.getString("firstName"));
+                    user.setLastName(response.getString("lastName"));
+                    user.setRole(response.getString("role"));
+                    user.setTitle(response.getString("title"));
+                    user.setEmail(response.getString("email"));
+                    user.setDescription(response.getString("profileDescription"));
+
+                    teamMembers.add(user);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+
         AppController.getInstance().addToRequestQueue(req);
     }
 }

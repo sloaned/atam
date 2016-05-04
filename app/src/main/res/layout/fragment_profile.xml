@@ -8,15 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_columnWeight="10"
         android:id="@+id/profile_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:id="@+id/user_info_area"
             android:orientation="horizontal"
-            android:layout_weight="3">
+            android:layout_weight="11">
 
             <ImageView
                 android:layout_width="140dp"
@@ -83,160 +82,24 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_below="@+id/profile_content"
-            android:minHeight="?attr/actionBarSize"
+            android:layout_height="wrap_content"
+            android:minHeight="80dp"
             android:background="#a6a6a6"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:layout_weight="1"/>
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/pager"
             android:background="#e48931"
-            android:layout_below="@+id/tab_layout"
-            android:paddingBottom="64dp"
-            android:layout_weight="6"/>
+            android:layout_weight="9"/>
+
+        <include layout="@layout/bottom_bar" />
 
 
 
     </LinearLayout>
 
 
-
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_above="@+id/bottom_bar"
-        android:background="#c0c0c0"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:orientation="horizontal"
-        android:id="@+id/bottom_bar"
-        android:background="#ffffff"
-        android:layout_alignParentBottom="true"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:layout_rowWeight="4">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/home_button"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_menu_home"
-                android:id="@+id/home_icon"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textSize="10sp"
-                android:gravity="center_horizontal"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="3dp"
-                android:layout_below="@+id/home_icon"/>
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/my_profile_button"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/user_profile"
-                android:id="@+id/my_profile_icon"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="My Profile"
-                android:textSize="10sp"
-                android:gravity="center_horizontal"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="3dp"
-                android:layout_below="@+id/my_profile_icon"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/feed_button"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/frame"
-                android:id="@+id/frame"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="55"
-                android:textSize="16sp"
-                android:layout_marginTop="4dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="Notifications"
-                android:textSize="10sp"
-                android:layout_marginTop="3dp"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/frame"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/settings_button"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/settings_icon"
-                android:src="@drawable/hamburger_menu"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textSize="10sp"
-                android:gravity="center_horizontal"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="3dp"
-                android:layout_below="@id/settings_icon"/>
-
-        </RelativeLayout>
-
-    </LinearLayout>
 
 </RelativeLayout>

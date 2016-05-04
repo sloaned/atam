@@ -242,7 +242,7 @@ public class DBHelper extends SQLiteOpenHelper {
         while (res.isAfterLast() == false) {
             Team team = new Team();
             team.setDescription(res.getString(res.getColumnIndex(TeamContract.TeamEntry.COLUMN_TEAM_DESCRIPTION)));
-            team.setId(res.getInt(res.getColumnIndex(TeamContract.TeamEntry._ID)));
+            team.setId(res.getString(res.getColumnIndex(TeamContract.TeamEntry._ID)));
             team.setName(res.getString(res.getColumnIndex(TeamContract.TeamEntry.COLUMN_TEAM_NAME)));
             if (res.getString(res.getColumnIndex(TeamContract.TeamEntry.COLUMN_TEAM_ACTIVE)) == "true") {
                 team.setActive(true);
@@ -324,7 +324,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return feedbacks;
     }
 
-    public ArrayList<User> getCurrentTeamMembers(int teamId) {
+    public ArrayList<User> getCurrentTeamMembers(String teamId) {
         ArrayList<Integer> userIds = new ArrayList<Integer>();
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -370,13 +370,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public void setSampleData() {
-        User bob = new User(1, "Bob", "Jenkins", "A hero with mad tennis skillz", "Developer 1");
-        User lucy = new User(2, "Lucy", "Hochneffer", "Fierce but vital", "Developer 2");
-        User cassandra = new User(3, "Cassandra", "Loomberg", "Skilled at databases", "Developer 1");
-        User travis = new User(4, "Travis", "Spindle", "Call me if you want to learn how to dance", "Tech Lead");
-        User heather = new User(5, "Heather", "Carmichael", "once got a hole in one in mini golf", "Developer 1");
-        User blaine = new User(6, "Blaine", "Edwards", "bold and brave", "Developer 1");
-        User brad = new User(7, "Brad", "Larson", "Brad Dad", "Developer 69");
+        User bob = new User("1", "Bob", "Jenkins", "A hero with mad tennis skillz", "Developer 1");
+        User lucy = new User("2", "Lucy", "Hochneffer", "Fierce but vital", "Developer 2");
+        User cassandra = new User("3", "Cassandra", "Loomberg", "Skilled at databases", "Developer 1");
+        User travis = new User("4", "Travis", "Spindle", "Call me if you want to learn how to dance", "Tech Lead");
+        User heather = new User("5", "Heather", "Carmichael", "once got a hole in one in mini golf", "Developer 1");
+        User blaine = new User("6", "Blaine", "Edwards", "bold and brave", "Developer 1");
+        User brad = new User("7", "Brad", "Larson", "Brad Dad", "Developer 69");
 
         addUser(bob);
         addUser(lucy);
@@ -399,9 +399,9 @@ public class DBHelper extends SQLiteOpenHelper {
         waldorfTeam.add(blaine);
         waldorfTeam.add(bob);
 
-        Team lunchmeat = new Team(1, "Lunchmeat", true, lunchmeatTeam, "We're here to make lunch.");
-        Team lego = new Team(2, "Lego Team", true, legoTeam, "Making lego art");
-        Team waldorf = new Team(3, "Waldorf", true, waldorfTeam, "Designing an improved Waldorf salad");
+        Team lunchmeat = new Team("1", "Lunchmeat", true, lunchmeatTeam, "We're here to make lunch.");
+        Team lego = new Team("2", "Lego Team", true, legoTeam, "Making lego art");
+        Team waldorf = new Team("3", "Waldorf", true, waldorfTeam, "Designing an improved Waldorf salad");
 
         addTeam(lunchmeat);
         addTeam(lego);
