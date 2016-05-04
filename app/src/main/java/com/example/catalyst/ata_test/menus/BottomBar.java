@@ -95,14 +95,9 @@ public class BottomBar {
     }
 
     public void openMyProfile() {
-        if (mContext instanceof ProfileActivity) {
-
-        } else {
-            Intent intent = new Intent(mContext, ProfileActivity.class);
-            mContext.startActivity(intent);
-            ((Activity)mContext).overridePendingTransition(0, 0);
-        }
-
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        mContext.startActivity(intent);
+        ((Activity)mContext).overridePendingTransition(0, 0);
     }
 
     public void openDashboard() {
