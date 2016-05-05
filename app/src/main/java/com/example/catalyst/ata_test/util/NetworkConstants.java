@@ -6,11 +6,12 @@ package com.example.catalyst.ata_test.util;
 public class NetworkConstants {
 
     //Alternatively, do your PC name
-    //http://pc30122.catalystsolves.com:8080 <--jacob millers pc name
+    //http://pc30122.catalystsolves.com <--jacob millers pc name
+    //http://pc30120.catalystsolves.com <-- Dan Sloane's computer
     //10.0.2.2:9999 <-- genymotion
 
 
-    public static final String DEV_NETWORK_ADDRESS = "http://pc30120.catalystsolves.com";  // Dan Sloane's computer
+    public static final String DEV_NETWORK_ADDRESS = "http://pc30122.catalystsolves.com";  // Jacob Miller's computer
 
     //When deployed, change this to the web address
     public static final String ATA_BASE =  DEV_NETWORK_ADDRESS + ":8090";
