@@ -12,7 +12,8 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         android:src="@drawable/ata"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/ata_logo_description"/>
 
     <android.support.v7.widget.SearchView
         android:id="@+id/action_search"

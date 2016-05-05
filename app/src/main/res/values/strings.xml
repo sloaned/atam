@@ -13,7 +13,32 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
     <string name="title_activity_dashboard">DashboardActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Strings related to bottom bar -->
+    <string name="bottom_bar_notifications_label">Notifications</string>
+    <string name="bottom_bar_settings_label">Settings</string>
+    <string name="bottom_bar_profile_label">My Profile</string>
+    <string name="bottom_bar_home_label">Home</string>
+    <string name="bottom_bar_home_button_description">Home button</string>
+    <string name="bottom_bar_profile_button_description">My Profile button</string>
+    <string name="bottom_bar_notifications_button_description">Notifications button</string>
+    <string name="bottom_bar_settings_button_description">Settings button</string>
+
+    <!-- Strings related to top bar -->
+    <string name="cancel_search">Cancel</string>
+    <string name="ata_logo_description">Aperture Team Assessment logo</string>
+
+    <!-- Strings related to settings page -->
+    <string name="settings_notification_label">Notification Settings</string>
+    <string name="settings_app_info_label">App Info</string>
+    <string name="settings_logout_label">LOG OUT</string>
+
+
+    <string name="edit_bio_label">Edit Bio</string>
+
+
 </resources>

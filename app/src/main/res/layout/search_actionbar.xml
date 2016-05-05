@@ -12,7 +12,8 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         android:src="@drawable/ata"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/ata_logo_description"/>
 
     <android.support.v7.widget.SearchView
         android:id="@+id/action_search"
@@ -23,8 +24,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:layout_centerVertical="true"
+        android:text="@string/cancel_search"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:textSize="14sp"

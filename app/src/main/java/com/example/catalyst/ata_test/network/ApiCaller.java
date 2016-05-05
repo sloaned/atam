@@ -39,13 +39,10 @@ public class ApiCaller {
     private Fragment mFragment;
     private static UpdateDashboardListener dashboardCallback;
     private static UpdateSearchListener searchCallback;
-    //private static DashboardFragment mDashboardFragment;
-
 
     private ArrayList<User> teamMembers = new ArrayList<User>();
 
     private static SharedPreferences prefs;
-
     private SharedPreferences.Editor mEditor;
 
     public interface UpdateDashboardListener {
