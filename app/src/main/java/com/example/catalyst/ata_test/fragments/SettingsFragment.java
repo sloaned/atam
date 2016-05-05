@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.LoginActivity;
 
-import com.example.catalyst.ata_test.activities.MainActivity;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import butterknife.Bind;
