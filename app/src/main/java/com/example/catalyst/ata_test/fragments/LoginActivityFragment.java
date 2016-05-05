@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.MainActivity;
+import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.util.NetworkConstants;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
@@ -97,7 +97,7 @@ public class LoginActivityFragment extends Fragment {
                     spinner.setVisibility(View.VISIBLE);
                     spinner.bringToFront();
 
-                    Intent homePage = new Intent(getActivity(), MainActivity.class);
+                    Intent homePage = new Intent(getActivity(), DashboardActivity.class);
                     startActivity(homePage);
                 }
             }

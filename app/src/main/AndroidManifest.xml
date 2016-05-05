@@ -16,14 +16,6 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/NoActionBarAppTheme">
-        <activity android:name=".activities.MainActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"
@@ -32,39 +24,36 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.catalyst.ata_test.activities.MainActivity"/>
         </activity>
         <activity
             android:name=".activities.DashboardActivity"
             android:label=""
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".activities.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.catalyst.ata_test.activities.MainActivity" />
+                android:value="com.example.catalyst.ata_test.activities.LoginActivity" />
         </activity>
         <activity android:name=".activities.ProfileActivity"
-                  android:parentActivityName=".activities.MainActivity">
+                  android:parentActivityName=".activities.LoginActivity">
                   <meta-data
                       android:name="android.support.PARENT_ACTIVITY"
-                      android:value="com.example.catalyst.ata_test.activities.MainActivity" />
+                      android:value="com.example.catalyst.ata_test.activities.LoginActivity" />
 
         </activity>
 
         <activity android:name=".activities.TeamActivity"
-                  android:parentActivityName=".activities.MainActivity">
+                  android:parentActivityName=".activities.LoginActivity">
                     <meta-data
                         android:name="android.support.PARENT_ACTIVITY"
-                     android:value="com.example.catalyst.ata_test.activities.MainActivity" />
+                     android:value="com.example.catalyst.ata_test.activities.LoginActivity" />
 
          </activity>
 
         <activity android:name=".activities.FeedActivity"
-                  android:parentActivityName=".activities.MainActivity">
+                  android:parentActivityName=".activities.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.catalyst.ata_test.activities.MainActivity" />
+                android:value="com.example.catalyst.ata_test.activities.LoginActivity" />
 
         </activity>
 
