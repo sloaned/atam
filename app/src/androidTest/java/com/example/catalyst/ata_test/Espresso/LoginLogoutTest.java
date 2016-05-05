@@ -48,10 +48,10 @@ public class LoginLogoutTest {
         }
     };
 
-    @Test
-    public void checkForWebView() {
-        onView(withId(R.id.loginView)).check(matches(isDisplayed()));
-    }
+//    @Test
+//    public void checkForWebView() {
+//        onView(withId(R.id.loginView)).check(matches(isDisplayed()));
+//    }
 
     @Test
     public void loginThenLogout() {
