@@ -180,7 +180,7 @@ public class ApiCaller {
                     team.setName(response.getString(JsonConstants.JSON_TEAM_NAME));
                     team.setDescription(response.getString(JsonConstants.JSON_TEAM_DESCRIPTION));
                     team.setActive(response.getBoolean(JsonConstants.JSON_TEAM_ACTIVE));
-                    if (response.getJSONArray(JsonConstants.JSON_TEAM_MEMBERLIST) != null) {
+                    if (!response.getString(JsonConstants.JSON_TEAM_MEMBERLIST).equals("null")) {
                         JSONArray memberList = response.getJSONArray(JsonConstants.JSON_TEAM_MEMBERLIST);
                         ArrayList<User> members = new ArrayList<User>();
                         for (int i = 0; i < memberList.length(); i++) {

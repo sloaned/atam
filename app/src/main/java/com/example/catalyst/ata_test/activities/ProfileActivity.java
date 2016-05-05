@@ -2,8 +2,10 @@ package com.example.catalyst.ata_test.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.menus.TopBar;

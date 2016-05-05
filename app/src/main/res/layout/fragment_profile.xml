@@ -8,14 +8,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/user_info_area"
             android:orientation="horizontal"
             android:layout_weight="11">
 
             <ImageView
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:src="@drawable/defaultuser"
                 android:id="@+id/profile_pic"
                 android:layout_weight="1"
@@ -61,7 +61,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/user_title"
                     android:layout_marginTop="5dp"
                     android:layout_marginLeft="5dp"
@@ -70,6 +70,8 @@
                     android:id="@+id/user_bio"
                     android:text="I eat tacos and watch reruns of The A-Team."
                     android:textSize="16sp" />
+
+
 
             </RelativeLayout>
 

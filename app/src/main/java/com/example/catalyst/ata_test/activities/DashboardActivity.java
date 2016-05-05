@@ -46,7 +46,6 @@ public class DashboardActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
 
         topBar = new TopBar();
-
         searchView = topBar.getTopBar(this, searchView);
     }
 

@@ -15,6 +15,13 @@
         android:layout_weight="1"
         android:contentDescription="@string/ata_logo_description"/>
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/focus_layout"
+        android:focusable="true"
+        android:focusableInTouchMode="true"><requestFocus /></LinearLayout>
+
     <android.support.v7.widget.SearchView
         android:id="@+id/action_search"
         android:layout_height="wrap_content"

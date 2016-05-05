@@ -27,7 +27,7 @@
         android:text="@string/cancel_search"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:clickable="true"
         android:id="@+id/action_cancel_search"
         android:layout_weight="1"/>
