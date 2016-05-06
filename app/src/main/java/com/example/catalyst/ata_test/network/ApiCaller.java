@@ -96,6 +96,14 @@ public class ApiCaller {
     }
 
     public void logout() {
+
+        //TODO: Oauth and ATA don't have logout funcionality. This code will need to be updated once
+        //they update their code to allow a legitimate logout.
+
+        //To facilitate loging out, the session ID with ATA is being destroyed client side.
+        //This effectively logs the user out.
+
+
         String url = API_URL + "/logout";
         StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
 
