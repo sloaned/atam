@@ -39,6 +39,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Bind(R.id.action_search)SearchView searchView;
     @Bind(R.id.listView) View listView;
     @Bind(R.id.action_logo) ImageView logo;
+    @Bind(R.id.focus_layout) LinearLayout focus;
     private TopBar topBar;
 
 
@@ -61,6 +62,7 @@ public class DashboardActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         topBar.clearSearch();
+        focus.requestFocus();
     }
 
     @Override

@@ -1,11 +1,14 @@
 package com.example.catalyst.ata_test.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by dsloane on 4/22/2016.
  */
-public class User implements Serializable {
+public class User implements Serializable, Parcelable {
     private String id;
     private String firstName;
     private String lastName;
@@ -38,4 +41,39 @@ public class User implements Serializable {
     public void setEmail(String email) {this.email = email;}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(id);
+        out.writeString(firstName);
+        out.writeString(lastName);
+        out.writeString(role);
+        out.writeString(description);
+        out.writeString(title);
+        out.writeString(email);
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    public User(Parcel in) {
+        id = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        role = in.readString();
+        description = in.readString();
+        title = in.readString();
+        email = in.readString();
+    }
 }

@@ -149,7 +149,7 @@ public class ApiCaller {
                             user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
                         }
 
-                        Log.d(TAG, "user name = " + user.getFirstName());
+                       // Log.d(TAG, "user name = " + user.getFirstName());
                         users.add(user);
                     }
                 } catch (JSONException e) {

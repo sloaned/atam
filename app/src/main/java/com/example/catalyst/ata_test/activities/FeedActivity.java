@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.menus.TopBar;
@@ -22,6 +23,7 @@ public class FeedActivity extends AppCompatActivity {
 
     @Bind(R.id.action_search)SearchView searchView;
     @Bind(R.id.action_logo) ImageView logo;
+    @Bind(R.id.focus_layout) LinearLayout focus;
     private TopBar topBar;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class FeedActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-
         topBar.clearSearch();
+        focus.requestFocus();
     }
 }

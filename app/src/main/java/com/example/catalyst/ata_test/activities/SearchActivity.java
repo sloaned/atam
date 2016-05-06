@@ -31,6 +31,7 @@ import com.example.catalyst.ata_test.network.ApiCaller;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -50,6 +51,8 @@ public class SearchActivity extends AppCompatActivity {
     @Bind(R.id.action_logo) ImageView logo;
     private ArrayList<User> results = new ArrayList<User>();
     private ArrayList<User> users = new ArrayList<User>();
+    private SearchView searchView;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +60,20 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
+        bundle = savedInstanceState;
+
+        searchView = (SearchView) findViewById(R.id.action_search);
+
         TopBar topBar = new TopBar();
         logo = topBar.setLogo(this, logo);
+
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
+
+        SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
+        search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
+
+        EventBus.getDefault().register(this);
 
         Runnable runnable = new Runnable() {
             @Override
@@ -67,15 +82,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         };
         new Thread(runnable).start();
-
-        final SearchView searchView = (SearchView) findViewById(R.id.action_search);
-
-
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
-
-        SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
-        search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -114,29 +120,17 @@ public class SearchActivity extends AppCompatActivity {
                 User user = (User) adapter.getItem(position);
 
                 Intent intent = new Intent(SearchActivity.this, ProfileActivity.class)
-                        .putExtra("User", user);
+                        .putExtra("User", (Serializable) user);
                 startActivity(intent);
             }
         });
 
-        Intent intent = getIntent();
-        final String query = intent.getStringExtra(SearchManager.QUERY);
-        if (!query.equals("")) {
-            searchView.post(new Runnable() {
-                @Override
-                public void run() {
-                    searchView.setQuery(query, true);
-                }
-            });
 
-            searchUsers(query);
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -152,6 +146,10 @@ public class SearchActivity extends AppCompatActivity {
 
 
     public void searchUsers(String query) {
+
+        Log.d(TAG, "searchUsers called!!!!!!!");
+        Log.d(TAG, "total number of users = " + users.size());
+
         results.clear();
         query = query.toLowerCase();
         for (User user : users) {
@@ -166,6 +164,66 @@ public class SearchActivity extends AppCompatActivity {
     @Subscribe
     public void onInitialSearchEvent(InitialSearchEvent event) {
         this.users = event.userList;
+
+        Intent intent = getIntent();
+
+        String savedInstanceQuery = "";
+        if (bundle != null && bundle.getString("QUERY") != null) {
+            savedInstanceQuery = ((String) bundle.getString("QUERY"));
+        }
+        Log.d(TAG, "SearchManager query = " + intent.getStringExtra(SearchManager.QUERY));
+        final String query = intent.getStringExtra(SearchManager.QUERY) != null ? intent.getStringExtra(SearchManager.QUERY) : savedInstanceQuery;
+        Log.d(TAG, "query = " + query + ", savedInstanceQuery = " + savedInstanceQuery);
+
+        searchView.post(new Runnable() {
+            @Override
+            public void run() {
+                searchView.setQuery(query, true);
+            }
+        });
+
+       // searchUsers(query);
+
+        if (!query.equals("") && !query.equals(savedInstanceQuery)) {
+
+            searchView.post(new Runnable() {
+                @Override
+                public void run() {
+                    searchView.setQuery(query, true);
+                }
+            });
+
+            searchUsers(query);
+        } else {
+            results.clear();
+            for (User user : bundle.<User>getParcelableArrayList("RESULTS")) {
+                Log.d(TAG, user.getFirstName() + " " + user.getLastName());
+                results.add(user);
+            }
+            adapter.notifyDataSetChanged();
+        }
+        intent.putExtra(SearchManager.QUERY, (String) null);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString("QUERY", searchView.getQuery().toString());
+        savedInstanceState.putParcelableArrayList("RESULTS", results);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        final String query = ((String) savedInstanceState.getString("QUERY"));
+        searchView.post(new Runnable() {
+            @Override
+            public void run() {
+                searchView.setQuery(query, true);
+            }
+        });
+        Log.d(TAG, "in onRestoreInstanceState!!!!!");
+    }
+
 
 }
