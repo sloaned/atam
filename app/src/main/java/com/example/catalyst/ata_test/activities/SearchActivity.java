@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.SearchResultAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
+import com.example.catalyst.ata_test.menus.TopBar;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
 
@@ -45,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     final ApiCaller caller = new ApiCaller(this, null);
 
     @Bind(android.R.id.list)ListView listView;
+    @Bind(R.id.action_logo) ImageView logo;
     private ArrayList<User> results = new ArrayList<User>();
     private ArrayList<User> users = new ArrayList<User>();
 
@@ -53,6 +56,9 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+        TopBar topBar = new TopBar();
+        logo = topBar.setLogo(this, logo);
 
         Runnable runnable = new Runnable() {
             @Override
@@ -128,15 +134,15 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         EventBus.getDefault().register(this);
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onPause();
     }
 
     public void cancelSearch() {

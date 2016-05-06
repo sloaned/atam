@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.support.v7.widget.SearchView;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.activities.SearchActivity;
 
 /**
@@ -20,6 +22,22 @@ public class TopBar {
 
     private Context mContext;
     private SearchView searchView;
+    private ImageView logoView;
+
+    public ImageView setLogo(Context context, ImageView logo) {
+        mContext = context;
+        logoView = logo;
+
+        logoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, DashboardActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+
+        return logoView;
+    }
 
     public SearchView getTopBar(Context context, SearchView view) {
 
@@ -31,8 +49,6 @@ public class TopBar {
 
         SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.text_small));
-        //search_text.clearFocus();
-
 
         searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
