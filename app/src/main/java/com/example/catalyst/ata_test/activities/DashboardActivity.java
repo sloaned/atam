@@ -29,6 +29,8 @@ import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
 import com.example.catalyst.ata_test.menus.TopBar;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class DashboardActivity extends AppCompatActivity {
 
     private SearchView searchView;
@@ -46,14 +48,13 @@ public class DashboardActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
 
         topBar = new TopBar();
-
         searchView = topBar.getTopBar(this, searchView);
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
-
         topBar.clearSearch();
     }
 

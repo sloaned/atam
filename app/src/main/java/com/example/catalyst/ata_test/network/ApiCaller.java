@@ -17,12 +17,16 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.catalyst.ata_test.AppController;
 import com.example.catalyst.ata_test.activities.LoginActivity;
 import com.example.catalyst.ata_test.activities.SearchActivity;
+import com.example.catalyst.ata_test.events.InitialSearchEvent;
+import com.example.catalyst.ata_test.events.TeamsEvent;
+import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
 import com.example.catalyst.ata_test.util.NetworkConstants;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,14 +47,14 @@ public class ApiCaller {
 
     private Context mContext;
     private Fragment mFragment;
-    private static UpdateDashboardListener dashboardCallback;
-    private static UpdateSearchListener searchCallback;
+   // private static UpdateDashboardListener dashboardCallback;
+   // private static UpdateSearchListener searchCallback;
 
     private ArrayList<User> teamMembers = new ArrayList<User>();
 
     private static SharedPreferences prefs;
     private SharedPreferences.Editor mEditor;
-
+    /*
     public interface UpdateDashboardListener {
         void refreshTeams(ArrayList<Team> teams);
 
@@ -61,7 +65,7 @@ public class ApiCaller {
 
     public interface UpdateSearchListener {
         void refreshUsers(ArrayList<User> users);
-    }
+    }  */
 
     public ApiCaller(Context context, Fragment fragment) {
         mContext = context;
@@ -71,7 +75,7 @@ public class ApiCaller {
         //  prefs = PreferenceManager.getDefaultSharedPreferences(context);
         //  mEditor = prefs.edit();
 
-        if (mFragment instanceof DashboardFragment) {
+       /* if (mFragment instanceof DashboardFragment) {
 
             Log.d(TAG, "fragment an instance of DashboardFragment!");
             try {
@@ -86,7 +90,7 @@ public class ApiCaller {
             } catch (ClassCastException e) {
                 throw new ClassCastException("Search activity must implement UpdateSearchListener");
             }
-        }
+        } */
 
 
     }
@@ -159,11 +163,11 @@ public class ApiCaller {
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
-                Log.d(TAG, "callback = " + searchCallback);
-
+                /*
                 if (searchCallback != null) {
                     searchCallback.refreshUsers(users);
-                }
+                }  */
+                EventBus.getDefault().post(new InitialSearchEvent(users));
 
             }
         }, new Response.ErrorListener() {
@@ -187,7 +191,6 @@ public class ApiCaller {
                     JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
                     JSONArray teamsList = embedded.getJSONArray(JsonConstants.JSON_TEAMS);
 
-                    Log.d(TAG, "teamsList length = " + teamsList.length());
                     for (int i = 0; i < teamsList.length(); i++) {
                         JSONObject jsonTeam = teamsList.getJSONObject(i);
                         Team team = new Team();
@@ -199,7 +202,7 @@ public class ApiCaller {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
 
-                dashboardCallback.refreshTeams(teams);
+                EventBus.getDefault().post(new TeamsEvent(teams));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -213,8 +216,6 @@ public class ApiCaller {
     public void getTeamById(String id) {
         String url = DATA_URL + "teams/" + id;
 
-        Log.d(TAG, "team url = " + url);
-
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -225,7 +226,7 @@ public class ApiCaller {
                     team.setName(response.getString(JsonConstants.JSON_TEAM_NAME));
                     team.setDescription(response.getString(JsonConstants.JSON_TEAM_DESCRIPTION));
                     team.setActive(response.getBoolean(JsonConstants.JSON_TEAM_ACTIVE));
-                    if (response.getJSONArray(JsonConstants.JSON_TEAM_MEMBERLIST) != null) {
+                    if (!response.getString(JsonConstants.JSON_TEAM_MEMBERLIST).equals("null")) {
                         JSONArray memberList = response.getJSONArray(JsonConstants.JSON_TEAM_MEMBERLIST);
                         ArrayList<User> members = new ArrayList<User>();
                         for (int i = 0; i < memberList.length(); i++) {
@@ -244,9 +245,7 @@ public class ApiCaller {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
 
-                if (mFragment instanceof DashboardFragment) {
-                    dashboardCallback.viewTeam(team);
-                }
+                EventBus.getDefault().post(new ViewTeamEvent(team));
 
             }
         }, new Response.ErrorListener() {
@@ -265,7 +264,7 @@ public class ApiCaller {
             getUserById(user.getId());
         }
         team.setUserList(teamMembers);
-        dashboardCallback.viewTeam(team);
+        EventBus.getDefault().post(new ViewTeamEvent(team));
     }
 
     public void getUserById(String id) {

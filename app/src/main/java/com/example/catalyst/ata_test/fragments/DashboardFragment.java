@@ -14,10 +14,15 @@ import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.TeamActivity;
 import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
+import com.example.catalyst.ata_test.events.TeamsEvent;
+import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -27,7 +32,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/27/2016.
  */
-public class DashboardFragment extends Fragment implements ApiCaller.UpdateDashboardListener {
+public class DashboardFragment extends Fragment {
 
     private static final String TAG = DashboardFragment.class.getSimpleName();
 
@@ -66,29 +71,41 @@ public class DashboardFragment extends Fragment implements ApiCaller.UpdateDashb
         return homeView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
     public void getTeams() {
         mTeams.clear();
         caller.getAllTeams();
     }
 
-    @Override
-    public void refreshTeams(ArrayList<Team> teams) {
-        for (Team team : teams) {
+    @Subscribe
+    public void refreshTeams(TeamsEvent event) {
+        for (Team team : event.getTeams()) {
             mTeams.add(team);
         }
         adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void viewTeam(Team team) {
+    @Subscribe
+    public void viewTeam(ViewTeamEvent event) {
         Intent intent = new Intent(getActivity(), TeamActivity.class)
-                .putExtra("Team", team);
+                .putExtra("Team", event.getTeam());
         startActivity(intent);
     }
-
-    @Override
+    /*
+    @Subscribe
     public void getTeamMembers(Team team) {
         caller.getTeamMembers(team);
-    }
+    }  */
 
 }

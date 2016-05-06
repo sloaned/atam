@@ -27,11 +27,12 @@ public class TopBar {
         searchView = view;
 
         searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint("Search for users and teams...");
+        searchView.setQueryHint(mContext.getResources().getString(R.string.search_query_hint));
 
         SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.text_small));
-        search_text.clearFocus();
+        //search_text.clearFocus();
+
 
         searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

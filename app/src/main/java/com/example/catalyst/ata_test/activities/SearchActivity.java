@@ -22,8 +22,12 @@ import android.widget.TextView;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.SearchResultAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
+import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -33,7 +37,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/26/2016.
  */
-public class SearchActivity extends AppCompatActivity implements ApiCaller.UpdateSearchListener {
+public class SearchActivity extends AppCompatActivity {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
@@ -41,7 +45,6 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
     final ApiCaller caller = new ApiCaller(this, null);
 
     @Bind(android.R.id.list)ListView listView;
-    private View resultView;
     private ArrayList<User> results = new ArrayList<User>();
     private ArrayList<User> users = new ArrayList<User>();
 
@@ -63,7 +66,7 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
 
 
         searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint("Search for users and teams...");
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
 
         SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
@@ -122,7 +125,18 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
 
             searchUsers(query);
         }
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     public void cancelSearch() {
@@ -143,9 +157,9 @@ public class SearchActivity extends AppCompatActivity implements ApiCaller.Updat
         adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void refreshUsers(ArrayList<User> users) {
-        this.users = users;
+    @Subscribe
+    public void onInitialSearchEvent(InitialSearchEvent event) {
+        this.users = event.userList;
     }
 
 }
