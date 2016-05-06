@@ -2,21 +2,26 @@ package com.example.catalyst.ata_test.network;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.webkit.CookieManager;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.catalyst.ata_test.AppController;
+import com.example.catalyst.ata_test.activities.LoginActivity;
 import com.example.catalyst.ata_test.activities.SearchActivity;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
+import com.example.catalyst.ata_test.util.NetworkConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +37,8 @@ public class ApiCaller {
 
     public static final String TAG = ApiCaller.class.getSimpleName();
 
-    private static final String BASE_URL = "http://pc30120.catalystsolves.com:8080/";
+    private static final String DATA_URL = "http://pc30120.catalystsolves.com:8080/";
+    private static final String API_URL = NetworkConstants.ATA_BASE;
 
 
     private Context mContext;
@@ -47,7 +53,9 @@ public class ApiCaller {
 
     public interface UpdateDashboardListener {
         void refreshTeams(ArrayList<Team> teams);
+
         void viewTeam(Team team);
+
         void getTeamMembers(Team team);
     }
 
@@ -60,8 +68,8 @@ public class ApiCaller {
         mFragment = fragment;
         Log.d(TAG, "Calling fragment = " + fragment);
 
-      //  prefs = PreferenceManager.getDefaultSharedPreferences(context);
-      //  mEditor = prefs.edit();
+        //  prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //  mEditor = prefs.edit();
 
         if (mFragment instanceof DashboardFragment) {
 
@@ -83,9 +91,38 @@ public class ApiCaller {
 
     }
 
+    public ApiCaller(Context context) {
+        mContext = context;
+    }
+
+    public void logout() {
+        String url = API_URL + "/logout";
+        StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+
+                CookieManager.getInstance().removeAllCookie();
+                System.out.println("Logout was successful!");
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CookieManager.getInstance().removeAllCookie();
+                System.out.println("Error occured with Volley, logging user out anyways.");
+
+                Intent intent = new Intent(mContext, LoginActivity.class);
+                mContext.startActivity(intent);
+
+            }
+        });
+        AppController.getInstance().addToRequestQueue(logoutRequest);
+    }
 
     public void getAllUsers() {
-        String url = BASE_URL + "users?size=3000";
+        String url = DATA_URL + "users?size=3000";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -131,7 +168,7 @@ public class ApiCaller {
     }
 
     public void getAllTeams() {
-        String url = BASE_URL + "teams?size=3000000";
+        String url = DATA_URL + "teams?size=3000000";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -166,7 +203,7 @@ public class ApiCaller {
     }
 
     public void getTeamById(String id) {
-        String url = BASE_URL + "teams/" + id;
+        String url = DATA_URL + "teams/" + id;
 
         Log.d(TAG, "team url = " + url);
 
@@ -224,7 +261,7 @@ public class ApiCaller {
     }
 
     public void getUserById(String id) {
-        String url = BASE_URL + "users/" + id + "/";
+        String url = DATA_URL + "users/" + id + "/";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

@@ -52,6 +52,8 @@ public class LoginActivityFragment extends Fragment {
         spinner = (ProgressBar) content.findViewById(R.id.progressBar);
         loginView = (WebView) content.findViewById(R.id.loginView);
 
+        System.out.println("Login Fragment started...");
+
         //Allows the cookie to be saved
         loginView.getSettings().setDomStorageEnabled(true);
 

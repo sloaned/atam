@@ -3,7 +3,6 @@ package com.example.catalyst.ata_test.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +10,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.CookieManager;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.LoginActivity;
-
+import com.example.catalyst.ata_test.network.ApiCaller;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import butterknife.Bind;
@@ -30,12 +27,13 @@ public class SettingsFragment extends DialogFragment {
     private SharedPreferences prefs;
     private SharedPreferences.Editor mEditor;
 
-
     private final String TAG = SettingsFragment.class.getSimpleName();
 
-    @Bind(R.id.logout_button) TextView logoutButton;
+    @Bind(R.id.logout_button)
+    TextView logoutButton;
 
-    public SettingsFragment() {}
+    public SettingsFragment() {
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -58,10 +56,8 @@ public class SettingsFragment extends DialogFragment {
                 mEditor.putString(SharedPreferencesConstants.PREFS_USER, null).apply();
                 mEditor.putString(SharedPreferencesConstants.JESESSIONID, null).apply();
 
-                CookieManager.getInstance().removeAllCookie();
+                new ApiCaller(getActivity()).logout();
 
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
             }
         });
 
