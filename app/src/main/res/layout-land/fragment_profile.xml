@@ -2,103 +2,111 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     android:id="@+id/profile_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/user_info_area"
-        android:orientation="horizontal"
-        android:layout_weight="4">
+        android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/defaultuser"
-            android:id="@+id/profile_pic"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:id="@+id/user_info_text_area"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/user_name"
-                android:text="User Name"
-                android:textSize="20sp"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"/>
+            android:layout_height="match_parent"
+            android:id="@+id/user_info_area"
+            android:orientation="horizontal"
+            android:layout_weight="2">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:id="@+id/edit_bio_button"
-                android:src="@drawable/editbutton"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/defaultuser"
+                android:id="@+id/profile_pic"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"/>
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Developer 1"
-                android:textSize="14sp"
-                android:textColor="#a6a6a6"
-                android:layout_below="@+id/user_name"
-                android:id="@+id/user_title"
-                android:layout_marginLeft="5dp"/>
+                android:layout_weight="2"
+                android:id="@+id/user_info_text_area"
+                android:layout_marginTop="10dp">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/user_name"
+                    android:text="User Name"
+                    android:textSize="20sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/edit_bio_button"
+                    android:src="@drawable/editbutton"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Developer 1"
+                    android:textSize="14sp"
+                    android:textColor="#a6a6a6"
+                    android:layout_below="@+id/user_name"
+                    android:id="@+id/user_title"
+                    android:layout_marginLeft="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/user_title"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/user_bio"
+                    android:text="I eat tacos and watch reruns of The A-Team."
+                    android:textSize="16sp" />
+
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/user_title"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="10dp"
-                android:id="@+id/user_bio"
-                android:text="I eat tacos and watch reruns of The A-Team."
-                android:textSize="16sp" />
+                android:minHeight="80dp"
+                android:background="#a6a6a6"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pager"
+                android:background="#e48931"/>
 
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="6">
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="80dp"
-            android:background="#a6a6a6"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-        <android.support.v4.view.ViewPager
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/pager"
-            android:background="#e48931"
-            android:layout_weight="9"/>
+        </LinearLayout>
 
     </LinearLayout>
+
+
 
 
 
