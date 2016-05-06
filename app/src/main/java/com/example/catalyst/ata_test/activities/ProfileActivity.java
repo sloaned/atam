@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.menus.TopBar;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by dsloane on 4/28/2016.
  */
@@ -31,6 +33,18 @@ public class ProfileActivity extends AppCompatActivity {
         searchView = topBar.getTopBar(this, searchView);
 
         searchView.clearFocus();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+      //  EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+    //    EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override

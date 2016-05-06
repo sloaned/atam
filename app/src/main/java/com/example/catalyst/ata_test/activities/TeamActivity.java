@@ -7,6 +7,8 @@ import android.support.v7.widget.SearchView;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.menus.TopBar;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by dsloane on 5/3/2016.
  */
@@ -26,6 +28,18 @@ public class TeamActivity extends AppCompatActivity {
         topBar = new TopBar();
 
         searchView = topBar.getTopBar(this, searchView);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+       // EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+     //   EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override

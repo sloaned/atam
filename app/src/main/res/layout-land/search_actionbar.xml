@@ -15,18 +15,21 @@
         android:layout_weight="1"
         android:contentDescription="@string/ata_logo_description"/>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/focus_layout"
-        android:focusable="true"
-        android:focusableInTouchMode="true"><requestFocus /></LinearLayout>
-
     <android.support.v7.widget.SearchView
         android:id="@+id/action_search"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:iconifiedByDefault="false"
-        android:layout_weight="11"/>
+        android:layout_weight="10"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_search"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:textSize="13sp"
+        android:clickable="true"
+        android:id="@+id/action_cancel_search"
+        android:layout_weight="1"/>
 
 </LinearLayout>
