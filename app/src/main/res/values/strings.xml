@@ -29,6 +29,7 @@
     <string name="bottom_bar_settings_button_description">Settings button</string>
 
     <!-- Strings related to top bar -->
+    <string name="search_query_hint">Search for users and teams...</string>
     <string name="cancel_search">Cancel</string>
     <string name="ata_logo_description">Aperture Team Assessment logo</string>
 
