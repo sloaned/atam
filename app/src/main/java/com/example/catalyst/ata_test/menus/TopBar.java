@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,13 +47,32 @@ public class TopBar {
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint(mContext.getResources().getString(R.string.search_query_hint));
+        searchView.setFocusable(true);
+        searchView.setFocusableInTouchMode(true);
 
         SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.text_small));
+        search_text.setFocusableInTouchMode(true);
+        search_text.setFocusable(true);
+
+        search_text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d(TAG, "focus of text area changed, focus of text area = " + hasFocus + "!!!!!!!!!!!!!!!");
+                if (hasFocus) {
+                    Intent intent = new Intent(mContext, SearchActivity.class);
+                    intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, "");
+                    mContext.startActivity(intent);
+                    ((Activity)mContext).overridePendingTransition(0, 0);
+                }
+            }
+        });
 
         searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+
+                Log.d(TAG, "focus changed, focus = " + hasFocus + "!!!!!!!!!!!!!!!");
                 if (hasFocus) {
                     Intent intent = new Intent(mContext, SearchActivity.class);
                     intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, "");
@@ -74,7 +94,7 @@ public class TopBar {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (!newText.equals("")) {
+                if (!newText.trim().equals("") && newText.length() > 1) {
                     Intent intent = new Intent(mContext, SearchActivity.class);
                     intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, newText);
                     mContext.startActivity(intent);

@@ -60,12 +60,14 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        bundle = savedInstanceState;
+        final Intent intent = getIntent();
 
         searchView = (SearchView) findViewById(R.id.action_search);
 
         TopBar topBar = new TopBar();
         logo = topBar.setLogo(this, logo);
+
+        bundle = savedInstanceState;
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
@@ -74,6 +76,14 @@ public class SearchActivity extends AppCompatActivity {
         search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
 
         EventBus.getDefault().register(this);
+
+        final String query = intent.getStringExtra(SearchManager.QUERY);
+        searchView.post(new Runnable() {
+            @Override
+            public void run() {
+                searchView.setQuery(query, true);
+            }
+        });
 
         Runnable runnable = new Runnable() {
             @Override
@@ -86,14 +96,22 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                intent.putExtra(SearchManager.QUERY, query);
                 searchUsers(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchUsers(newText);
-                return false;
+                intent.putExtra(SearchManager.QUERY, newText);
+                if (!newText.equals("")) {
+                    searchUsers(newText);
+                    return true;
+                } else {
+                    results.clear();
+                    adapter.notifyDataSetChanged();
+                    return false;
+                }
             }
         });
 
@@ -194,7 +212,7 @@ public class SearchActivity extends AppCompatActivity {
             });
 
             searchUsers(query);
-        } else {
+        } else if(!query.equals("")) {
             results.clear();
             for (User user : bundle.<User>getParcelableArrayList("RESULTS")) {
                 Log.d(TAG, user.getFirstName() + " " + user.getLastName());
@@ -216,12 +234,13 @@ public class SearchActivity extends AppCompatActivity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         final String query = ((String) savedInstanceState.getString("QUERY"));
+        /*
         searchView.post(new Runnable() {
             @Override
             public void run() {
                 searchView.setQuery(query, true);
             }
-        });
+        });    */
         Log.d(TAG, "in onRestoreInstanceState!!!!!");
     }
 

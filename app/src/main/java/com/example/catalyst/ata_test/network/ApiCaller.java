@@ -54,45 +54,10 @@ public class ApiCaller {
 
     private static SharedPreferences prefs;
     private SharedPreferences.Editor mEditor;
-    /*
-    public interface UpdateDashboardListener {
-        void refreshTeams(ArrayList<Team> teams);
-
-        void viewTeam(Team team);
-
-        void getTeamMembers(Team team);
-    }
-
-    public interface UpdateSearchListener {
-        void refreshUsers(ArrayList<User> users);
-    }  */
 
     public ApiCaller(Context context, Fragment fragment) {
         mContext = context;
         mFragment = fragment;
-        Log.d(TAG, "Calling fragment = " + fragment);
-
-        //  prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        //  mEditor = prefs.edit();
-
-       /* if (mFragment instanceof DashboardFragment) {
-
-            Log.d(TAG, "fragment an instance of DashboardFragment!");
-            try {
-                dashboardCallback = (UpdateDashboardListener) mFragment;
-            } catch (ClassCastException e) {
-                throw new ClassCastException("Dashboard fragment must implement UpdateDashboardListener");
-            }
-
-        } else if (mContext instanceof SearchActivity) {
-            try {
-                searchCallback = (UpdateSearchListener) mContext;
-            } catch (ClassCastException e) {
-                throw new ClassCastException("Search activity must implement UpdateSearchListener");
-            }
-        } */
-
-
     }
 
     public ApiCaller(Context context) {
@@ -155,10 +120,7 @@ public class ApiCaller {
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
-                /*
-                if (searchCallback != null) {
-                    searchCallback.refreshUsers(users);
-                }  */
+
                 EventBus.getDefault().post(new InitialSearchEvent(users));
 
             }
