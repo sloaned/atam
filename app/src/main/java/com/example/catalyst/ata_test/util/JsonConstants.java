@@ -25,4 +25,14 @@ public class JsonConstants {
     public static final String JSON_TEAM_ACTIVE = "active";
     public static final String JSON_TEAM_MEMBERLIST = "memberList";
     public static final String JSON_TEAM_MEMBER_ID = "userId";
+
+    public static final String JSON_KUDOS = "kudoes";
+    public static final String JSON_KUDOS_REVIEWER_ID = "reviewerId";
+    public static final String JSON_KUDOS_REVIEWED_ID = "reviewedId";
+    public static final String JSON_KUDOS_COMMENT = "comment";
+    public static final String JSON_KUDOS_SUBMITTED_DATE = "submittedDate";
+
+
+
+
 }

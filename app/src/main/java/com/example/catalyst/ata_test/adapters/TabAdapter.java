@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.catalyst.ata_test.fragments.KudosTabFragment;
 import com.example.catalyst.ata_test.fragments.ReviewsTabFragment;
 import com.example.catalyst.ata_test.fragments.TeamsTabFragment;
+import com.example.catalyst.ata_test.models.User;
 
 /**
  * Created by dsloane on 4/29/2016.
@@ -17,25 +18,24 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = TabAdapter.class.getSimpleName();
 
     int mNumOfTabs;
+    User mUser;
 
-    public TabAdapter(FragmentManager fm, int numOfTabs) {
+    public TabAdapter(FragmentManager fm, int numOfTabs, User user) {
         super(fm);
-        this.mNumOfTabs = numOfTabs;
+        mNumOfTabs = numOfTabs;
+        mUser = user;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.d(TAG, "TabAdapter getItem called, position # " + position);
         switch (position) {
             case 0:
-                KudosTabFragment kudosTab = new KudosTabFragment();
-                return kudosTab;
+                KudosTabFragment fragment = KudosTabFragment.newInstance(mUser);
+                return fragment;
             case 1:
-                ReviewsTabFragment reviewsTab = new ReviewsTabFragment();
-                return reviewsTab;
+                return new ReviewsTabFragment();
             case 2:
-                TeamsTabFragment teamsTab = new TeamsTabFragment();
-                return teamsTab;
+                return new TeamsTabFragment();
             default:
                 return null;
         }

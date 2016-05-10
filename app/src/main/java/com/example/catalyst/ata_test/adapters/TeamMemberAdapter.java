@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.data.TeamMemberContract;
 import com.example.catalyst.ata_test.models.User;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 /**
  * Created by dsloane on 5/3/2016.
  */
+// display information for team member list on team pages
 public class TeamMemberAdapter extends BaseAdapter {
 
     private Context mContext;
@@ -24,7 +26,7 @@ public class TeamMemberAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<User> memberList = new ArrayList<User>();
 
-    private static final String TAG = DashboardAdapter.class.getSimpleName();
+    private static final String TAG = TeamMemberAdapter.class.getSimpleName();
 
     public TeamMemberAdapter(Context context, List<User> memberList) {
         mContext = context;

@@ -8,8 +8,15 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.webkit.CookieManager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -17,10 +24,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.catalyst.ata_test.AppController;
 import com.example.catalyst.ata_test.activities.LoginActivity;
 import com.example.catalyst.ata_test.activities.SearchActivity;
+import com.example.catalyst.ata_test.events.GetKudosInfoEvent;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.events.TeamsEvent;
+import com.example.catalyst.ata_test.events.UpdateKudosEvent;
+import com.example.catalyst.ata_test.events.UpdateTeamMembersEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
+import com.example.catalyst.ata_test.models.Kudo;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
@@ -44,21 +55,10 @@ public class ApiCaller {
     private static final String DATA_URL = "http://pc30120.catalystsolves.com:8080/";
     private static final String API_URL = NetworkConstants.ATA_BASE;
 
+    private ArrayList<User> teamMembers = new ArrayList<User>();
+    private ArrayList<Kudo> kudos = new ArrayList<Kudo>();
 
     private Context mContext;
-    private Fragment mFragment;
-   // private static UpdateDashboardListener dashboardCallback;
-   // private static UpdateSearchListener searchCallback;
-
-    private ArrayList<User> teamMembers = new ArrayList<User>();
-
-    private static SharedPreferences prefs;
-    private SharedPreferences.Editor mEditor;
-
-    public ApiCaller(Context context, Fragment fragment) {
-        mContext = context;
-        mFragment = fragment;
-    }
 
     public ApiCaller(Context context) {
         mContext = context;
@@ -106,6 +106,7 @@ public class ApiCaller {
                     for (int i = 0; i < userList.length(); i++) {
                         JSONObject jsonUser = userList.getJSONObject(i);
                         User user = new User();
+                        user.setId(jsonUser.getString(JsonConstants.JSON_USER_ID));
                         user.setFirstName(jsonUser.getString(JsonConstants.JSON_USER_FIRST_NAME));
                         user.setLastName(jsonUser.getString(JsonConstants.JSON_USER_LAST_NAME));
                         user.setTitle(jsonUser.getString(JsonConstants.JSON_USER_TITLE));
@@ -130,6 +131,7 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+        req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 
@@ -164,6 +166,7 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+        req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 
@@ -198,30 +201,40 @@ public class ApiCaller {
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
-
                 EventBus.getDefault().post(new ViewTeamEvent(team));
-
+               // getTeamMembers(team);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null) {
+                    Log.e("Volley", "Error. HTTP Status Code:"+networkResponse.statusCode);
+                    Log.e("Volley", "" + networkResponse.data);
+                }
+
             }
 
         });
+        req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 
+    /*
+        get team member info on all members of a team
+     */
     public void getTeamMembers(Team team) {
         teamMembers.clear();
-        for (User user : team.getUserList()) {
-            getUserById(user.getId());
+        for (int i = 0; i < team.getUserList().size(); i++) {
+            User user = team.getUserList().get(i);
+            getTeamMemberById(i, team.getUserList().size(), user.getId());
         }
-        team.setUserList(teamMembers);
-        EventBus.getDefault().post(new ViewTeamEvent(team));
     }
 
-    public void getUserById(String id) {
+    /*
+        copy of getUserById method, but this one will call the updateTeamMember event on the team page when it finishes
+     */
+    public void getTeamMemberById(final int counter, final int size, String id) {
         String url = DATA_URL + "users/" + id + "/";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -233,7 +246,44 @@ public class ApiCaller {
                     user.setId(response.getString(JsonConstants.JSON_USER_ID));
                     user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
                     user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
-                    user.setRole(response.getString(JsonConstants.JSON_USER_ROLE));
+                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
+                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
+                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
+
+                    teamMembers.add(user);
+
+                    if (counter == size-1) {
+                        EventBus.getDefault().post(new UpdateTeamMembersEvent(teamMembers));
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+
+    public void getUserById(String id) {
+        String url = DATA_URL + "users/" + id + "/";
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                User user = new User();
+                ArrayList<User> teamMembers = new ArrayList<User>();
+                try {
+                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
+                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
                     user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
                     user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
                     user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
@@ -250,7 +300,104 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req);
+    }
 
+    public void getKudos(final String reviewedId) {
+        String url = DATA_URL + "kudos?size=3000000";
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                kudos.clear();
+                try {
+                    JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    JSONArray kudosArray = embedded.getJSONArray(JsonConstants.JSON_KUDOS);
+                    Log.d(TAG, "kudosArray length = " + kudosArray.length());
+                    for (int i = 0; i < kudosArray.length(); i++) {
+                        JSONObject jsonKudo = kudosArray.getJSONObject(i);
+                        Kudo kudo = new Kudo();
+                        User reviewer = new User();
+                        User reviewed = new User();
+                        kudo.setKudo(jsonKudo.getString(JsonConstants.JSON_KUDOS_COMMENT));
+                        kudo.setSubmittedDate(jsonKudo.getString(JsonConstants.JSON_KUDOS_SUBMITTED_DATE));
+                        reviewer.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWER_ID));
+                        kudo.setReviewer(reviewer);
+                        reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
+                        kudo.setReviewed(reviewed);
+
+                        Log.d(TAG, "user's id = " + reviewedId + ", reviewed id = " + reviewed.getId());
+                        Log.d(TAG, "Match?  " + (reviewedId.equals(reviewed.getId())));
+                        if (reviewedId.equals(reviewed.getId())) {
+                            Log.d(TAG, "match!!!!!!!");
+                            kudos.add(kudo);
+                        }
+                    }
+
+                    EventBus.getDefault().post(new UpdateKudosEvent(kudos));
+
+
+                } catch(JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    public void getKudosReviewers(ArrayList<Kudo> kudosList) {
+        kudos = kudosList;
+        Log.d(TAG, "in getKudosReviewers, kudos size = " + kudos.size());
+        for (int i = 0; i < kudos.size(); i++) {
+            getKudosReviewerInfo(i, kudos.size(), kudos.get(i));
+        }
+    }
+
+    public void getKudosReviewerInfo (final int counter, final int size, final Kudo kudo) {
+        String url = DATA_URL + "users/" + kudo.getReviewer().getId();
+        Log.d(TAG, "in getKudosReviewerInfo, url = " + url);
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                User user = new User();
+
+                try {
+                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
+                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
+                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
+                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
+                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
+
+                    kudo.setReviewer(user);
+
+                    kudos.set(counter, kudo);
+
+                    if (counter == size-1) {
+                        EventBus.getDefault().post(new GetKudosInfoEvent(kudos));
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+        req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 }

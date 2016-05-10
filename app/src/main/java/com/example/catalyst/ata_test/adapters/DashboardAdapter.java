@@ -79,7 +79,7 @@ public class DashboardAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         TextView name;
-        TextView id;
+        TextView id; // invisible textview, so that the team id can be stored and used later to get team details
     }
 
 }

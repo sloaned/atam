@@ -17,6 +17,8 @@ import com.example.catalyst.ata_test.activities.SearchActivity;
 /**
  * Created by dsloane on 4/28/2016.
  */
+
+/* defines the search bar functionality */
 public class TopBar {
 
     private final static String TAG = TopBar.class.getSimpleName();
@@ -29,6 +31,7 @@ public class TopBar {
         mContext = context;
         logoView = logo;
 
+        /* set logo image to be another home/dashboard button */
         logoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,61 +50,20 @@ public class TopBar {
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint(mContext.getResources().getString(R.string.search_query_hint));
-        searchView.setFocusable(true);
-        searchView.setFocusableInTouchMode(true);
 
         SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.text_small));
-        search_text.setFocusableInTouchMode(true);
-        search_text.setFocusable(true);
 
+        /* start the search activity as soon as the search bar has focus */
         search_text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Log.d(TAG, "focus of text area changed, focus of text area = " + hasFocus + "!!!!!!!!!!!!!!!");
                 if (hasFocus) {
                     Intent intent = new Intent(mContext, SearchActivity.class);
                     intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, "");
                     mContext.startActivity(intent);
                     ((Activity)mContext).overridePendingTransition(0, 0);
                 }
-            }
-        });
-
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-
-                Log.d(TAG, "focus changed, focus = " + hasFocus + "!!!!!!!!!!!!!!!");
-                if (hasFocus) {
-                    Intent intent = new Intent(mContext, SearchActivity.class);
-                    intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, "");
-                    mContext.startActivity(intent);
-                    ((Activity)mContext).overridePendingTransition(0, 0);
-                }
-            }
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(mContext, SearchActivity.class);
-                intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, query);
-                mContext.startActivity(intent);
-                ((Activity)mContext).overridePendingTransition(0, 0);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!newText.trim().equals("") && newText.length() > 1) {
-                    Intent intent = new Intent(mContext, SearchActivity.class);
-                    intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, newText);
-                    mContext.startActivity(intent);
-                    ((Activity)mContext).overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
             }
         });
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by dsloane on 5/6/2016.
  */
+/* Fires when the home/dashboard activity is launched/refreshed */
 public class TeamsEvent {
     private final String TAG = TeamsEvent.class.getSimpleName();
 

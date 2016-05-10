@@ -52,7 +52,7 @@ public class DashboardFragment extends Fragment {
 
         adapter = new DashboardAdapter(getActivity(), mTeams);
 
-        caller = new ApiCaller(getActivity(), this);
+        caller = new ApiCaller(getActivity());
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -5,6 +5,8 @@ import com.example.catalyst.ata_test.models.Team;
 /**
  * Created by dsloane on 5/6/2016.
  */
+
+/* Fires when a user clicks/taps on a specific team */
 public class ViewTeamEvent {
 
     private Team team;

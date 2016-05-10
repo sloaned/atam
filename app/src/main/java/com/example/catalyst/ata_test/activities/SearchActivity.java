@@ -45,7 +45,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     private SearchResultAdapter adapter;
-    final ApiCaller caller = new ApiCaller(this, null);
+    final ApiCaller caller = new ApiCaller(this);
 
     @Bind(android.R.id.list)ListView listView;
     @Bind(R.id.action_logo) ImageView logo;
@@ -117,13 +117,9 @@ public class SearchActivity extends AppCompatActivity {
 
         TextView cancelSearch = (TextView) findViewById(R.id.action_cancel_search);
 
-        Log.d(TAG, "cancelSearch text = " + cancelSearch.getText());
-
         cancelSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.d(TAG, "cancel clicked!");
                 finish();
             }
         });
@@ -158,15 +154,11 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void cancelSearch() {
-        Log.d(TAG, "cancel clicked!");
         finish();
     }
 
 
     public void searchUsers(String query) {
-
-        Log.d(TAG, "searchUsers called!!!!!!!");
-        Log.d(TAG, "total number of users = " + users.size());
 
         results.clear();
         query = query.toLowerCase();
@@ -189,9 +181,7 @@ public class SearchActivity extends AppCompatActivity {
         if (bundle != null && bundle.getString("QUERY") != null) {
             savedInstanceQuery = ((String) bundle.getString("QUERY"));
         }
-        Log.d(TAG, "SearchManager query = " + intent.getStringExtra(SearchManager.QUERY));
         final String query = intent.getStringExtra(SearchManager.QUERY) != null ? intent.getStringExtra(SearchManager.QUERY) : savedInstanceQuery;
-        Log.d(TAG, "query = " + query + ", savedInstanceQuery = " + savedInstanceQuery);
 
         searchView.post(new Runnable() {
             @Override
@@ -199,8 +189,6 @@ public class SearchActivity extends AppCompatActivity {
                 searchView.setQuery(query, true);
             }
         });
-
-       // searchUsers(query);
 
         if (!query.equals("") && !query.equals(savedInstanceQuery)) {
 
@@ -215,7 +203,6 @@ public class SearchActivity extends AppCompatActivity {
         } else if(!query.equals("")) {
             results.clear();
             for (User user : bundle.<User>getParcelableArrayList("RESULTS")) {
-                Log.d(TAG, user.getFirstName() + " " + user.getLastName());
                 results.add(user);
             }
             adapter.notifyDataSetChanged();
@@ -229,20 +216,5 @@ public class SearchActivity extends AppCompatActivity {
         savedInstanceState.putParcelableArrayList("RESULTS", results);
         super.onSaveInstanceState(savedInstanceState);
     }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        final String query = ((String) savedInstanceState.getString("QUERY"));
-        /*
-        searchView.post(new Runnable() {
-            @Override
-            public void run() {
-                searchView.setQuery(query, true);
-            }
-        });    */
-        Log.d(TAG, "in onRestoreInstanceState!!!!!");
-    }
-
 
 }
