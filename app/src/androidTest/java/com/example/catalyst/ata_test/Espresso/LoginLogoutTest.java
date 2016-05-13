@@ -65,8 +65,9 @@ public class LoginLogoutTest {
         onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "submit-btn"))
                 .perform(webClick());
 
-        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "authorize"))
-                .perform(webClick());
+        //Commented this line of code out because OAuth quit asking for authorization. 
+//        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "authorize"))
+//                .perform(webClick());
 
         //Esspresso Equivilent of Thread.Sleep()
         onView(isRoot()).perform(waitId(R.id.bottom_bar, 3000));
