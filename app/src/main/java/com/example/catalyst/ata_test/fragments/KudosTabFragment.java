@@ -47,8 +47,6 @@ public class KudosTabFragment extends Fragment {
         listView = (ListView) kudoView.findViewById(android.R.id.list);
 
         if (mUser != null) {
-            RelativeLayout fakeKudo = (RelativeLayout) kudoView.findViewById(R.id.fake_kudo);
-            fakeKudo.setVisibility(View.GONE);
             getKudos();
         }
 
@@ -84,8 +82,11 @@ public class KudosTabFragment extends Fragment {
     }
     @Subscribe
     public void updateKudos(UpdateKudosEvent event) {
-        Log.d(TAG, "in updateKudos!!!!!!!!!!!!");
         kudosList = event.getKudos();
+        if (kudosList.size() > 0) {
+            RelativeLayout fakeKudo = (RelativeLayout) kudoView.findViewById(R.id.fake_kudo);
+            fakeKudo.setVisibility(View.GONE);
+        }
         caller.getKudosReviewers(kudosList);
     }
 
