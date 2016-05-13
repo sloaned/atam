@@ -61,7 +61,7 @@ public class BottomBarNavTest {
 
     @Test
     public void leaveAndReturnToDashboard() {
-        onView(withId(R.id.feed_button))
+        onView(withId(R.id.my_profile_button))
                 .perform(click());
 
         String username = "User Name";
