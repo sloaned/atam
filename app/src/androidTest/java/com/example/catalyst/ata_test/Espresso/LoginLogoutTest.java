@@ -65,7 +65,7 @@ public class LoginLogoutTest {
         onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "submit-btn"))
                 .perform(webClick());
 
-        //Commented this line of code out because OAuth quit asking for authorization. 
+        //Commented this line of code out because OAuth quit asking for authorization.
 //        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "authorize"))
 //                .perform(webClick());
 
