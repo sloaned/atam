@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.KudosAdapter;
@@ -45,7 +46,12 @@ public class KudosTabFragment extends Fragment {
         kudoView = inflater.inflate(R.layout.tab_kudos, container, false);
         listView = (ListView) kudoView.findViewById(android.R.id.list);
 
-        getKudos();
+        if (mUser != null) {
+            RelativeLayout fakeKudo = (RelativeLayout) kudoView.findViewById(R.id.fake_kudo);
+            fakeKudo.setVisibility(View.GONE);
+            getKudos();
+        }
+
 
         return kudoView;
     }
