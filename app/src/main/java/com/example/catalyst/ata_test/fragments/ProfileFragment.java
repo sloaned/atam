@@ -66,6 +66,9 @@ public class ProfileFragment extends Fragment {
         profileTabs.addTab(profileTabs.newTab().setText("TEAMS"));
         profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
 
+
+
+
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra("User")) {
             user = (User) intent.getSerializableExtra("User");
@@ -75,32 +78,31 @@ public class ProfileFragment extends Fragment {
                 userBio.setText(user.getDescription());
             }
 
-
-            final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
-            final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), user);
-
-            viewPager.setAdapter(adapter);
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
-
-            profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    viewPager.setCurrentItem(tab.getPosition());
-                    Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
-                }
-
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-                    Log.d(TAG, "tab unselected = " + tab.getText());
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-                    Log.d(TAG, "tab reselected = " + tab.getText());
-                }
-            });
-
         }
+
+        final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
+        final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), user);
+
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
+
+        profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+                Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG, "tab unselected = " + tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "tab reselected = " + tab.getText());
+            }
+        });
 
 
         return profileView;
