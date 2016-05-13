@@ -20,13 +20,16 @@
         android:layout_height="0dp"
         android:id="@+id/focus_layout"
         android:focusable="true"
-        android:focusableInTouchMode="true"><requestFocus /></LinearLayout>
+        android:focusableInTouchMode="true"><requestFocus />
+    <!-- invisible layout to get initial focus, so that the search bar won't -->
+    </LinearLayout>
 
     <android.support.v7.widget.SearchView
         android:id="@+id/action_search"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:iconifiedByDefault="false"
+        android:focusableInTouchMode="true"
         android:layout_weight="11"/>
 
 </LinearLayout>

@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/28/2016.
  */
+/* defines the bottom navigation bar for all views */
 public class BottomBar {
 
     private final static String TAG = BottomBar.class.getSimpleName();
@@ -51,22 +52,6 @@ public class BottomBar {
             }
         });
 
-        feedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFeed();
-            }
-        });
-
-
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSettings();
-            }
-        });
-
-
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +59,19 @@ public class BottomBar {
             }
         });
 
+        feedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFeed();
+            }
+        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettings();
+            }
+        });
 
         return mView;
     }
@@ -83,10 +81,8 @@ public class BottomBar {
         if (dialog.getDialog() != null) {
             dialog.getDialog().setCanceledOnTouchOutside(true);
         }
-
         try {
             final Activity activity = (Activity) mContext;
-
             dialog.show(activity.getFragmentManager(), "dialog");
         } catch (ClassCastException e) {
             Log.d(TAG, "Error getting fragment manager");

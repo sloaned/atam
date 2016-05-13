@@ -11,34 +11,25 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.events.BioChangeEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by dsloane on 4/28/2016.
  */
 public class EditBioFragment extends DialogFragment {
 
-    private static BioChangeListener callback;
-    private static ProfileFragment mProfileFragment;
     private static String mBioText;
 
     public EditBioFragment() {}
 
     private final static String TAG = EditBioFragment.class.getSimpleName();
 
-    public interface BioChangeListener {
-        public void changeBio (String bio);
-    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        try {
-            callback = (BioChangeListener) mProfileFragment;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Calling fragment must implement BioChangeListener interface");
-        }
-
-        Log.d(TAG, "callback = " + callback);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -55,23 +46,20 @@ public class EditBioFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 String bio = bioText.getText().toString();
                 Log.d(TAG, bio);
-                callback.changeBio(bio);
+                EventBus.getDefault().post(new BioChangeEvent(bio));
             }
-        })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
+            }
+        });
 
         return builder.create();
     }
 
-    public static EditBioFragment newInstance(String bio, ProfileFragment fragment) {
-        mProfileFragment = fragment;
+    public static EditBioFragment newInstance(String bio) {
         mBioText = bio;
-
 
         EditBioFragment editBioFragment = new EditBioFragment();
         Bundle args = new Bundle();

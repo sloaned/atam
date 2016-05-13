@@ -18,8 +18,12 @@ import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.TabAdapter;
+import com.example.catalyst.ata_test.events.BioChangeEvent;
 import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.User;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/28/2016.
  */
-public class ProfileFragment extends Fragment implements EditBioFragment.BioChangeListener {
+public class ProfileFragment extends Fragment {
 
     private static final String TAG = ProfileFragment.class.getSimpleName();
     private BottomBar bottomBar = new BottomBar();
@@ -42,11 +46,6 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
     @Bind(R.id.edit_bio_button) ImageView editBioButton;
     @Bind(R.id.user_bio) TextView userBio;
     @Bind(R.id.tab_layout) TabLayout profileTabs;
-
-
-   // private Fragment kudosTab = new KudosTabFragment();
-   // private Fragment reviewsTab = new ReviewsTabFragment();
-  //  private Fragment teamsTab = new TeamsTabFragment();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,30 +66,6 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
         profileTabs.addTab(profileTabs.newTab().setText("TEAMS"));
         profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
-        final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount());
-
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
-
-        profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab unselected = " + tab.getText());
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab reselected = " + tab.getText());
-            }
-        });
-
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra("User")) {
             user = (User) intent.getSerializableExtra("User");
@@ -100,28 +75,62 @@ public class ProfileFragment extends Fragment implements EditBioFragment.BioChan
                 userBio.setText(user.getDescription());
             }
 
+
+            final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
+            final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), user);
+
+            viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
+
+            profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+                    Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                    Log.d(TAG, "tab unselected = " + tab.getText());
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                    Log.d(TAG, "tab reselected = " + tab.getText());
+                }
+            });
+
         }
 
+
         return profileView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
     }
 
 
     public void openEditBioFragment() {
         String bio = userBio.getText().toString();
-        DialogFragment dialog = EditBioFragment.newInstance(bio, this);
+        DialogFragment dialog = EditBioFragment.newInstance(bio);
         if (dialog.getDialog() != null) {
             dialog.getDialog().setCanceledOnTouchOutside(true);
         }
         dialog.show(getFragmentManager(), "dialog");
     }
 
-    @Override
-    public void changeBio(String bio) {
-        userBio.setText(bio);
+    @Subscribe
+    public void changeBio(BioChangeEvent event) {
+        userBio.setText(event.getBio());
     }
-
-
-
-
 
 }

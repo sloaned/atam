@@ -31,11 +31,17 @@ import com.example.catalyst.ata_test.menus.TopBar;
 
 import org.greenrobot.eventbus.EventBus;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class DashboardActivity extends AppCompatActivity {
 
-    private SearchView searchView;
-    private View listView;
+    @Bind(R.id.action_search)SearchView searchView;
+    @Bind(R.id.listView) View listView;
+    @Bind(R.id.action_logo) ImageView logo;
+    @Bind(R.id.focus_layout) LinearLayout focus;
     private TopBar topBar;
+
 
     private static final String TAG = DashboardActivity.class.getSimpleName();
 
@@ -44,10 +50,10 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        searchView = (SearchView) findViewById(R.id.action_search);
-        listView = findViewById(R.id.listView);
+        ButterKnife.bind(this);
 
         topBar = new TopBar();
+        logo = topBar.setLogo(this, logo);
         searchView = topBar.getTopBar(this, searchView);
     }
 
@@ -56,6 +62,15 @@ public class DashboardActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         topBar.clearSearch();
+        focus.requestFocus();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 
 

@@ -52,7 +52,7 @@ public class DashboardFragment extends Fragment {
 
         adapter = new DashboardAdapter(getActivity(), mTeams);
 
-        caller = new ApiCaller(getActivity(), this);
+        caller = new ApiCaller(getActivity());
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -72,15 +72,15 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         EventBus.getDefault().register(this);
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onPause();
     }
 
     public void getTeams() {

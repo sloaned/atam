@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,12 +24,14 @@ import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.SearchResultAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
+import com.example.catalyst.ata_test.menus.TopBar;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -42,17 +45,45 @@ public class SearchActivity extends AppCompatActivity {
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     private SearchResultAdapter adapter;
-    final ApiCaller caller = new ApiCaller(this, null);
+    final ApiCaller caller = new ApiCaller(this);
 
     @Bind(android.R.id.list)ListView listView;
+    @Bind(R.id.action_logo) ImageView logo;
     private ArrayList<User> results = new ArrayList<User>();
     private ArrayList<User> users = new ArrayList<User>();
+    private SearchView searchView;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+        final Intent intent = getIntent();
+
+        searchView = (SearchView) findViewById(R.id.action_search);
+
+        TopBar topBar = new TopBar();
+        logo = topBar.setLogo(this, logo);
+
+        bundle = savedInstanceState;
+
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
+
+        SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
+        search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
+
+        EventBus.getDefault().register(this);
+
+        final String query = intent.getStringExtra(SearchManager.QUERY);
+        searchView.post(new Runnable() {
+            @Override
+            public void run() {
+                searchView.setQuery(query, true);
+            }
+        });
 
         Runnable runnable = new Runnable() {
             @Override
@@ -62,38 +93,33 @@ public class SearchActivity extends AppCompatActivity {
         };
         new Thread(runnable).start();
 
-        final SearchView searchView = (SearchView) findViewById(R.id.action_search);
-
-
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
-
-        SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
-        search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                intent.putExtra(SearchManager.QUERY, query);
                 searchUsers(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchUsers(newText);
-                return false;
+                intent.putExtra(SearchManager.QUERY, newText);
+                if (!newText.equals("")) {
+                    searchUsers(newText);
+                    return true;
+                } else {
+                    results.clear();
+                    adapter.notifyDataSetChanged();
+                    return false;
+                }
             }
         });
 
         TextView cancelSearch = (TextView) findViewById(R.id.action_cancel_search);
 
-        Log.d(TAG, "cancelSearch text = " + cancelSearch.getText());
-
         cancelSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.d(TAG, "cancel clicked!");
                 finish();
             }
         });
@@ -108,44 +134,32 @@ public class SearchActivity extends AppCompatActivity {
                 User user = (User) adapter.getItem(position);
 
                 Intent intent = new Intent(SearchActivity.this, ProfileActivity.class)
-                        .putExtra("User", user);
+                        .putExtra("User", (Serializable) user);
                 startActivity(intent);
             }
         });
 
-        Intent intent = getIntent();
-        final String query = intent.getStringExtra(SearchManager.QUERY);
-        if (!query.equals("")) {
-            searchView.post(new Runnable() {
-                @Override
-                public void run() {
-                    searchView.setQuery(query, true);
-                }
-            });
 
-            searchUsers(query);
-        }
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onPause();
     }
 
     public void cancelSearch() {
-        Log.d(TAG, "cancel clicked!");
         finish();
     }
 
 
     public void searchUsers(String query) {
+
         results.clear();
         query = query.toLowerCase();
         for (User user : users) {
@@ -160,6 +174,47 @@ public class SearchActivity extends AppCompatActivity {
     @Subscribe
     public void onInitialSearchEvent(InitialSearchEvent event) {
         this.users = event.userList;
+
+        Intent intent = getIntent();
+
+        String savedInstanceQuery = "";
+        if (bundle != null && bundle.getString("QUERY") != null) {
+            savedInstanceQuery = ((String) bundle.getString("QUERY"));
+        }
+        final String query = intent.getStringExtra(SearchManager.QUERY) != null ? intent.getStringExtra(SearchManager.QUERY) : savedInstanceQuery;
+
+        searchView.post(new Runnable() {
+            @Override
+            public void run() {
+                searchView.setQuery(query, true);
+            }
+        });
+
+        if (!query.equals("") && !query.equals(savedInstanceQuery)) {
+
+            searchView.post(new Runnable() {
+                @Override
+                public void run() {
+                    searchView.setQuery(query, true);
+                }
+            });
+
+            searchUsers(query);
+        } else if(!query.equals("")) {
+            results.clear();
+            for (User user : bundle.<User>getParcelableArrayList("RESULTS")) {
+                results.add(user);
+            }
+            adapter.notifyDataSetChanged();
+        }
+        intent.putExtra(SearchManager.QUERY, (String) null);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString("QUERY", searchView.getQuery().toString());
+        savedInstanceState.putParcelableArrayList("RESULTS", results);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
 }

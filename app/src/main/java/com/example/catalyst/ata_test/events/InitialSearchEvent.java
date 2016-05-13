@@ -7,6 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by dsloane on 5/6/2016.
  */
+/* Fires when the search activity is launched */
 public class InitialSearchEvent {
 
     public ArrayList<User> userList;
