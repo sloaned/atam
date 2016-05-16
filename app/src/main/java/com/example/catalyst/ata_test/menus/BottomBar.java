@@ -79,6 +79,8 @@ public class BottomBar {
     public void openSettings() {
         DialogFragment dialog = SettingsFragment.newInstance();
         if (dialog.getDialog() != null) {
+
+            /* touching outside the modal will close it */
             dialog.getDialog().setCanceledOnTouchOutside(true);
         }
         try {
@@ -93,6 +95,8 @@ public class BottomBar {
     public void openMyProfile() {
         Intent intent = new Intent(mContext, ProfileActivity.class);
         mContext.startActivity(intent);
+
+        /* make activity transition seamless */
         ((Activity)mContext).overridePendingTransition(0, 0);
     }
 
@@ -102,6 +106,8 @@ public class BottomBar {
         } else {
             Intent intent = new Intent(mContext, DashboardActivity.class);
             mContext.startActivity(intent);
+
+            /* make activity transition seamless */
             ((Activity)mContext).overridePendingTransition(0, 0);
         }
     }
@@ -112,6 +118,8 @@ public class BottomBar {
         } else {
             Intent intent = new Intent(mContext, FeedActivity.class);
             mContext.startActivity(intent);
+
+            /* make activity transition seamless */
             ((Activity)mContext).overridePendingTransition(0, 0);
         }
     }

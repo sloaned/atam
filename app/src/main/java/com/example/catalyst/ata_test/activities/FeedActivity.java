@@ -23,6 +23,9 @@ public class FeedActivity extends AppCompatActivity {
 
     @Bind(R.id.action_search)SearchView searchView;
     @Bind(R.id.action_logo) ImageView logo;
+
+    // an invisible layout before the searchbar to prevent the searchbar from automatically
+    // gaining focus on page load
     @Bind(R.id.focus_layout) LinearLayout focus;
     private TopBar topBar;
 
@@ -35,18 +38,6 @@ public class FeedActivity extends AppCompatActivity {
         topBar = new TopBar();
         logo = topBar.setLogo(this, logo);
         searchView = topBar.getTopBar(this, searchView);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-      //  EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-      //  EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 
     @Override

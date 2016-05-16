@@ -61,6 +61,9 @@ public class TeamFragment extends Fragment {
 
             ApiCaller caller = new ApiCaller(getActivity());
 
+            /*
+                network call to get team member names from their user ids
+             */
             caller.getTeamMembers(team);
 
         }
@@ -80,6 +83,9 @@ public class TeamFragment extends Fragment {
         super.onPause();
     }
 
+    /*
+        callback function from network call to update view with list of team member names
+     */
     @Subscribe
     public void updateTeamMembers(UpdateTeamMembersEvent event) {
         memberList = event.getMemberList();

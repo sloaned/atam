@@ -70,6 +70,7 @@ public class TopBar {
         return searchView;
     }
 
+    /* clear the search bar on activity load */
     public void clearSearch() {
         searchView.post(new Runnable() {
             @Override

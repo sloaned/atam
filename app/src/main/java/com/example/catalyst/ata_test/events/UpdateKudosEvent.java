@@ -7,6 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by dsloane on 5/10/2016.
  */
+/* fires when usernames of kudos givers are pulled from database to update view */
 public class UpdateKudosEvent {
 
     private ArrayList<Kudo> kudos;

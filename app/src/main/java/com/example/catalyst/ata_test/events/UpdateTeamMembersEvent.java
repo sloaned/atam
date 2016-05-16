@@ -9,6 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by dsloane on 5/10/2016.
  */
+/* fires when usernames of team members are pulled from database to update team page */
 public class UpdateTeamMembersEvent {
 
     private final String TAG = UpdateTeamMembersEvent.class.getSimpleName();

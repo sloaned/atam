@@ -37,6 +37,8 @@ public class EditBioFragment extends DialogFragment {
         final View editView = inflater.inflate(R.layout.fragment_editbio, null);
 
         final EditText bioText = (EditText) editView.findViewById(R.id.edit_bio_textarea);
+
+        /* populate text area with current user bio */
         bioText.setText(mBioText);
 
         builder.setView(editView);
@@ -45,7 +47,8 @@ public class EditBioFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String bio = bioText.getText().toString();
-                Log.d(TAG, bio);
+
+                /* activates callback function in profile fragment to update the profile view */
                 EventBus.getDefault().post(new BioChangeEvent(bio));
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

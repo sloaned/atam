@@ -7,6 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by dsloane on 5/10/2016.
  */
+/* on profile page load, gets kudos for a given user */
 public class GetKudosInfoEvent {
 
     private ArrayList<Kudo> kudos;

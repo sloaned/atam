@@ -40,6 +40,8 @@ import butterknife.ButterKnife;
 /**
  * Created by dsloane on 4/26/2016.
  */
+
+// currently only searches for users, not teams/projects
 public class SearchActivity extends AppCompatActivity {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
@@ -78,6 +80,8 @@ public class SearchActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
 
         final String query = intent.getStringExtra(SearchManager.QUERY);
+
+        // put the query that was typed in during the calling activity back into the searchbar
         searchView.post(new Runnable() {
             @Override
             public void run() {
@@ -85,6 +89,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        // creates an arrayList of all Catalyst employees
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -103,11 +108,15 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+                // change the search query in the intent
                 intent.putExtra(SearchManager.QUERY, newText);
-                if (!newText.equals("")) {
+
+
+                if (!newText.equals("")) { // the query is not empty
                     searchUsers(newText);
                     return true;
-                } else {
+                } else { // empty query - do not display any results
                     results.clear();
                     adapter.notifyDataSetChanged();
                     return false;
@@ -117,6 +126,9 @@ public class SearchActivity extends AppCompatActivity {
 
         TextView cancelSearch = (TextView) findViewById(R.id.action_cancel_search);
 
+        /* called when cancel button next to search bar is pressed.
+             Closes search activity and returns to previous activity
+        */
         cancelSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,6 +140,11 @@ public class SearchActivity extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
+        /*
+            open profile of given user when a search result is clicked
+            (should be updated when results include teams/projects to check
+            the type of result and to start appropriate activity)
+         */
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -153,14 +170,12 @@ public class SearchActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    public void cancelSearch() {
-        finish();
-    }
-
 
     public void searchUsers(String query) {
 
         results.clear();
+
+        // ignore case when performing queries
         query = query.toLowerCase();
         for (User user : users) {
             String name = user.getFirstName().toLowerCase() + " " + user.getLastName().toLowerCase();
@@ -177,12 +192,16 @@ public class SearchActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
+        /*
+            check for query either from intent or from bundle (query saved in bundle on orientation change)
+         */
         String savedInstanceQuery = "";
         if (bundle != null && bundle.getString("QUERY") != null) {
             savedInstanceQuery = ((String) bundle.getString("QUERY"));
         }
         final String query = intent.getStringExtra(SearchManager.QUERY) != null ? intent.getStringExtra(SearchManager.QUERY) : savedInstanceQuery;
 
+        // perform search on query
         searchView.post(new Runnable() {
             @Override
             public void run() {
@@ -190,6 +209,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        // query isn't empty, and/or query has been changed since orientation change
         if (!query.equals("") && !query.equals(savedInstanceQuery)) {
 
             searchView.post(new Runnable() {
@@ -200,7 +220,7 @@ public class SearchActivity extends AppCompatActivity {
             });
 
             searchUsers(query);
-        } else if(!query.equals("")) {
+        } else if(!query.equals("")) { // orientation change, query not empty
             results.clear();
             for (User user : bundle.<User>getParcelableArrayList("RESULTS")) {
                 results.add(user);
@@ -210,6 +230,9 @@ public class SearchActivity extends AppCompatActivity {
         intent.putExtra(SearchManager.QUERY, (String) null);
     }
 
+    /* save the instance state so that query and search results do not disappear
+        upon device orientation change
+     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putString("QUERY", searchView.getQuery().toString());

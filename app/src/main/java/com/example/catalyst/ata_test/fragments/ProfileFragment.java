@@ -120,7 +120,9 @@ public class ProfileFragment extends Fragment {
         super.onPause();
     }
 
-
+    /*
+        called when edit bio button is clicked
+     */
     public void openEditBioFragment() {
         String bio = userBio.getText().toString();
         DialogFragment dialog = EditBioFragment.newInstance(bio);
@@ -130,6 +132,7 @@ public class ProfileFragment extends Fragment {
         dialog.show(getFragmentManager(), "dialog");
     }
 
+    /* callback function from editBioFragment to update user bio */
     @Subscribe
     public void changeBio(BioChangeEvent event) {
         userBio.setText(event.getBio());

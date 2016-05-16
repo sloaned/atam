@@ -12,6 +12,7 @@ import com.example.catalyst.ata_test.util.LruBitmapCache;
 /**
  * Created by dsloane on 5/3/2016.
  */
+/* used by Volley to schedule network calls */
 public class AppController extends Application {
 
     public static final String TAG = AppController.class.getSimpleName();

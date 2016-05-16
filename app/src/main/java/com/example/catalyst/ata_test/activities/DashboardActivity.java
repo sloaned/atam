@@ -39,6 +39,9 @@ public class DashboardActivity extends AppCompatActivity {
     @Bind(R.id.action_search)SearchView searchView;
     @Bind(R.id.listView) View listView;
     @Bind(R.id.action_logo) ImageView logo;
+
+    // an invisible layout before the searchbar to prevent the searchbar from automatically
+    // gaining focus on page load
     @Bind(R.id.focus_layout) LinearLayout focus;
     private TopBar topBar;
 
@@ -65,6 +68,9 @@ public class DashboardActivity extends AppCompatActivity {
         focus.requestFocus();
     }
 
+    /*
+        close/minimize app when back button pressed
+     */
     @Override
     public void onBackPressed() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);

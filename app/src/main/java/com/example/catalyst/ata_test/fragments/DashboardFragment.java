@@ -55,6 +55,8 @@ public class DashboardFragment extends Fragment {
         caller = new ApiCaller(getActivity());
 
         listView.setAdapter(adapter);
+
+        /* clicking on a team name brings you to the team page */
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,6 +67,7 @@ public class DashboardFragment extends Fragment {
                 caller.getTeamById(teamId);
             }
         });
+
 
         getTeams();
 
@@ -83,11 +86,13 @@ public class DashboardFragment extends Fragment {
         super.onPause();
     }
 
+    /* make network call to get list of teams */
     public void getTeams() {
         mTeams.clear();
         caller.getAllTeams();
     }
 
+    /* callback function populate list with teams */
     @Subscribe
     public void refreshTeams(TeamsEvent event) {
         for (Team team : event.getTeams()) {
@@ -96,6 +101,7 @@ public class DashboardFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    /* open team page when a team is clicked on */
     @Subscribe
     public void viewTeam(ViewTeamEvent event) {
         Intent intent = new Intent(getActivity(), TeamActivity.class)

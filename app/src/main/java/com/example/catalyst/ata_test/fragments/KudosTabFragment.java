@@ -43,8 +43,12 @@ public class KudosTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        /* set view for the overall view contained within the tab */
         kudoView = inflater.inflate(R.layout.tab_kudos, container, false);
+
+        /* set view for the list of kudos */
         listView = (ListView) kudoView.findViewById(android.R.id.list);
+
 
         if (mUser != null) {
             getKudos();
@@ -76,10 +80,16 @@ public class KudosTabFragment extends Fragment {
         super.onPause();
     }
 
+    /* make network call to get the kudos for this user */
     public void getKudos() {
         caller = new ApiCaller(getActivity());
         caller.getKudos(mUser.getId());
     }
+
+    /*
+        callback function from first network call. Calls another network call to convert reviewers' user ids
+        into actual user objects, so that their names can be displayed
+     */
     @Subscribe
     public void updateKudos(UpdateKudosEvent event) {
         kudosList = event.getKudos();
@@ -90,6 +100,9 @@ public class KudosTabFragment extends Fragment {
         caller.getKudosReviewers(kudosList);
     }
 
+    /*
+        callback function from second network call. Updates kudos list with reviewer names
+     */
     @Subscribe
     public void getReviewerInfoEvent(GetKudosInfoEvent event) {
         Log.d(TAG, "in getReviewerInfoEvent!!!!!!!!!!!!");

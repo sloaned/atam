@@ -52,7 +52,7 @@ public class ApiCaller {
 
     public static final String TAG = ApiCaller.class.getSimpleName();
 
-    private static final String DATA_URL = "http://pc30120.catalystsolves.com:8080/";
+    private static final String DATA_URL = "http://pc30120.catalystsolves.com:8080/";   // change to your own computer name
     private static final String API_URL = NetworkConstants.ATA_BASE;
 
     private ArrayList<User> teamMembers = new ArrayList<User>();
@@ -99,6 +99,8 @@ public class ApiCaller {
     }
 
     public void getAllUsers() {
+
+        /* may need to be updated depending on number of employees */
         String url = DATA_URL + "users?size=3000";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -123,7 +125,6 @@ public class ApiCaller {
                             user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
                         }
 
-                       // Log.d(TAG, "user name = " + user.getFirstName());
                         users.add(user);
                     }
                 } catch (JSONException e) {
@@ -139,11 +140,16 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+
+        // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 
+    /* currently gets all teams in database. Should be changed to only retrieve teams that a given user is on */
     public void getAllTeams() {
+
+        // should be updated to reflect approx. number of teams
         String url = DATA_URL + "teams?size=3000000";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -174,6 +180,8 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+
+        // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
@@ -209,8 +217,9 @@ public class ApiCaller {
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
+
+                /* activate callback function to view a team activity */
                 EventBus.getDefault().post(new ViewTeamEvent(team));
-               // getTeamMembers(team);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -224,6 +233,8 @@ public class ApiCaller {
             }
 
         });
+
+        // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
@@ -240,6 +251,9 @@ public class ApiCaller {
     }
 
     /*
+        @params: int counter - iterator of team member in team's list of team members
+                 int size - total number of team member's on the team
+                 String id - user id of team member[counter]
         copy of getUserById method, but this one will call the updateTeamMember event on the team page when it finishes
      */
     public void getTeamMemberById(final int counter, final int size, String id) {
@@ -260,6 +274,10 @@ public class ApiCaller {
 
                     teamMembers.add(user);
 
+                    /*
+                        if this was the final team member in the list, activate callback function
+                        to update list view
+                     */
                     if (counter == size-1) {
                         EventBus.getDefault().post(new UpdateTeamMembersEvent(teamMembers));
                     }
@@ -274,11 +292,14 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+
+        // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 
 
+    /* generic getUserById function */
     public void getUserById(String id) {
         String url = DATA_URL + "users/" + id + "/";
 
@@ -308,11 +329,20 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+
+        // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 
+    /*
+        @param: String reviewedId - the id of the user who was given the kudos
+
+        creates an arrayList of all kudos given to the user with the given id. Activates
+        a callback function in the profile fragment upon completion
+     */
     public void getKudos(final String reviewedId) {
+        /* size should be updated */
         String url = DATA_URL + "kudos?size=3000000";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -357,10 +387,17 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+
+        // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
 
+    /*
+        gets the usernames, by id, of all users who have given a given user kudos.
+        It will The callback function is called to update the kudos tab after
+        info for every kudos in the list is retrieved
+     */
     public void getKudosReviewers(ArrayList<Kudo> kudosList) {
         kudos = kudosList;
         Log.d(TAG, "in getKudosReviewers, kudos size = " + kudos.size());
@@ -369,6 +406,14 @@ public class ApiCaller {
         }
     }
 
+    /*
+        @params: int counter - an iterator of the kudo in the list of kudos a given user has
+                int size - the total number of kudos that user has
+                Kudo kudo - kudo[counter] in the user's list of kudos
+        This function will activate the callback function in the kudos fragment once it has
+        retrieved the information for all of a user's kudos (calculated by comparing the total
+        size to the current counter)
+     */
     public void getKudosReviewerInfo (final int counter, final int size, final Kudo kudo) {
         String url = DATA_URL + "users/" + kudo.getReviewer().getId();
         Log.d(TAG, "in getKudosReviewerInfo, url = " + url);
@@ -380,6 +425,7 @@ public class ApiCaller {
                 User user = new User();
 
                 try {
+                    /* set user info about the person who gave the kudos */
                     user.setId(response.getString(JsonConstants.JSON_USER_ID));
                     user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
                     user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
@@ -391,6 +437,9 @@ public class ApiCaller {
 
                     kudos.set(counter, kudo);
 
+                    /* if this was the final kudo in the list, activate the callback
+                        function to update the view in the kudos tab
+                     */
                     if (counter == size-1) {
                         EventBus.getDefault().post(new GetKudosInfoEvent(kudos));
                     }
@@ -405,6 +454,8 @@ public class ApiCaller {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         });
+
+        // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
