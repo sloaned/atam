@@ -25,86 +25,58 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.fragments.DashboardFragment;
+import com.example.catalyst.ata_test.menus.TopBar;
+
+import org.greenrobot.eventbus.EventBus;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private SearchView searchView;// = (SearchView) findViewById(R.id.action_search);
-    private View view;
+    @Bind(R.id.action_search)SearchView searchView;
+    @Bind(R.id.listView) View listView;
+    @Bind(R.id.action_logo) ImageView logo;
 
-    @Override
+    // an invisible layout before the searchbar to prevent the searchbar from automatically
+    // gaining focus on page load
+    @Bind(R.id.focus_layout) LinearLayout focus;
+    private TopBar topBar;
+
+
+    private static final String TAG = DashboardActivity.class.getSimpleName();
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
-        searchView = (SearchView) findViewById(R.id.action_search);
-        view = findViewById(R.id.listView);
-        //view.requestFocus();
-
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint("Search for users and teams...");
-
-
-
-       // searchView.clearFocus();
-
-        SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
-        search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
-       // search_text.clearFocus();
-
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-                    intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, "");
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                }
-            }
-        });
-
-        // getCurrentFocus().clearFocus();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-                intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, query);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!newText.equals("")) {
-                    Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-                    intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, newText);
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
-            }
-        });
-
+        topBar = new TopBar();
+        logo = topBar.setLogo(this, logo);
+        searchView = topBar.getTopBar(this, searchView);
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        searchView.post(new Runnable() {
-            @Override
-            public void run() {
-                searchView.setQuery("", true);
-            }
-        });
+        topBar.clearSearch();
+        focus.requestFocus();
+    }
 
-        view.requestFocus();
+    /*
+        close/minimize app when back button pressed
+     */
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 
 

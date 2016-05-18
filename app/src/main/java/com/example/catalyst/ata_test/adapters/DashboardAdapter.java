@@ -1,6 +1,7 @@
 package com.example.catalyst.ata_test.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,11 @@ public class DashboardAdapter extends BaseAdapter {
     private Context mContext;
 
     private LayoutInflater inflater;
-    private List<String> teamList = new ArrayList<String>();
+    private List<Team> teamList = new ArrayList<Team>();
 
     private static final String TAG = DashboardAdapter.class.getSimpleName();
 
-    public DashboardAdapter(Context context, List<String> teamList) {
+    public DashboardAdapter(Context context, List<Team> teamList) {
         mContext = context;
         this.teamList = teamList;
     }
@@ -60,13 +61,16 @@ public class DashboardAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_dashboard, null);
             holder.name = (TextView) convertView.findViewById(R.id.team_name);
-
+            holder.id = (TextView) convertView.findViewById(R.id.team_id);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        String s = teamList.get(position);
+        String s = teamList.get(position).getName();
+        String id = teamList.get(position).getId();
+
         holder.name.setText(s);
+        holder.id.setText(id);
 
         return convertView;
     }
@@ -75,6 +79,7 @@ public class DashboardAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         TextView name;
+        TextView id; // invisible textview, so that the team id can be stored and used later to get team details
     }
 
 }

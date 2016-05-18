@@ -1,22 +1,28 @@
 package com.example.catalyst.ata_test.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.activities.TeamActivity;
 import com.example.catalyst.ata_test.adapters.DashboardAdapter;
 import com.example.catalyst.ata_test.data.DBHelper;
+import com.example.catalyst.ata_test.events.TeamsEvent;
+import com.example.catalyst.ata_test.events.ViewTeamEvent;
+import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Team;
+import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.network.ApiCaller;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -32,58 +38,80 @@ public class DashboardFragment extends Fragment {
 
     private DashboardAdapter adapter;
     @Bind(android.R.id.list)ListView listView;
-    @Bind(R.id.bottom_bar)LinearLayout bottomBar;
-    @Bind(R.id.home_button)RelativeLayout homeButton;
-    @Bind(R.id.my_profile_button) RelativeLayout profileButton;
-    @Bind(R.id.feed_button) RelativeLayout feedButton;
-    @Bind(R.id.settings_button) RelativeLayout settingsButton;
     private View homeView;
-    private ArrayList<String> mTeams = new ArrayList<String>();
+    private ArrayList<Team> mTeams = new ArrayList<Team>();
+    private BottomBar bottomBar = new BottomBar();
+    private ApiCaller caller;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeView = inflater.inflate(R.layout.content_dashboard, null);
+        homeView = inflater.inflate(R.layout.fragment_dashboard, null);
         ButterKnife.bind(this, homeView);
+
+        homeView = bottomBar.getBottomBar(getActivity(), homeView);
 
         adapter = new DashboardAdapter(getActivity(), mTeams);
 
+        caller = new ApiCaller(getActivity());
+
         listView.setAdapter(adapter);
 
-        getTasks();
-
-        Log.d(TAG, "in the dashboard fragment!!!!!!!!!");
-
-        settingsButton.setOnClickListener(new View.OnClickListener() {
+        /* clicking on a team name brings you to the team page */
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                openSettings();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Team team = (Team) adapter.getItem(position);
+
+                String teamId = team.getId();
+
+                caller.getTeamById(teamId);
             }
         });
+
+
+        getTeams();
 
         return homeView;
     }
 
-    public void getTasks() {
-        mTeams.clear();
-        DBHelper dbHelper = new DBHelper(getActivity());
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
 
-        ArrayList<Team> teams = dbHelper.getTeams();
-        for (Team team : teams) {
-            Log.d(TAG, "getting " + team.getName());
-            mTeams.add(team.getName());
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    /* make network call to get list of teams */
+    public void getTeams() {
+        mTeams.clear();
+        caller.getAllTeams();
+    }
+
+    /* callback function populate list with teams */
+    @Subscribe
+    public void refreshTeams(TeamsEvent event) {
+        for (Team team : event.getTeams()) {
+            mTeams.add(team);
         }
-        dbHelper.close();
         adapter.notifyDataSetChanged();
     }
 
-    public void openSettings() {
-        Log.d(TAG, "open Settings!!!!!");
-        DialogFragment dialog = SettingsFragment.newInstance();
-        if (dialog.getDialog() != null) {
-            dialog.getDialog().setCanceledOnTouchOutside(true);
-        }
-        dialog.show(getFragmentManager(), "dialog");
-
+    /* open team page when a team is clicked on */
+    @Subscribe
+    public void viewTeam(ViewTeamEvent event) {
+        Intent intent = new Intent(getActivity(), TeamActivity.class)
+                .putExtra("Team", event.getTeam());
+        startActivity(intent);
     }
+    /*
+    @Subscribe
+    public void getTeamMembers(Team team) {
+        caller.getTeamMembers(team);
+    }  */
 
 }

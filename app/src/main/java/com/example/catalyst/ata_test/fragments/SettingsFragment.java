@@ -2,20 +2,18 @@ package com.example.catalyst.ata_test.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Intent;
+import android.app.DialogFragment;
 import android.content.SharedPreferences;
-import android.media.audiofx.BassBoost;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.MainActivity;
+import com.example.catalyst.ata_test.network.ApiCaller;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import butterknife.Bind;
@@ -29,12 +27,13 @@ public class SettingsFragment extends DialogFragment {
     private SharedPreferences prefs;
     private SharedPreferences.Editor mEditor;
 
-
     private final String TAG = SettingsFragment.class.getSimpleName();
 
-    @Bind(R.id.logout_button) TextView logoutButton;
+    @Bind(R.id.logout_button)
+    TextView logoutButton;
 
-    public SettingsFragment() {}
+    public SettingsFragment() {
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -53,10 +52,11 @@ public class SettingsFragment extends DialogFragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "logout button clicked!!!!!");
                 mEditor.putString(SharedPreferencesConstants.PREFS_USER, null).apply();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
+                mEditor.putString(SharedPreferencesConstants.JESESSIONID, null).apply();
+
+                new ApiCaller(getActivity()).logout();
+
             }
         });
 
