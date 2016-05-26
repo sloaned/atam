@@ -135,7 +135,9 @@ public class LoginActivityFragment extends Fragment {
 
     public boolean loginSuccessful(String url) {
 
-        if (url.contains(NetworkConstants.OAUTH_SUCCESS) && !(url.contains(NetworkConstants.OAUTH_LOGIN))) {
+        Log.d(TAG, "loginSuccessful, url = " + url);
+
+        if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.OAUTH_LOGIN)) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
 
             //Grabbing the cookie to get the jessionid
             String cookies = cookieManager.getCookie(url);

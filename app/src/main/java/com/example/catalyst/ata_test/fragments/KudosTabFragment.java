@@ -97,7 +97,9 @@ public class KudosTabFragment extends Fragment {
             RelativeLayout fakeKudo = (RelativeLayout) kudoView.findViewById(R.id.fake_kudo);
             fakeKudo.setVisibility(View.GONE);
         }
-        caller.getKudosReviewers(kudosList);
+        adapter = new KudosAdapter(getActivity(), kudosList);
+        listView.setAdapter(adapter);
+       // caller.getKudosReviewers(kudosList);
     }
 
     /*

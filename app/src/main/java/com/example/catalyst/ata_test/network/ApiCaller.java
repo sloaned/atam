@@ -93,6 +93,9 @@ public class ApiCaller {
                 CookieManager.getInstance().removeAllCookie();
                 System.out.println("Logout was successful!");
 
+                Intent intent = new Intent(mContext, LoginActivity.class);
+                mContext.startActivity(intent);
+
             }
 
         }, new Response.ErrorListener() {
@@ -120,8 +123,8 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 ArrayList<User> users = new ArrayList<User>();
                 try {
-                    JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
-                    JSONArray userList = embedded.getJSONArray(JsonConstants.JSON_USERS);
+                  //  JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    JSONArray userList = response.getJSONArray(JsonConstants.JSON_RESULT);
 
                     Log.d(TAG, "userList length = " + userList.length());
                     for (int i = 0; i < userList.length(); i++) {
@@ -235,10 +238,10 @@ public class ApiCaller {
                 String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
                 Log.d(TAG, "cookie = " + cookie);
                // headers.put("X-AUTH-TOKEN", cookie);
-               // headers.put("JSESSIONID", cookie);
+                headers.put("JSESSIONID", "9D0768F1D937C22431B5ECB2A251DEB8");
                // headers.put("Cookie", cookie);
                // headers.put("SPRING_SECURITY_REMEMBER_ME_COOKIE", cookie);
-                headers.put("Set-Cookie", "JSESSIONID=" + cookie);
+                //headers.put("Set-Cookie", "JSESSIONID=" + cookie);
                 Log.d(TAG, " the headers!: " + headers.toString());
 
                 return headers;
@@ -307,7 +310,7 @@ public class ApiCaller {
 
             }
 
-        }) {
+        }); /* {
                 @Override
                 public Map<String, String> getParams() throws AuthFailureError{
                     try {
@@ -326,7 +329,7 @@ public class ApiCaller {
                     }
 
                 }
-        };
+        }; */
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -352,8 +355,8 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 kudos.clear();
                 try {
-                    JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
-                    JSONArray kudosArray = embedded.getJSONArray(JsonConstants.JSON_KUDOS);
+                   // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    JSONArray kudosArray = response.getJSONArray(JsonConstants.JSON_RESULT);
                     Log.d(TAG, "kudosArray length = " + kudosArray.length());
                     for (int i = 0; i < kudosArray.length(); i++) {
                         JSONObject jsonKudo = kudosArray.getJSONObject(i);
@@ -362,7 +365,17 @@ public class ApiCaller {
                         User reviewed = new User();
                         kudo.setKudo(jsonKudo.getString(JsonConstants.JSON_KUDOS_COMMENT));
                         kudo.setSubmittedDate(jsonKudo.getString(JsonConstants.JSON_KUDOS_SUBMITTED_DATE));
-                        reviewer.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWER_ID));
+
+                        JSONObject jsonReviewer = jsonKudo.getJSONObject(JsonConstants.JSON_KUDOS_REVIEWER);
+
+
+                        reviewer.setId(jsonReviewer.getString(JsonConstants.JSON_USER_ID));
+                        reviewer.setFirstName(jsonReviewer.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                        reviewer.setLastName(jsonReviewer.getString(JsonConstants.JSON_USER_LAST_NAME));
+                        reviewer.setTitle(jsonReviewer.getString(JsonConstants.JSON_USER_TITLE));
+                        reviewer.setEmail(jsonReviewer.getString(JsonConstants.JSON_USER_EMAIL));
+                        reviewer.setDescription(jsonReviewer.getString(JsonConstants.JSON_USER_DESCRIPTION));
+                        //reviewer.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWER_ID));
                         kudo.setReviewer(reviewer);
                         reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
                         kudo.setReviewed(reviewed);
