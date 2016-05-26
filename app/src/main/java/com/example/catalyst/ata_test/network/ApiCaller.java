@@ -4,6 +4,7 @@ package com.example.catalyst.ata_test.network;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.webkit.CookieManager;
@@ -19,6 +20,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.catalyst.ata_test.AppController;
@@ -36,6 +38,7 @@ import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
 import com.example.catalyst.ata_test.util.NetworkConstants;
+import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -43,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -52,7 +57,7 @@ public class ApiCaller {
 
     public static final String TAG = ApiCaller.class.getSimpleName();
 
-    private static final String DATA_URL = "http://pc30120.catalystsolves.com:8080/";   // change to your own computer name
+    private static final String DATA_URL = "http://pc30120.catalystsolves.com:8090/";   // change to your own computer name
     private static final String API_URL = NetworkConstants.ATA_BASE;
 
     private ArrayList<User> teamMembers = new ArrayList<User>();
@@ -60,8 +65,14 @@ public class ApiCaller {
 
     private Context mContext;
 
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor mEditor;
+
     public ApiCaller(Context context) {
         mContext = context;
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mEditor = prefs.edit();
     }
 
     public void logout() {
@@ -158,8 +169,8 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 ArrayList<Team> teams = new ArrayList<Team>();
                 try {
-                    JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
-                    JSONArray teamsList = embedded.getJSONArray(JsonConstants.JSON_TEAMS);
+                   // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    JSONArray teamsList = response.getJSONArray(JsonConstants.JSON_RESULT);
 
                     for (int i = 0; i < teamsList.length(); i++) {
                         JSONObject jsonTeam = teamsList.getJSONObject(i);
@@ -179,10 +190,27 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                Log.d(TAG, "cookie = " + cookie);
+               // headers.put("X-AUTH-TOKEN", cookie);
+               // headers.put("JSESSIONID", cookie);
+               // headers.put("Cookie", cookie);
+               // headers.put("SPRING_SECURITY_REMEMBER_ME_COOKIE", cookie);
+                headers.put("Set-Cookie", "JSESSIONID=" + cookie);
+                Log.d(TAG, " the headers!: " + headers.toString());
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
+
         AppController.getInstance().addToRequestQueue(req);
     }
 
@@ -195,18 +223,28 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 Team team = new Team();
                 try {
-                    team.setId(response.getString(JsonConstants.JSON_TEAM_ID));
-                    team.setName(response.getString(JsonConstants.JSON_TEAM_NAME));
-                    team.setDescription(response.getString(JsonConstants.JSON_TEAM_DESCRIPTION));
-                    team.setActive(response.getBoolean(JsonConstants.JSON_TEAM_ACTIVE));
-                    if (!response.getString(JsonConstants.JSON_TEAM_MEMBERLIST).equals("null")) {
-                        JSONArray memberList = response.getJSONArray(JsonConstants.JSON_TEAM_MEMBERLIST);
+                    JSONObject jsonTeam = response.getJSONObject(JsonConstants.JSON_RESULT);
+                    team.setId(jsonTeam.getString(JsonConstants.JSON_TEAM_ID));
+                    team.setName(jsonTeam.getString(JsonConstants.JSON_TEAM_NAME));
+                    team.setDescription(jsonTeam.getString(JsonConstants.JSON_TEAM_DESCRIPTION));
+                    team.setActive(jsonTeam.getBoolean(JsonConstants.JSON_TEAM_ACTIVE));
+                    if (!jsonTeam.getString(JsonConstants.JSON_TEAM_MEMBERLIST).equals("null")) {
+                        JSONArray memberList = jsonTeam.getJSONArray(JsonConstants.JSON_TEAM_MEMBERLIST);
                         ArrayList<User> members = new ArrayList<User>();
                         for (int i = 0; i < memberList.length(); i++) {
                             JSONObject member = memberList.getJSONObject(i);
-                            String memberId = member.getString(JsonConstants.JSON_TEAM_MEMBER_ID);
+                            Log.d(TAG, "member = " + member.toString());
+                            JSONObject userObject = member.getJSONObject(JsonConstants.JSON_TEAM_MEMBER);
+                            Log.d(TAG, "userObject = " + userObject.toString());
                             User user = new User();
-                            user.setId(memberId);
+                            user.setId(userObject.getString(JsonConstants.JSON_USER_ID));
+                            user.setFirstName(userObject.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                            user.setLastName(userObject.getString(JsonConstants.JSON_USER_LAST_NAME));
+                            user.setTitle(userObject.getString(JsonConstants.JSON_USER_TITLE));
+                            user.setEmail(userObject.getString(JsonConstants.JSON_USER_EMAIL));
+                            user.setDescription(userObject.getString(JsonConstants.JSON_USER_DESCRIPTION));
+
+
                             members.add(user);
                         }
 
@@ -232,10 +270,31 @@ public class ApiCaller {
 
             }
 
-        });
+        }) {
+                @Override
+                public Map<String, String> getParams() throws AuthFailureError{
+                    try {
+                        Map<String, String> params = super.getParams();
+
+                        String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                        params.put("Cookie", "JSESSIONID=" + cookie);
+
+                        Log.d(TAG, " the headers!: " + params.toString());
+
+                        return params;
+                    } catch (AuthFailureError e) {
+                        Log.e(TAG, "error getting headers");
+                        e.printStackTrace();
+                        return null;
+                    }
+
+                }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
+
+
         AppController.getInstance().addToRequestQueue(req);
     }
 

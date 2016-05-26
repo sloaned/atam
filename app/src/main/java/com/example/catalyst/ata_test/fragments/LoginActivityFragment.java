@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +23,17 @@ import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.util.NetworkConstants;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class LoginActivityFragment extends Fragment {
+
+    private final String TAG = LoginActivityFragment.class.getSimpleName();
 
     private CookieManager cookieManager;
     private SharedPreferences prefs;
@@ -72,7 +81,7 @@ public class LoginActivityFragment extends Fragment {
                 boolean override = checkUrlForLocalHost(urlConnection);
                 //Replaces any local host address with the correct network address
 
-                if(override){
+                if (override) {
                     view.loadUrl(urlConnection);
                 }
 
@@ -85,7 +94,7 @@ public class LoginActivityFragment extends Fragment {
 
 
                 //If the user sucessfully logs in, then they get redirected to the app dashboard
-                if(loginSuccessful(url)) {
+                if (loginSuccessful(url)) {
 
                     //Setting the view to invisible for a nicer user experince.
                     view.setVisibility(View.GONE);
@@ -104,7 +113,12 @@ public class LoginActivityFragment extends Fragment {
                 }
             }
         });
-        loginView.loadUrl(NetworkConstants.OAUTH_LOGIN);
+        loginView.loadUrl(NetworkConstants.ATA_LOGIN);
+
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
 
         return content;
     }
@@ -125,12 +139,34 @@ public class LoginActivityFragment extends Fragment {
 
         if (url.contains(NetworkConstants.OAUTH_SUCCESS) && !(url.contains(NetworkConstants.OAUTH_LOGIN))) {
 
+
+            try {
+
+                URL obj = new URL(url);
+                URLConnection conn = obj.openConnection();
+                Map<String, List<String>> map = conn.getHeaderFields();
+
+                System.out.println("Printing Response Header...\n");
+
+                for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+                    System.out.println("Key : " + entry.getKey()
+                            + " ,Value : " + entry.getValue());
+                }
+
+
+                System.out.println("\n Done");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             //Grabbing the cookie to get the jessionid
             String cookies = cookieManager.getCookie(url);
 
             if (cookies != null) {
                 cookies = editCookieString(cookies);
             }
+            Log.d(TAG, "cookie = " + cookies);
 
             mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
             return true;

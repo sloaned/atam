@@ -104,6 +104,7 @@ public class DashboardFragment extends Fragment {
     /* open team page when a team is clicked on */
     @Subscribe
     public void viewTeam(ViewTeamEvent event) {
+        Log.d(TAG, event.getTeam().toString());
         Intent intent = new Intent(getActivity(), TeamActivity.class)
                 .putExtra("Team", event.getTeam());
         startActivity(intent);

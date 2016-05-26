@@ -59,12 +59,15 @@ public class TeamFragment extends Fragment {
 
             memberList = team.getUserList();
 
-            ApiCaller caller = new ApiCaller(getActivity());
+            adapter = new TeamMemberAdapter(getActivity(), memberList);
+            teamMemberListView.setAdapter(adapter);
+
+           // ApiCaller caller = new ApiCaller(getActivity());
 
             /*
                 network call to get team member names from their user ids
              */
-            caller.getTeamMembers(team);
+          //  caller.getTeamMembers(team);
 
         }
 

@@ -18,13 +18,14 @@ public class JsonConstants {
     public static final String JSON_USER_DESCRIPTION = "profileDescription";
 
     public static final String JSON_TEAMS = "teams";
+    public static final String JSON_RESULT = "result";
 
     public static final String JSON_TEAM_ID = "id";
     public static final String JSON_TEAM_NAME = "name";
     public static final String JSON_TEAM_DESCRIPTION = "description";
-    public static final String JSON_TEAM_ACTIVE = "active";
+    public static final String JSON_TEAM_ACTIVE = "isActive";
     public static final String JSON_TEAM_MEMBERLIST = "memberList";
-    public static final String JSON_TEAM_MEMBER_ID = "userId";
+    public static final String JSON_TEAM_MEMBER = "user";
 
     public static final String JSON_KUDOS = "kudoes";
     public static final String JSON_KUDOS_REVIEWER_ID = "reviewerId";

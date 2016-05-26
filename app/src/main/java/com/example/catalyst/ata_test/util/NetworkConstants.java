@@ -17,6 +17,8 @@ public class NetworkConstants {
     public static final String ATA_BASE =  DEV_NETWORK_ADDRESS + ":8090";
     public static final String ATA_LOGIN =  ATA_BASE + "/login";
 
-    public static final String OAUTH_LOGIN = DEV_NETWORK_ADDRESS + ":9999" + "/uaa/login";
-    public static final String OAUTH_SUCCESS = DEV_NETWORK_ADDRESS + ":9999" + "/uaa/";
+
+    public static final String OAUTH_LOGIN = "http://172.17.30.21:9999" + "/uaa/login";
+    //public static final String OAUTH_SUCCESS = DEV_NETWORK_ADDRESS + ":9999" + "/uaa/";
+    public static final String OAUTH_SUCCESS = "http://172.17.30.21:9999" + "/uaa/";
 }
