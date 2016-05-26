@@ -19,6 +19,5 @@ public class NetworkConstants {
 
 
     public static final String OAUTH_LOGIN = "http://172.17.30.21:9999" + "/uaa/login";
-    //public static final String OAUTH_SUCCESS = DEV_NETWORK_ADDRESS + ":9999" + "/uaa/";
     public static final String OAUTH_SUCCESS = "http://172.17.30.21:9999" + "/uaa/";
 }

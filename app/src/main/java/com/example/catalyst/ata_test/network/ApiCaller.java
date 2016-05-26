@@ -157,6 +157,43 @@ public class ApiCaller {
         AppController.getInstance().addToRequestQueue(req);
     }
 
+
+    /* generic getUserById function */
+    public void getUserById(String id) {
+        String url = DATA_URL + "users/" + id + "/";
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                User user = new User();
+                ArrayList<User> teamMembers = new ArrayList<User>();
+                try {
+                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
+                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
+                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
+                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
+                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
+
+                    teamMembers.add(user);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+
+        // avoid data caching on the device, which can cause 500 errors
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
     /* currently gets all teams in database. Should be changed to only retrieve teams that a given user is on */
     public void getAllTeams() {
 
@@ -298,101 +335,6 @@ public class ApiCaller {
         AppController.getInstance().addToRequestQueue(req);
     }
 
-    /*
-        get team member info on all members of a team
-     */
-    public void getTeamMembers(Team team) {
-        teamMembers.clear();
-        for (int i = 0; i < team.getUserList().size(); i++) {
-            User user = team.getUserList().get(i);
-            getTeamMemberById(i, team.getUserList().size(), user.getId());
-        }
-    }
-
-    /*
-        @params: int counter - iterator of team member in team's list of team members
-                 int size - total number of team member's on the team
-                 String id - user id of team member[counter]
-        copy of getUserById method, but this one will call the updateTeamMember event on the team page when it finishes
-     */
-    public void getTeamMemberById(final int counter, final int size, String id) {
-        String url = DATA_URL + "users/" + id + "/";
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-                User user = new User();
-                try {
-                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
-                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
-                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
-                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
-                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
-                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
-
-                    teamMembers.add(user);
-
-                    /*
-                        if this was the final team member in the list, activate callback function
-                        to update list view
-                     */
-                    if (counter == size-1) {
-                        EventBus.getDefault().post(new UpdateTeamMembersEvent(teamMembers));
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        });
-
-        // avoid data caching on the device, which can cause 500 errors
-        req.setShouldCache(false);
-        AppController.getInstance().addToRequestQueue(req);
-    }
-
-
-    /* generic getUserById function */
-    public void getUserById(String id) {
-        String url = DATA_URL + "users/" + id + "/";
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-                User user = new User();
-                ArrayList<User> teamMembers = new ArrayList<User>();
-                try {
-                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
-                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
-                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
-                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
-                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
-                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
-
-                    teamMembers.add(user);
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        });
-
-        // avoid data caching on the device, which can cause 500 errors
-        req.setShouldCache(false);
-        AppController.getInstance().addToRequestQueue(req);
-    }
 
     /*
         @param: String reviewedId - the id of the user who was given the kudos

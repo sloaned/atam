@@ -116,9 +116,7 @@ public class LoginActivityFragment extends Fragment {
         loginView.loadUrl(NetworkConstants.ATA_LOGIN);
 
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
-        StrictMode.setThreadPolicy(policy);
 
         return content;
     }
@@ -138,27 +136,6 @@ public class LoginActivityFragment extends Fragment {
     public boolean loginSuccessful(String url) {
 
         if (url.contains(NetworkConstants.OAUTH_SUCCESS) && !(url.contains(NetworkConstants.OAUTH_LOGIN))) {
-
-
-            try {
-
-                URL obj = new URL(url);
-                URLConnection conn = obj.openConnection();
-                Map<String, List<String>> map = conn.getHeaderFields();
-
-                System.out.println("Printing Response Header...\n");
-
-                for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-                    System.out.println("Key : " + entry.getKey()
-                            + " ,Value : " + entry.getValue());
-                }
-
-
-                System.out.println("\n Done");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             //Grabbing the cookie to get the jessionid
             String cookies = cookieManager.getCookie(url);
