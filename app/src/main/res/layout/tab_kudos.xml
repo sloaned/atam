@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
 
     <RelativeLayout
                     android:layout_width="match_parent"
@@ -14,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="22sp"
             android:id="@+id/reviewer_name"
             android:text="Dan Sloane"/>
         <TextView
@@ -23,14 +25,14 @@
             android:id="@+id/kudo_date"
             android:layout_below="@+id/reviewer_name"
             android:text="05/13/2016"
-            android:textSize="14sp"/>
+            android:textSize="18sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/kudo_content"
             android:layout_below="@+id/kudo_date"
             android:text="Wow what a great coworker I love them"
-            android:textSize="16sp"/>
+            android:textSize="20sp"/>
 
     </RelativeLayout>
 

@@ -109,10 +109,5 @@ public class DashboardFragment extends Fragment {
                 .putExtra("Team", event.getTeam());
         startActivity(intent);
     }
-    /*
-    @Subscribe
-    public void getTeamMembers(Team team) {
-        caller.getTeamMembers(team);
-    }  */
 
 }

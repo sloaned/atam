@@ -3,7 +3,6 @@ package com.example.catalyst.ata_test.fragments;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,11 @@ import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.TeamMemberAdapter;
-import com.example.catalyst.ata_test.events.UpdateTeamMembersEvent;
 import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
-import com.example.catalyst.ata_test.network.ApiCaller;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -62,13 +58,6 @@ public class TeamFragment extends Fragment {
             adapter = new TeamMemberAdapter(getActivity(), memberList);
             teamMemberListView.setAdapter(adapter);
 
-           // ApiCaller caller = new ApiCaller(getActivity());
-
-            /*
-                network call to get team member names from their user ids
-             */
-          //  caller.getTeamMembers(team);
-
         }
 
         return teamView;
@@ -84,16 +73,6 @@ public class TeamFragment extends Fragment {
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
-    }
-
-    /*
-        callback function from network call to update view with list of team member names
-     */
-    @Subscribe
-    public void updateTeamMembers(UpdateTeamMembersEvent event) {
-        memberList = event.getMemberList();
-        adapter = new TeamMemberAdapter(getActivity(), memberList);
-        teamMemberListView.setAdapter(adapter);
     }
 
 }
