@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
-
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
@@ -22,11 +20,6 @@ import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.util.NetworkConstants;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
-
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -60,8 +53,6 @@ public class LoginActivityFragment extends Fragment {
         logoContainer = (LinearLayout) content.findViewById(R.id.atalogo);
         spinner = (ProgressBar) content.findViewById(R.id.progressBar);
         loginView = (WebView) content.findViewById(R.id.loginView);
-
-        System.out.println("Login Fragment started...");
 
         //Allows the cookie to be saved
         loginView.getSettings().setDomStorageEnabled(true);
@@ -113,7 +104,7 @@ public class LoginActivityFragment extends Fragment {
                 }
             }
         });
-        loginView.loadUrl(NetworkConstants.ATA_LOGIN);
+        loginView.loadUrl(NetworkConstants.ATAM_LOGIN);
 
 
 
@@ -121,6 +112,7 @@ public class LoginActivityFragment extends Fragment {
         return content;
     }
 
+    //TODO: Remove this method when the server gets deployed.
     public boolean checkUrlForLocalHost(String url) {
         //this if/else statement is need because the servers are on local host.
         //If servers are remote, this if else statement should be removed, and
@@ -135,26 +127,21 @@ public class LoginActivityFragment extends Fragment {
 
     public boolean loginSuccessful(String url) {
 
+        //TODO: Remove this line of debug code when app hits version 1.0
         Log.d(TAG, "loginSuccessful, url = " + url);
 
-        if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.OAUTH_LOGIN)) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
+        if (url.contains(NetworkConstants.ATAM_BASE) && !(url.contains(NetworkConstants.OAUTH_LOGIN)) && !(url.contains(NetworkConstants.ATAM_LOGIN))) {
 
             //Grabbing the cookie to get the jessionid
             String cookies = cookieManager.getCookie(url);
 
-            if (cookies != null) {
-                cookies = editCookieString(cookies);
-            }
+            //TODO: Remove this line of debug code when app hits version 1.0
             Log.d(TAG, "cookie = " + cookies);
 
             mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
             return true;
         }
         return false;
-    }
-
-    public String editCookieString(String cookies) {
-        return cookies.replace("JSESSIONID=", "");
     }
 
     //Getters and setter for testing.

@@ -1,38 +1,27 @@
 package com.example.catalyst.ata_test.network;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.webkit.CookieManager;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.catalyst.ata_test.AppController;
 import com.example.catalyst.ata_test.activities.LoginActivity;
-import com.example.catalyst.ata_test.activities.SearchActivity;
 import com.example.catalyst.ata_test.events.GetKudosInfoEvent;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.events.TeamsEvent;
 import com.example.catalyst.ata_test.events.UpdateKudosEvent;
-import com.example.catalyst.ata_test.events.UpdateTeamMembersEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
-import com.example.catalyst.ata_test.fragments.DashboardFragment;
 import com.example.catalyst.ata_test.models.Kudo;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
@@ -57,8 +46,8 @@ public class ApiCaller {
 
     public static final String TAG = ApiCaller.class.getSimpleName();
 
-    private static final String DATA_URL = "http://pc30120.catalystsolves.com:8090/";   // change to your own computer name
-    private static final String API_URL = NetworkConstants.ATA_BASE;
+    private static final String DATA_URL = NetworkConstants.ATAM_BASE + "/";   // change to your own computer name
+    private static final String API_URL = NetworkConstants.ATAM_BASE;
 
     private ArrayList<User> teamMembers = new ArrayList<User>();
     private ArrayList<Kudo> kudos = new ArrayList<Kudo>();
@@ -80,18 +69,23 @@ public class ApiCaller {
         //TODO: Oauth and ATA don't have logout funcionality. This code will need to be updated once
         //they update their code to allow a legitimate logout.
 
-        //To facilitate loging out, the session ID with ATA is being destroyed client side.
+        //To facilitate loging out, the session ID with ATAM is being destroyed client side.
         //This effectively logs the user out.
 
 
         String url = API_URL + "/logout";
+
         StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
 
                 CookieManager.getInstance().removeAllCookie();
+
+                //TODO: Remove this line of debug code when app hits version 1.0
                 System.out.println("Logout was successful!");
+
+                prefs.edit().putString(SharedPreferencesConstants.JESESSIONID, ".").apply();
 
                 Intent intent = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent);
@@ -102,7 +96,11 @@ public class ApiCaller {
             @Override
             public void onErrorResponse(VolleyError error) {
                 CookieManager.getInstance().removeAllCookie();
+
+                //TODO: Remove this line of debug code when app hits version 1.0
                 System.out.println("Error occured with Volley, logging user out anyways.");
+
+                prefs.edit().putString(SharedPreferencesConstants.JESESSIONID, ".").apply();
 
                 Intent intent = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent);
@@ -123,10 +121,12 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 ArrayList<User> users = new ArrayList<User>();
                 try {
-                  //  JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    //  JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
                     JSONArray userList = response.getJSONArray(JsonConstants.JSON_RESULT);
 
+                    //TODO: Remove this line of debug code when app hits version 1.0
                     Log.d(TAG, "userList length = " + userList.length());
+
                     for (int i = 0; i < userList.length(); i++) {
                         JSONObject jsonUser = userList.getJSONObject(i);
                         User user = new User();
@@ -168,7 +168,9 @@ public class ApiCaller {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
                 Log.d(TAG, response.toString());
+
                 User user = new User();
                 ArrayList<User> teamMembers = new ArrayList<User>();
                 try {
@@ -209,7 +211,7 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 ArrayList<Team> teams = new ArrayList<Team>();
                 try {
-                   // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
                     JSONArray teamsList = response.getJSONArray(JsonConstants.JSON_RESULT);
 
                     for (int i = 0; i < teamsList.length(); i++) {
@@ -236,12 +238,14 @@ public class ApiCaller {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
                 String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                //TODO: Remove this debug line of code
                 Log.d(TAG, "cookie = " + cookie);
-               // headers.put("X-AUTH-TOKEN", cookie);
-                headers.put("JSESSIONID", "9D0768F1D937C22431B5ECB2A251DEB8");
-               // headers.put("Cookie", cookie);
-               // headers.put("SPRING_SECURITY_REMEMBER_ME_COOKIE", cookie);
-                //headers.put("Set-Cookie", "JSESSIONID=" + cookie);
+
+                //This attaches the Cookie jessionid to the header
+                headers.put("Cookie", cookie);
+
+                //TODO: Remove this debug code
                 Log.d(TAG, " the headers!: " + headers.toString());
 
                 return headers;
@@ -260,7 +264,9 @@ public class ApiCaller {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
                 Log.d(TAG, response.toString());
+
                 Team team = new Team();
                 try {
                     JSONObject jsonTeam = response.getJSONObject(JsonConstants.JSON_RESULT);
@@ -273,9 +279,15 @@ public class ApiCaller {
                         ArrayList<User> members = new ArrayList<User>();
                         for (int i = 0; i < memberList.length(); i++) {
                             JSONObject member = memberList.getJSONObject(i);
+
+                            //TODO: Remove this line of debug code when app hits version 1.0
                             Log.d(TAG, "member = " + member.toString());
+
                             JSONObject userObject = member.getJSONObject(JsonConstants.JSON_TEAM_MEMBER);
+
+                            //TODO: Remove this line of debug code when app hits version 1.0
                             Log.d(TAG, "userObject = " + userObject.toString());
+
                             User user = new User();
                             user.setId(userObject.getString(JsonConstants.JSON_USER_ID));
                             user.setFirstName(userObject.getString(JsonConstants.JSON_USER_FIRST_NAME));
@@ -304,7 +316,7 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse != null) {
-                    Log.e("Volley", "Error. HTTP Status Code:"+networkResponse.statusCode);
+                    Log.e("Volley", "Error. HTTP Status Code:" + networkResponse.statusCode);
                     Log.e("Volley", "" + networkResponse.data);
                 }
 
@@ -352,12 +364,17 @@ public class ApiCaller {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
                 Log.d(TAG, response.toString());
+
                 kudos.clear();
                 try {
-                   // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
                     JSONArray kudosArray = response.getJSONArray(JsonConstants.JSON_RESULT);
+
+                    //TODO: Remove this line of debug code when app hits version 1.0
                     Log.d(TAG, "kudosArray length = " + kudosArray.length());
+
                     for (int i = 0; i < kudosArray.length(); i++) {
                         JSONObject jsonKudo = kudosArray.getJSONObject(i);
                         Kudo kudo = new Kudo();
@@ -380,8 +397,12 @@ public class ApiCaller {
                         reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
                         kudo.setReviewed(reviewed);
 
+                        //TODO: Remove this line of debug code when app hits version 1.0
                         Log.d(TAG, "user's id = " + reviewedId + ", reviewed id = " + reviewed.getId());
+
+                        //TODO: Remove this line of debug code when app hits version 1.0
                         Log.d(TAG, "Match?  " + (reviewedId.equals(reviewed.getId())));
+
                         if (reviewedId.equals(reviewed.getId())) {
                             Log.d(TAG, "match!!!!!!!");
                             kudos.add(kudo);
@@ -391,7 +412,7 @@ public class ApiCaller {
                     EventBus.getDefault().post(new UpdateKudosEvent(kudos));
 
 
-                } catch(JSONException e) {
+                } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
             }
@@ -414,7 +435,10 @@ public class ApiCaller {
      */
     public void getKudosReviewers(ArrayList<Kudo> kudosList) {
         kudos = kudosList;
+
+        //TODO: Remove this line of debug code when app hits version 1.0
         Log.d(TAG, "in getKudosReviewers, kudos size = " + kudos.size());
+
         for (int i = 0; i < kudos.size(); i++) {
             getKudosReviewerInfo(i, kudos.size(), kudos.get(i));
         }
@@ -428,8 +452,10 @@ public class ApiCaller {
         retrieved the information for all of a user's kudos (calculated by comparing the total
         size to the current counter)
      */
-    public void getKudosReviewerInfo (final int counter, final int size, final Kudo kudo) {
+    public void getKudosReviewerInfo(final int counter, final int size, final Kudo kudo) {
         String url = DATA_URL + "users/" + kudo.getReviewer().getId();
+
+        //TODO: Remove this line of debug code when app hits version 1.0
         Log.d(TAG, "in getKudosReviewerInfo, url = " + url);
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -454,7 +480,7 @@ public class ApiCaller {
                     /* if this was the final kudo in the list, activate the callback
                         function to update the view in the kudos tab
                      */
-                    if (counter == size-1) {
+                    if (counter == size - 1) {
                         EventBus.getDefault().post(new GetKudosInfoEvent(kudos));
                     }
                 } catch (JSONException e) {

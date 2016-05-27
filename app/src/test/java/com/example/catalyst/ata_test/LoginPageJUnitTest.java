@@ -19,8 +19,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class LoginPageJUnitTest {
 
-    private static final String BASE_URL = NetworkConstants.ATA_BASE;
-    private static final String LOGIN_URL = NetworkConstants.ATA_LOGIN;
+    private static final String BASE_URL = NetworkConstants.ATAM_BASE;
+    private static final String LOGIN_URL = NetworkConstants.ATAM_LOGIN;
 
     private CookieManager cm;;
     private LoginActivityFragment loginFragment;
@@ -69,15 +69,4 @@ public class LoginPageJUnitTest {
         Mockito.when(pEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(pEditor);
         Assert.assertFalse(loginFragment.loginSuccessful(LOGIN_URL));
     }
-
-    @Test
-    public void editCookieString(){
-        String uneditedCookie = "JSESSIONID=ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String editedCookie = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        Assert.assertEquals(loginFragment.editCookieString(uneditedCookie), editedCookie);
-    }
-
-
-
 }
