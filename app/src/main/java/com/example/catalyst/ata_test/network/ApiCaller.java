@@ -4,9 +4,11 @@ package com.example.catalyst.ata_test.network;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.CookieManager;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -26,6 +28,7 @@ import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
 import com.example.catalyst.ata_test.util.NetworkConstants;
+import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -33,6 +36,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -56,8 +61,8 @@ public class ApiCaller {
     public ApiCaller(Context context) {
         mContext = context;
 
-        //prefs = mContext.getSharedPreferences("", Context.MODE_PRIVATE);
-        //mEditor = prefs.edit();
+        prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mEditor = prefs.edit();
     }
 
     public void logout() {
@@ -93,7 +98,18 @@ public class ApiCaller {
                 mContext.startActivity(intent);
 
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
         AppController.getInstance().addToRequestQueue(logoutRequest);
     }
 
@@ -138,7 +154,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -175,7 +202,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -214,21 +252,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });/* {
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
                 String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
-                Log.d(TAG, "cookie = " + cookie);
 
-                headers.put("JSESSIONID", cookie);
-
-                Log.d(TAG, " the headers!: " + headers.toString());
+                headers.put("Cookie:", cookie);
 
                 return headers;
             }
-        }; */
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -268,7 +303,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -332,27 +378,18 @@ public class ApiCaller {
 
             }
 
-        }); /* {
-                @Override
-                public Map<String, String> getParams() throws AuthFailureError{
-                    try {
-                        Map<String, String> params = super.getParams();
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
 
-                        String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
-                        params.put("Cookie", "JSESSIONID=" + cookie);
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
 
-                        Log.d(TAG, " the headers!: " + params.toString());
+                headers.put("Cookie:", cookie);
 
-                        return params;
-                    } catch (AuthFailureError e) {
-                        Log.e(TAG, "error getting headers");
-                        e.printStackTrace();
-                        return null;
-                    }
-
-                }
-        }; */
-
+                return headers;
+            }
+        };
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
 
@@ -402,13 +439,6 @@ public class ApiCaller {
                         reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
                         kudo.setReviewed(reviewed);
                         kudos.add(kudo);
-                        /*
-                        Log.d(TAG, "user's id = " + reviewedId + ", reviewed id = " + reviewed.getId());
-                        Log.d(TAG, "Match?  " + (reviewedId.equals(reviewed.getId())));
-                        if (reviewedId.equals(reviewed.getId())) {
-                            Log.d(TAG, "match!!!!!!!");
-                            kudos.add(kudo);
-                        } */
                     }
 
                     EventBus.getDefault().post(new UpdateKudosEvent(kudos));
@@ -423,7 +453,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);

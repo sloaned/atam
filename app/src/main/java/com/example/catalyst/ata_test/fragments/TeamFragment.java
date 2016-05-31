@@ -62,7 +62,7 @@ public class TeamFragment extends Fragment {
 
         return teamView;
     }
-
+/*
     @Override
     public void onResume() {
         super.onResume();
@@ -74,5 +74,5 @@ public class TeamFragment extends Fragment {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
-
+*/
 }
