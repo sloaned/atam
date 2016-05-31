@@ -134,10 +134,7 @@ public class LoginActivityFragment extends Fragment {
 
             //Grabbing the cookie to get the jessionid
             String cookies = cookieManager.getCookie(url);
-
-            //TODO: Remove this line of debug code when app hits version 1.0
             Log.d(TAG, "cookie = " + cookies);
-
             mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
             return true;
         }

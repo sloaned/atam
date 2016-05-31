@@ -3,6 +3,7 @@ package com.example.catalyst.ata_test.network;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.CookieManager;
 
@@ -59,8 +60,8 @@ public class ApiCaller {
     public ApiCaller(Context context) {
         mContext = context;
 
-        //prefs = mContext.getSharedPreferences("", Context.MODE_PRIVATE);
-        //mEditor = prefs.edit();
+        prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mEditor = prefs.edit();
     }
 
     public void logout() {
@@ -105,7 +106,18 @@ public class ApiCaller {
                 mContext.startActivity(intent);
 
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
         AppController.getInstance().addToRequestQueue(logoutRequest);
     }
 
@@ -152,7 +164,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -191,7 +214,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -234,21 +268,8 @@ public class ApiCaller {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-
                 String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
-
-                //TODO: Remove this debug line of code
-                Log.d(TAG, "cookie = " + cookie);
-
-                //This attaches the Cookie jessionid to the header
-                headers.put("Cookie", cookie);
-
-                //TODO: Remove this debug code
-                headers.put("JSESSIONID", cookie);
-
-		//TODO: Remove this debug code
-                Log.d(TAG, " the headers!: " + headers.toString());
-
+                headers.put("Cookie:", cookie);
                 return headers;
             }
         };
@@ -291,7 +312,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -363,27 +395,18 @@ public class ApiCaller {
 
             }
 
-        }); /* {
-                @Override
-                public Map<String, String> getParams() throws AuthFailureError{
-                    try {
-                        Map<String, String> params = super.getParams();
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
 
-                        String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
-                        params.put("Cookie", "JSESSIONID=" + cookie);
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
 
-                        Log.d(TAG, " the headers!: " + params.toString());
+                headers.put("Cookie:", cookie);
 
-                        return params;
-                    } catch (AuthFailureError e) {
-                        Log.e(TAG, "error getting headers");
-                        e.printStackTrace();
-                        return null;
-                    }
-
-                }
-        }; */
-
+                return headers;
+            }
+        };
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
 
@@ -462,7 +485,18 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);

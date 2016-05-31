@@ -47,7 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     private SearchResultAdapter adapter;
-    final ApiCaller caller = new ApiCaller(this);
+   // private ApiCaller caller;
 
     @Bind(android.R.id.list)ListView listView;
     @Bind(R.id.action_logo) ImageView logo;
@@ -61,6 +61,8 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+      //  caller = new ApiCaller(this);
 
         final Intent intent = getIntent();
 
@@ -93,6 +95,7 @@ public class SearchActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                ApiCaller caller = new ApiCaller(getApplicationContext());
                 caller.getAllUsers();
             }
         };
