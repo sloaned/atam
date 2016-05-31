@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.KudosAdapter;
-import com.example.catalyst.ata_test.events.GetKudosInfoEvent;
 import com.example.catalyst.ata_test.events.UpdateKudosEvent;
 import com.example.catalyst.ata_test.models.Kudo;
 import com.example.catalyst.ata_test.models.User;
@@ -87,8 +86,7 @@ public class KudosTabFragment extends Fragment {
     }
 
     /*
-        callback function from first network call. Calls another network call to convert reviewers' user ids
-        into actual user objects, so that their names can be displayed
+        callback function from network call.
      */
     @Subscribe
     public void updateKudos(UpdateKudosEvent event) {
@@ -97,18 +95,6 @@ public class KudosTabFragment extends Fragment {
             RelativeLayout fakeKudo = (RelativeLayout) kudoView.findViewById(R.id.fake_kudo);
             fakeKudo.setVisibility(View.GONE);
         }
-        adapter = new KudosAdapter(getActivity(), kudosList);
-        listView.setAdapter(adapter);
-       // caller.getKudosReviewers(kudosList);
-    }
-
-    /*
-        callback function from second network call. Updates kudos list with reviewer names
-     */
-    @Subscribe
-    public void getReviewerInfoEvent(GetKudosInfoEvent event) {
-        Log.d(TAG, "in getReviewerInfoEvent!!!!!!!!!!!!");
-        kudosList = event.getKudos();
         adapter = new KudosAdapter(getActivity(), kudosList);
         listView.setAdapter(adapter);
     }

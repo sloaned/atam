@@ -30,12 +30,13 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                KudosTabFragment fragment = KudosTabFragment.newInstance(mUser);
-                return fragment;
+                KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mUser);
+                return kudosFragment;
             case 1:
                 return new ReviewsTabFragment();
             case 2:
-                return new TeamsTabFragment();
+                TeamsTabFragment teamsFragment = TeamsTabFragment.newInstance(mUser);
+                return teamsFragment;
             default:
                 return null;
         }

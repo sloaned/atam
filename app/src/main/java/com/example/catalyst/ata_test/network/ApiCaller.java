@@ -3,7 +3,6 @@ package com.example.catalyst.ata_test.network;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.CookieManager;
 
@@ -17,10 +16,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.catalyst.ata_test.AppController;
 import com.example.catalyst.ata_test.activities.LoginActivity;
-import com.example.catalyst.ata_test.events.GetKudosInfoEvent;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.events.TeamsEvent;
 import com.example.catalyst.ata_test.events.UpdateKudosEvent;
+import com.example.catalyst.ata_test.events.UpdateTeamsEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.models.Kudo;
 import com.example.catalyst.ata_test.models.Team;
@@ -60,8 +59,8 @@ public class ApiCaller {
     public ApiCaller(Context context) {
         mContext = context;
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        mEditor = prefs.edit();
+        //prefs = mContext.getSharedPreferences("", Context.MODE_PRIVATE);
+        //mEditor = prefs.edit();
     }
 
     public void logout() {
@@ -202,8 +201,7 @@ public class ApiCaller {
     /* currently gets all teams in database. Should be changed to only retrieve teams that a given user is on */
     public void getAllTeams() {
 
-        // should be updated to reflect approx. number of teams
-        String url = DATA_URL + "teams?size=3000000";
+        String url = DATA_URL + "teams";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -246,11 +244,54 @@ public class ApiCaller {
                 headers.put("Cookie", cookie);
 
                 //TODO: Remove this debug code
+                headers.put("JSESSIONID", cookie);
+
+		//TODO: Remove this debug code
                 Log.d(TAG, " the headers!: " + headers.toString());
 
                 return headers;
             }
         };
+
+        // avoid data caching on the device, which can cause 500 errors
+        req.setShouldCache(false);
+
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    public void getTeamsByUser(String id) {
+        String url = DATA_URL + "teams/user/" + id;
+
+        Log.d(TAG, "in getTeamsByUser, url = " + url);
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                ArrayList<Team> teams = new ArrayList<Team>();
+                try {
+                    JSONArray teamsList = response.getJSONArray(JsonConstants.JSON_RESULT);
+
+                    for (int i = 0; i < teamsList.length(); i++) {
+                        JSONObject jsonTeam = teamsList.getJSONObject(i);
+                        Team team = new Team();
+                        team.setName(jsonTeam.getString(JsonConstants.JSON_TEAM_NAME));
+                        team.setDescription(jsonTeam.getString(JsonConstants.JSON_TEAM_DESCRIPTION));
+                        team.setId(jsonTeam.getString(JsonConstants.JSON_TEAM_ID));
+                        teams.add(team);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+                EventBus.getDefault().post(new UpdateTeamsEvent(teams));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
 
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
@@ -359,7 +400,7 @@ public class ApiCaller {
      */
     public void getKudos(final String reviewedId) {
         /* size should be updated */
-        String url = DATA_URL + "kudos?size=3000000";
+        String url = DATA_URL + "kudos/user/" + reviewedId;
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -397,7 +438,7 @@ public class ApiCaller {
                         reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
                         kudo.setReviewed(reviewed);
 
-                        //TODO: Remove this line of debug code when app hits version 1.0
+                        kudos.add(kudo);
                         Log.d(TAG, "user's id = " + reviewedId + ", reviewed id = " + reviewed.getId());
 
                         //TODO: Remove this line of debug code when app hits version 1.0
@@ -481,7 +522,7 @@ public class ApiCaller {
                         function to update the view in the kudos tab
                      */
                     if (counter == size - 1) {
-                        EventBus.getDefault().post(new GetKudosInfoEvent(kudos));
+                        //EventBus.getDefault().post(new GetKudosInfoEvent(kudos));
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
