@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment {
             user = (User) intent.getSerializableExtra("User");
             username.setText(user.getFirstName() + " " + user.getLastName());
             userTitle.setText(user.getTitle());
-            if (user.getDescription() != null) {
+            if (!user.getDescription().equals("null")) {
                 userBio.setText(user.getDescription());
             }
 

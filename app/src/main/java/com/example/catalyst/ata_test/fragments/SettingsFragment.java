@@ -52,8 +52,7 @@ public class SettingsFragment extends DialogFragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditor.putString(SharedPreferencesConstants.PREFS_USER, null).apply();
-                mEditor.putString(SharedPreferencesConstants.JESESSIONID, null).apply();
+                //mEditor.putString(SharedPreferencesConstants.JSESSIONID, null).apply();
 
                 new ApiCaller(getActivity()).logout();
 

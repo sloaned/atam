@@ -20,8 +20,13 @@ import android.widget.ProgressBar;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.DashboardActivity;
+import com.example.catalyst.ata_test.events.GetCurrentUserEvent;
+import com.example.catalyst.ata_test.network.ApiCaller;
 import com.example.catalyst.ata_test.util.NetworkConstants;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -40,6 +45,8 @@ public class LoginActivityFragment extends Fragment {
     private SharedPreferences.Editor mEditor;
     private String urlConnection;
 
+    ApiCaller caller;
+
     LinearLayout logoContainer;
     ProgressBar spinner;
     WebView loginView;
@@ -55,6 +62,8 @@ public class LoginActivityFragment extends Fragment {
         //initialize shared preferences to save the session id.
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = prefs.edit();
+
+        caller = new ApiCaller(getActivity());
 
         //initialize the views
         logoContainer = (LinearLayout) content.findViewById(R.id.atalogo);
@@ -108,8 +117,7 @@ public class LoginActivityFragment extends Fragment {
                     spinner.setVisibility(View.VISIBLE);
                     spinner.bringToFront();
 
-                    Intent homePage = new Intent(getActivity(), DashboardActivity.class);
-                    startActivity(homePage);
+                    caller.getCurrentUser();
                 }
             }
         });
@@ -139,23 +147,30 @@ public class LoginActivityFragment extends Fragment {
 
         if (url.contains(NetworkConstants.ATA_BASE) && !(url.contains(NetworkConstants.OAUTH_LOGIN)) && !(url.contains(NetworkConstants.ATA_LOGIN))) {
 
-            //Grabbing the cookie to get the jessionid
+            //Grabbing the cookie to get the jsessionid
             String cookies = cookieManager.getCookie(url);
-            /*
-            if (cookies != null) {
-                cookies = editCookieString(cookies);
-            } */
+
             Log.d(TAG, "cookie = " + cookies);
 
-            mEditor.putString(SharedPreferencesConstants.JESESSIONID, cookies).apply();
+            mEditor.putString(SharedPreferencesConstants.JSESSIONID, cookies).apply();
+
             return true;
         }
         return false;
     }
 
+    @Subscribe
+    public void getCurrentUserSuccess(GetCurrentUserEvent event) {
+
+        Log.d(TAG, "in getCurrentUserSuccess!!!!");
+
+        Intent homePage = new Intent(getActivity(), DashboardActivity.class);
+        startActivity(homePage);
+    }
+    /*
     public String editCookieString(String cookies) {
         return cookies.replace("JSESSIONID=", "");
-    }
+    } */
 
     //Getters and setter for testing.
     public void setCookieManager(CookieManager cookieManager) {
@@ -172,5 +187,17 @@ public class LoginActivityFragment extends Fragment {
 
     public void setmEditor(SharedPreferences.Editor mEditor) {
         this.mEditor = mEditor;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
     }
 }

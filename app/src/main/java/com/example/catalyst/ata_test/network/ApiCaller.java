@@ -18,7 +18,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.catalyst.ata_test.AppController;
 import com.example.catalyst.ata_test.activities.LoginActivity;
+import com.example.catalyst.ata_test.events.GetCurrentUserEvent;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
+import com.example.catalyst.ata_test.events.ProfileEvent;
 import com.example.catalyst.ata_test.events.TeamsEvent;
 import com.example.catalyst.ata_test.events.UpdateKudosEvent;
 import com.example.catalyst.ata_test.events.UpdateTeamsEvent;
@@ -35,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpRetryException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +85,8 @@ public class ApiCaller {
 
                 CookieManager.getInstance().removeAllCookie();
                 System.out.println("Logout was successful!");
+                mEditor.putString(SharedPreferencesConstants.JSESSIONID, null);
+                mEditor.putString(SharedPreferencesConstants.USER_ID, null);
 
                 Intent intent = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent);
@@ -103,7 +108,7 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
-                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
 
@@ -159,7 +164,50 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
-                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
+
+        // avoid data caching on the device, which can cause 500 errors
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    public void getCurrentUser() {
+        String url = DATA_URL + "/users/current";
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+
+                try {
+                    JSONObject user = response.getJSONObject(JsonConstants.JSON_RESULT);
+                    String userId = user.getString(JsonConstants.JSON_USER_ID);
+                    mEditor.putString(SharedPreferencesConstants.USER_ID, userId).apply();
+
+                    EventBus.getDefault().post(new GetCurrentUserEvent());
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
 
@@ -182,16 +230,17 @@ public class ApiCaller {
             public void onResponse(JSONObject response) {
                 Log.d(TAG, response.toString());
                 User user = new User();
-                ArrayList<User> teamMembers = new ArrayList<User>();
                 try {
-                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
-                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
-                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
-                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
-                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
-                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
+                    JSONObject jsonUser = response.getJSONObject(JsonConstants.JSON_RESULT);
+                    user.setId(jsonUser.getString(JsonConstants.JSON_USER_ID));
+                    user.setFirstName(jsonUser.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                    user.setLastName(jsonUser.getString(JsonConstants.JSON_USER_LAST_NAME));
+                    user.setTitle(jsonUser.getString(JsonConstants.JSON_USER_TITLE));
+                    user.setEmail(jsonUser.getString(JsonConstants.JSON_USER_EMAIL));
+                    user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
 
-                    teamMembers.add(user);
+                    EventBus.getDefault().post(new ProfileEvent(user));
+
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
@@ -207,7 +256,7 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
-                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
 
@@ -257,7 +306,7 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
-                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
 
@@ -308,7 +357,7 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
-                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
 
@@ -383,7 +432,7 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
-                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
 
@@ -458,7 +507,7 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
 
-                String cookie = prefs.getString(SharedPreferencesConstants.JESESSIONID, null);
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
 

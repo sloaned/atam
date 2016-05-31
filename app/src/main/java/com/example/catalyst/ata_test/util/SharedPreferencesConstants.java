@@ -7,6 +7,8 @@ public class SharedPreferencesConstants {
 
     public static final String PREFS_USER = "username";
 
-    public static final String JESESSIONID = "jesessionid";
+    public static final String JSESSIONID = "jesessionid";
+
+    public static final String USER_ID = "userid";
 
 }
