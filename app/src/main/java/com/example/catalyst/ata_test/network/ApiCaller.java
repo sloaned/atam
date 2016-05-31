@@ -1,6 +1,5 @@
 package com.example.catalyst.ata_test.network;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -50,8 +49,8 @@ public class ApiCaller {
 
     public static final String TAG = ApiCaller.class.getSimpleName();
 
-    private static final String DATA_URL = "http://pc30120.catalystsolves.com:8090/";   // change to your own computer name
-    private static final String API_URL = NetworkConstants.ATA_BASE;
+    private static final String DATA_URL = NetworkConstants.ATAM_BASE + "/";   // change to your own computer name
+    private static final String API_URL = NetworkConstants.ATAM_BASE;
 
     private ArrayList<User> teamMembers = new ArrayList<User>();
     private ArrayList<Kudo> kudos = new ArrayList<Kudo>();
@@ -73,20 +72,23 @@ public class ApiCaller {
         //TODO: Oauth and ATA don't have logout funcionality. This code will need to be updated once
         //they update their code to allow a legitimate logout.
 
-        //To facilitate loging out, the session ID with ATA is being destroyed client side.
+        //To facilitate loging out, the session ID with ATAM is being destroyed client side.
         //This effectively logs the user out.
 
 
         String url = API_URL + "/logout";
+
         StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
 
                 CookieManager.getInstance().removeAllCookie();
+
+                //TODO: Remove this line of debug code when app hits version 1.0
                 System.out.println("Logout was successful!");
-                mEditor.putString(SharedPreferencesConstants.JSESSIONID, null);
-                mEditor.putString(SharedPreferencesConstants.USER_ID, null);
+                mEditor.putString(SharedPreferencesConstants.JSESSIONID, null).apply();
+                mEditor.putString(SharedPreferencesConstants.USER_ID, null).apply();
 
                 Intent intent = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent);
@@ -97,7 +99,13 @@ public class ApiCaller {
             @Override
             public void onErrorResponse(VolleyError error) {
                 CookieManager.getInstance().removeAllCookie();
+
+                //TODO: Remove this line of debug code when app hits version 1.0
                 System.out.println("Error occured with Volley, logging user out anyways.");
+
+                prefs.edit().putString(SharedPreferencesConstants.JSESSIONID, null).apply();
+                mEditor.putString(SharedPreferencesConstants.USER_ID, null).apply();
+
 
                 Intent intent = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent);
@@ -129,10 +137,12 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 ArrayList<User> users = new ArrayList<User>();
                 try {
-                  //  JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    //  JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
                     JSONArray userList = response.getJSONArray(JsonConstants.JSON_RESULT);
 
+                    //TODO: Remove this line of debug code when app hits version 1.0
                     Log.d(TAG, "userList length = " + userList.length());
+
                     for (int i = 0; i < userList.length(); i++) {
                         JSONObject jsonUser = userList.getJSONObject(i);
                         User user = new User();
@@ -228,7 +238,9 @@ public class ApiCaller {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
                 Log.d(TAG, response.toString());
+
                 User user = new User();
                 try {
                     JSONObject jsonUser = response.getJSONObject(JsonConstants.JSON_RESULT);
@@ -280,7 +292,7 @@ public class ApiCaller {
                 Log.d(TAG, response.toString());
                 ArrayList<Team> teams = new ArrayList<Team>();
                 try {
-                   // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
                     JSONArray teamsList = response.getJSONArray(JsonConstants.JSON_RESULT);
 
                     for (int i = 0; i < teamsList.length(); i++) {
@@ -309,7 +321,6 @@ public class ApiCaller {
                 String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
 
                 headers.put("Cookie:", cookie);
-
                 return headers;
             }
         };
@@ -377,7 +388,9 @@ public class ApiCaller {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
                 Log.d(TAG, response.toString());
+
                 Team team = new Team();
                 try {
                     JSONObject jsonTeam = response.getJSONObject(JsonConstants.JSON_RESULT);
@@ -390,9 +403,15 @@ public class ApiCaller {
                         ArrayList<User> members = new ArrayList<User>();
                         for (int i = 0; i < memberList.length(); i++) {
                             JSONObject member = memberList.getJSONObject(i);
+
+                            //TODO: Remove this line of debug code when app hits version 1.0
                             Log.d(TAG, "member = " + member.toString());
+
                             JSONObject userObject = member.getJSONObject(JsonConstants.JSON_TEAM_MEMBER);
+
+                            //TODO: Remove this line of debug code when app hits version 1.0
                             Log.d(TAG, "userObject = " + userObject.toString());
+
                             User user = new User();
                             user.setId(userObject.getString(JsonConstants.JSON_USER_ID));
                             user.setFirstName(userObject.getString(JsonConstants.JSON_USER_FIRST_NAME));
@@ -421,7 +440,7 @@ public class ApiCaller {
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse != null) {
-                    Log.e("Volley", "Error. HTTP Status Code:"+networkResponse.statusCode);
+                    Log.e("Volley", "Error. HTTP Status Code:" + networkResponse.statusCode);
                     Log.e("Volley", "" + networkResponse.data);
                 }
 
@@ -460,12 +479,17 @@ public class ApiCaller {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
                 Log.d(TAG, response.toString());
+
                 kudos.clear();
                 try {
-                   // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
+                    // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
                     JSONArray kudosArray = response.getJSONArray(JsonConstants.JSON_RESULT);
+
+                    //TODO: Remove this line of debug code when app hits version 1.0
                     Log.d(TAG, "kudosArray length = " + kudosArray.length());
+
                     for (int i = 0; i < kudosArray.length(); i++) {
                         JSONObject jsonKudo = kudosArray.getJSONObject(i);
                         Kudo kudo = new Kudo();
@@ -487,13 +511,23 @@ public class ApiCaller {
                         kudo.setReviewer(reviewer);
                         reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
                         kudo.setReviewed(reviewed);
+
                         kudos.add(kudo);
+                        Log.d(TAG, "user's id = " + reviewedId + ", reviewed id = " + reviewed.getId());
+
+                        //TODO: Remove this line of debug code when app hits version 1.0
+                        Log.d(TAG, "Match?  " + (reviewedId.equals(reviewed.getId())));
+
+                        if (reviewedId.equals(reviewed.getId())) {
+                            Log.d(TAG, "match!!!!!!!");
+                            kudos.add(kudo);
+                        }
                     }
 
                     EventBus.getDefault().post(new UpdateKudosEvent(kudos));
 
 
-                } catch(JSONException e) {
+                } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
             }
@@ -520,4 +554,75 @@ public class ApiCaller {
         AppController.getInstance().addToRequestQueue(req);
     }
 
+    /*
+        gets the usernames, by id, of all users who have given a given user kudos.
+        It will The callback function is called to update the kudos tab after
+        info for every kudos in the list is retrieved
+     */
+    public void getKudosReviewers(ArrayList<Kudo> kudosList) {
+        kudos = kudosList;
+
+        //TODO: Remove this line of debug code when app hits version 1.0
+        Log.d(TAG, "in getKudosReviewers, kudos size = " + kudos.size());
+
+        for (int i = 0; i < kudos.size(); i++) {
+            getKudosReviewerInfo(i, kudos.size(), kudos.get(i));
+        }
+    }
+
+    /*
+        @params: int counter - an iterator of the kudo in the list of kudos a given user has
+                int size - the total number of kudos that user has
+                Kudo kudo - kudo[counter] in the user's list of kudos
+        This function will activate the callback function in the kudos fragment once it has
+        retrieved the information for all of a user's kudos (calculated by comparing the total
+        size to the current counter)
+     */
+    public void getKudosReviewerInfo(final int counter, final int size, final Kudo kudo) {
+        String url = DATA_URL + "users/" + kudo.getReviewer().getId();
+
+        //TODO: Remove this line of debug code when app hits version 1.0
+        Log.d(TAG, "in getKudosReviewerInfo, url = " + url);
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+                User user = new User();
+
+                try {
+                    /* set user info about the person who gave the kudos */
+                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
+                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
+                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
+                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
+                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
+
+                    kudo.setReviewer(user);
+
+                    kudos.set(counter, kudo);
+
+                    /* if this was the final kudo in the list, activate the callback
+                        function to update the view in the kudos tab
+                     */
+                    if (counter == size - 1) {
+                        //EventBus.getDefault().post(new GetKudosInfoEvent(kudos));
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+
+        // avoid data caching on the device, which can cause 500 errors
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req);
+    }
 }
