@@ -561,7 +561,6 @@ public class ApiCaller {
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
