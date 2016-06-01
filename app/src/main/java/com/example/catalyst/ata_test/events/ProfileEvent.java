@@ -1,21 +1,21 @@
 package com.example.catalyst.ata_test.events;
 
-import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.models.Profile;
 
 /**
  * Created by dsloane on 5/31/2016.
  */
 public class ProfileEvent {
 
-    public ProfileEvent(User user) {this.user = user;}
+    public ProfileEvent(Profile profile) {this.profile = profile;}
 
-    private User user;
+    private Profile profile;
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
-    public User getUser() {
-        return user;
+    public Profile getProfile() {
+        return profile;
     }
 }

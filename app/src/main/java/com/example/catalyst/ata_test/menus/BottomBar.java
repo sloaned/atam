@@ -113,13 +113,12 @@ public class BottomBar {
 
         String userId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
 
-        caller.getUserById(userId);
-
-       /* Intent intent = new Intent(mContext, ProfileActivity.class);
-        mContext.startActivity(intent);  */
+        Intent intent = new Intent(mContext, ProfileActivity.class)
+                .putExtra("User", userId);
+        mContext.startActivity(intent);
 
         /* make activity transition seamless */
-     //   ((Activity)mContext).overridePendingTransition(0, 0);
+        ((Activity)mContext).overridePendingTransition(0, 0);
     }
 
     public void openDashboard() {

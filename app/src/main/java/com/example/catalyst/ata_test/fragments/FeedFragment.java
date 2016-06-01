@@ -47,18 +47,7 @@ public class FeedFragment extends Fragment {
     }
 
 
-    @Subscribe
-    public void goToMyProfile(ProfileEvent event) {
-        User user = event.getUser();
-
-        Intent intent = new Intent(getActivity(), ProfileActivity.class)
-                .putExtra("User", (Serializable) user);
-        getActivity().startActivity(intent);
-
-        /* make activity transition seamless */
-        ((Activity)getActivity()).overridePendingTransition(0, 0);
-    }
-
+/*
     @Override
     public void onResume() {
         super.onResume();
@@ -70,5 +59,5 @@ public class FeedFragment extends Fragment {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
-
+*/
 }

@@ -27,9 +27,8 @@ public class TeamsTabFragment extends Fragment {
     private final String TAG = TeamsTabFragment.class.getSimpleName();
 
     private ListView listView;
-    private static User mUser;
     private ApiCaller caller;
-    private ArrayList<Team> teamsList = new ArrayList<Team>();
+    private static ArrayList<Team> teamsList = new ArrayList<Team>();
     private View teamView;
 
     private TeamAdapter adapter;
@@ -40,15 +39,14 @@ public class TeamsTabFragment extends Fragment {
         teamView = inflater.inflate(R.layout.tab_teams, container, false);
         listView = (ListView) teamView.findViewById(android.R.id.list);
 
-        if (mUser != null) {
-            getTeams();
-        }
+        adapter = new TeamAdapter(getActivity(), teamsList);
+        listView.setAdapter(adapter);
 
         return teamView;
     }
 
-    public static TeamsTabFragment newInstance(User user) {
-        mUser = user;
+    public static TeamsTabFragment newInstance(ArrayList<Team> teams) {
+        teamsList = teams;
 
         TeamsTabFragment fragment = new TeamsTabFragment();
         Bundle args = new Bundle();
@@ -56,30 +54,5 @@ public class TeamsTabFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        EventBus.getDefault().unregister(this);
-        super.onPause();
-    }
-
-    public void getTeams() {
-        caller = new ApiCaller(getActivity());
-        caller.getTeamsByUser(mUser.getId());
-    }
-
-    @Subscribe
-    public void updateTeams(UpdateTeamsEvent event) {
-        teamsList = event.getTeams();
-        adapter = new TeamAdapter(getActivity(), teamsList);
-        listView.setAdapter(adapter);
-    }
-
 
 }

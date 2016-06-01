@@ -19,8 +19,11 @@ import android.widget.TextView;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.TabAdapter;
 import com.example.catalyst.ata_test.events.BioChangeEvent;
+import com.example.catalyst.ata_test.events.ProfileEvent;
 import com.example.catalyst.ata_test.menus.BottomBar;
+import com.example.catalyst.ata_test.models.Profile;
 import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.network.ApiCaller;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,7 +39,10 @@ public class ProfileFragment extends Fragment {
     private static final String TAG = ProfileFragment.class.getSimpleName();
     private BottomBar bottomBar = new BottomBar();
     private View profileView;
-    private User user;
+    private Profile mProfile;
+    private ApiCaller caller;
+
+    private TabAdapter adapter;
 
     @Bind(R.id.user_info_area)LinearLayout userInfoArea;
     @Bind(R.id.user_info_text_area) RelativeLayout userInfoTextArea;
@@ -52,6 +58,7 @@ public class ProfileFragment extends Fragment {
         profileView = inflater.inflate(R.layout.fragment_profile, null);
 
         ButterKnife.bind(this, profileView);
+        caller = new ApiCaller(getActivity());
         profileView = bottomBar.getBottomBar(getActivity(), profileView);
 
         editBioButton.setOnClickListener(new View.OnClickListener() {
@@ -71,38 +78,13 @@ public class ProfileFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra("User")) {
-            user = (User) intent.getSerializableExtra("User");
-            username.setText(user.getFirstName() + " " + user.getLastName());
-            userTitle.setText(user.getTitle());
-            if (!user.getDescription().equals("null")) {
-                userBio.setText(user.getDescription());
-            }
+            String userId = intent.getStringExtra("User");
+
+            caller.getProfile(userId);
 
         }
 
-        final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
-        final TabAdapter adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), user);
 
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
-
-        profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab unselected = " + tab.getText());
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab reselected = " + tab.getText());
-            }
-        });
 
 
         return profileView;
@@ -136,6 +118,46 @@ public class ProfileFragment extends Fragment {
     @Subscribe
     public void changeBio(BioChangeEvent event) {
         userBio.setText(event.getBio());
+    }
+
+    @Subscribe
+    public void getProfile(ProfileEvent event) {
+        mProfile= event.getProfile();
+
+        User user = mProfile.getUser();
+
+        username.setText(user.getFirstName() + " " + user.getLastName());
+        userTitle.setText(user.getTitle());
+        if (user.getDescription() != null && !user.getDescription().equals("null")) {
+            userBio.setText(user.getDescription());
+        }
+
+        final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
+        adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), mProfile);
+
+        viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
+
+
+        profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+                Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG, "tab unselected = " + tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "tab reselected = " + tab.getText());
+            }
+        });
+
     }
 
 }

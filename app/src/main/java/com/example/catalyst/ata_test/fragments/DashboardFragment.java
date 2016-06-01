@@ -1,6 +1,5 @@
 package com.example.catalyst.ata_test.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,24 +13,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.ProfileActivity;
 import com.example.catalyst.ata_test.activities.TeamActivity;
 import com.example.catalyst.ata_test.adapters.DashboardAdapter;
-import com.example.catalyst.ata_test.data.DBHelper;
-import com.example.catalyst.ata_test.events.ProfileEvent;
-import com.example.catalyst.ata_test.events.TeamsEvent;
 import com.example.catalyst.ata_test.events.UpdateTeamsEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Team;
-import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -105,18 +98,6 @@ public class DashboardFragment extends Fragment {
         mTeams.clear();
         String userId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
         caller.getTeamsByUser(userId);
-    }
-
-    @Subscribe
-    public void goToMyProfile(ProfileEvent event) {
-        User user = event.getUser();
-
-        Intent intent = new Intent(getActivity(), ProfileActivity.class)
-                .putExtra("User", (Serializable) user);
-        getActivity().startActivity(intent);
-
-        /* make activity transition seamless */
-        ((Activity)getActivity()).overridePendingTransition(0, 0);
     }
 
     /* callback function populate list with teams */

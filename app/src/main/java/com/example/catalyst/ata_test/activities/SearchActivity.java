@@ -154,7 +154,7 @@ public class SearchActivity extends AppCompatActivity {
                 User user = (User) adapter.getItem(position);
 
                 Intent intent = new Intent(SearchActivity.this, ProfileActivity.class)
-                        .putExtra("User", (Serializable) user);
+                        .putExtra("User", user.getId());
                 startActivity(intent);
             }
         });

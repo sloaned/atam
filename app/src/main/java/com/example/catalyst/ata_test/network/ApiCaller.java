@@ -20,11 +20,11 @@ import com.example.catalyst.ata_test.activities.LoginActivity;
 import com.example.catalyst.ata_test.events.GetCurrentUserEvent;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.events.ProfileEvent;
-import com.example.catalyst.ata_test.events.TeamsEvent;
-import com.example.catalyst.ata_test.events.UpdateKudosEvent;
 import com.example.catalyst.ata_test.events.UpdateTeamsEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.models.Kudo;
+import com.example.catalyst.ata_test.models.Profile;
+import com.example.catalyst.ata_test.models.Review;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
@@ -36,7 +36,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpRetryException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -230,8 +229,111 @@ public class ApiCaller {
         AppController.getInstance().addToRequestQueue(req);
     }
 
+    public void getProfile(String id) {
+        String url = DATA_URL + "/users/" + id + "/profile";
 
-    /* generic getUserById function */
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
+                Log.d(TAG, response.toString());
+
+                Profile profile = new Profile();
+                try {
+                    JSONObject jsonProfile = response.getJSONObject(JsonConstants.JSON_RESULT);
+                    JSONObject jsonUser = jsonProfile.getJSONObject(JsonConstants.JSON_USER);
+                    JSONArray jsonKudos = jsonProfile.getJSONArray(JsonConstants.JSON_KUDOS);
+                    JSONArray jsonTeams = jsonProfile.getJSONArray(JsonConstants.JSON_TEAMS);
+                    JSONArray jsonReviews = jsonProfile.getJSONArray(JsonConstants.JSON_REVIEWS);
+
+                    User user = new User();
+                    user.setId(jsonUser.getString(JsonConstants.JSON_USER_ID));
+                    user.setFirstName(jsonUser.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                    user.setLastName(jsonUser.getString(JsonConstants.JSON_USER_LAST_NAME));
+                    user.setTitle(jsonUser.getString(JsonConstants.JSON_USER_TITLE));
+                    user.setEmail(jsonUser.getString(JsonConstants.JSON_USER_EMAIL));
+                    user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
+
+                    ArrayList<Kudo> kudos = new ArrayList<Kudo>();
+                    for (int i = 0; i < jsonKudos.length(); i++) {
+                        JSONObject jsonKudo = jsonKudos.getJSONObject(i);
+                        Kudo kudo = new Kudo();
+                        User reviewer = new User();
+                        User reviewed = new User();
+                        kudo.setKudo(jsonKudo.getString(JsonConstants.JSON_KUDOS_COMMENT));
+                        kudo.setSubmittedDate(jsonKudo.getString(JsonConstants.JSON_KUDOS_SUBMITTED_DATE));
+
+                        JSONObject jsonReviewer = jsonKudo.getJSONObject(JsonConstants.JSON_KUDOS_REVIEWER);
+
+                        reviewer.setId(jsonReviewer.getString(JsonConstants.JSON_USER_ID));
+                        reviewer.setFirstName(jsonReviewer.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                        reviewer.setLastName(jsonReviewer.getString(JsonConstants.JSON_USER_LAST_NAME));
+                        reviewer.setTitle(jsonReviewer.getString(JsonConstants.JSON_USER_TITLE));
+
+                        kudo.setReviewer(reviewer);
+
+                        reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
+                        kudo.setReviewed(reviewed);
+
+                        kudos.add(kudo);
+
+                    }
+
+                    ArrayList<Team> teams = new ArrayList<Team>();
+                    for (int i = 0; i < jsonTeams.length(); i++) {
+                        JSONObject jsonTeam = jsonTeams.getJSONObject(i);
+                        Team team = new Team();
+                        team.setName(jsonTeam.getString(JsonConstants.JSON_TEAM_NAME));
+                        team.setDescription(jsonTeam.getString(JsonConstants.JSON_TEAM_DESCRIPTION));
+                        team.setId(jsonTeam.getString(JsonConstants.JSON_TEAM_ID));
+                        teams.add(team);
+                    }
+
+                    ArrayList<Review> reviews = new ArrayList<Review>();
+                    for (int i = 0; i < jsonReviews.length(); i++) {
+                        JSONObject jsonReview = jsonReviews.getJSONObject(i);
+                        Review review = new Review();
+
+
+                        reviews.add(review);
+                    }
+
+                    profile.setUser(user);
+                    profile.setKudos(kudos);
+                    profile.setTeams(teams);
+                    profile.setReviews(reviews);
+
+                    EventBus.getDefault().post(new ProfileEvent(profile));
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
+
+        // avoid data caching on the device, which can cause 500 errors
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req);
+    }
+/*
     public void getUserById(String id) {
         String url = DATA_URL + "users/" + id + "/";
 
@@ -251,7 +353,7 @@ public class ApiCaller {
                     user.setEmail(jsonUser.getString(JsonConstants.JSON_USER_EMAIL));
                     user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
 
-                    EventBus.getDefault().post(new ProfileEvent(user));
+                   // EventBus.getDefault().post(new ProfileEvent(user));
 
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
@@ -279,57 +381,7 @@ public class ApiCaller {
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
-    }
-
-    /* currently gets all teams in database. Should be changed to only retrieve teams that a given user is on */
-    public void getAllTeams() {
-
-        String url = DATA_URL + "teams";
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-                ArrayList<Team> teams = new ArrayList<Team>();
-                try {
-                    // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
-                    JSONArray teamsList = response.getJSONArray(JsonConstants.JSON_RESULT);
-
-                    for (int i = 0; i < teamsList.length(); i++) {
-                        JSONObject jsonTeam = teamsList.getJSONObject(i);
-                        Team team = new Team();
-                        team.setName(jsonTeam.getString(JsonConstants.JSON_TEAM_NAME));
-                        team.setId(jsonTeam.getString(JsonConstants.JSON_TEAM_ID));
-                        teams.add(team);
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-
-                EventBus.getDefault().post(new TeamsEvent(teams));
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-
-                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
-
-                headers.put("Cookie:", cookie);
-                return headers;
-            }
-        };
-
-        // avoid data caching on the device, which can cause 500 errors
-        req.setShouldCache(false);
-
-        AppController.getInstance().addToRequestQueue(req);
-    }
+    } */
 
     public void getTeamsByUser(String id) {
         String url = DATA_URL + "teams/user/" + id;
@@ -404,9 +456,6 @@ public class ApiCaller {
                         for (int i = 0; i < memberList.length(); i++) {
                             JSONObject member = memberList.getJSONObject(i);
 
-                            //TODO: Remove this line of debug code when app hits version 1.0
-                            Log.d(TAG, "member = " + member.toString());
-
                             JSONObject userObject = member.getJSONObject(JsonConstants.JSON_TEAM_MEMBER);
 
                             //TODO: Remove this line of debug code when app hits version 1.0
@@ -465,164 +514,4 @@ public class ApiCaller {
         AppController.getInstance().addToRequestQueue(req);
     }
 
-
-    /*
-        @param: String reviewedId - the id of the user who was given the kudos
-
-        creates an arrayList of all kudos given to the user with the given id. Activates
-        a callback function in the profile fragment upon completion
-     */
-    public void getKudos(final String reviewedId) {
-        /* size should be updated */
-        String url = DATA_URL + "kudos/user/" + reviewedId;
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                //TODO: Remove this line of debug code when app hits version 1.0
-                Log.d(TAG, response.toString());
-
-                kudos.clear();
-                try {
-                    // JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
-                    JSONArray kudosArray = response.getJSONArray(JsonConstants.JSON_RESULT);
-
-                    //TODO: Remove this line of debug code when app hits version 1.0
-                    Log.d(TAG, "kudosArray length = " + kudosArray.length());
-
-                    for (int i = 0; i < kudosArray.length(); i++) {
-                        JSONObject jsonKudo = kudosArray.getJSONObject(i);
-                        Kudo kudo = new Kudo();
-                        User reviewer = new User();
-                        User reviewed = new User();
-                        kudo.setKudo(jsonKudo.getString(JsonConstants.JSON_KUDOS_COMMENT));
-                        kudo.setSubmittedDate(jsonKudo.getString(JsonConstants.JSON_KUDOS_SUBMITTED_DATE));
-
-                        JSONObject jsonReviewer = jsonKudo.getJSONObject(JsonConstants.JSON_KUDOS_REVIEWER);
-
-
-                        reviewer.setId(jsonReviewer.getString(JsonConstants.JSON_USER_ID));
-                        reviewer.setFirstName(jsonReviewer.getString(JsonConstants.JSON_USER_FIRST_NAME));
-                        reviewer.setLastName(jsonReviewer.getString(JsonConstants.JSON_USER_LAST_NAME));
-                        reviewer.setTitle(jsonReviewer.getString(JsonConstants.JSON_USER_TITLE));
-                        reviewer.setEmail(jsonReviewer.getString(JsonConstants.JSON_USER_EMAIL));
-                        reviewer.setDescription(jsonReviewer.getString(JsonConstants.JSON_USER_DESCRIPTION));
-                        //reviewer.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWER_ID));
-                        kudo.setReviewer(reviewer);
-                        reviewed.setId(jsonKudo.getString(JsonConstants.JSON_KUDOS_REVIEWED_ID));
-                        kudo.setReviewed(reviewed);
-
-                        kudos.add(kudo);
-                        Log.d(TAG, "user's id = " + reviewedId + ", reviewed id = " + reviewed.getId());
-
-                        //TODO: Remove this line of debug code when app hits version 1.0
-                        Log.d(TAG, "Match?  " + (reviewedId.equals(reviewed.getId())));
-
-                        if (reviewedId.equals(reviewed.getId())) {
-                            Log.d(TAG, "match!!!!!!!");
-                            kudos.add(kudo);
-                        }
-                    }
-
-                    EventBus.getDefault().post(new UpdateKudosEvent(kudos));
-
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-
-                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
-
-                headers.put("Cookie:", cookie);
-
-                return headers;
-            }
-        };
-
-        // avoid data caching on the device, which can cause 500 errors
-        req.setShouldCache(false);
-        AppController.getInstance().addToRequestQueue(req);
-    }
-
-    /*
-        gets the usernames, by id, of all users who have given a given user kudos.
-        It will The callback function is called to update the kudos tab after
-        info for every kudos in the list is retrieved
-     */
-    public void getKudosReviewers(ArrayList<Kudo> kudosList) {
-        kudos = kudosList;
-
-        //TODO: Remove this line of debug code when app hits version 1.0
-        Log.d(TAG, "in getKudosReviewers, kudos size = " + kudos.size());
-
-        for (int i = 0; i < kudos.size(); i++) {
-            getKudosReviewerInfo(i, kudos.size(), kudos.get(i));
-        }
-    }
-
-    /*
-        @params: int counter - an iterator of the kudo in the list of kudos a given user has
-                int size - the total number of kudos that user has
-                Kudo kudo - kudo[counter] in the user's list of kudos
-        This function will activate the callback function in the kudos fragment once it has
-        retrieved the information for all of a user's kudos (calculated by comparing the total
-        size to the current counter)
-     */
-    public void getKudosReviewerInfo(final int counter, final int size, final Kudo kudo) {
-        String url = DATA_URL + "users/" + kudo.getReviewer().getId();
-
-        //TODO: Remove this line of debug code when app hits version 1.0
-        Log.d(TAG, "in getKudosReviewerInfo, url = " + url);
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-                User user = new User();
-
-                try {
-                    /* set user info about the person who gave the kudos */
-                    user.setId(response.getString(JsonConstants.JSON_USER_ID));
-                    user.setFirstName(response.getString(JsonConstants.JSON_USER_FIRST_NAME));
-                    user.setLastName(response.getString(JsonConstants.JSON_USER_LAST_NAME));
-                    user.setTitle(response.getString(JsonConstants.JSON_USER_TITLE));
-                    user.setEmail(response.getString(JsonConstants.JSON_USER_EMAIL));
-                    user.setDescription(response.getString(JsonConstants.JSON_USER_DESCRIPTION));
-
-                    kudo.setReviewer(user);
-
-                    kudos.set(counter, kudo);
-
-                    /* if this was the final kudo in the list, activate the callback
-                        function to update the view in the kudos tab
-                     */
-                    if (counter == size - 1) {
-                        //EventBus.getDefault().post(new GetKudosInfoEvent(kudos));
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        });
-
-        // avoid data caching on the device, which can cause 500 errors
-        req.setShouldCache(false);
-        AppController.getInstance().addToRequestQueue(req);
-    }
 }

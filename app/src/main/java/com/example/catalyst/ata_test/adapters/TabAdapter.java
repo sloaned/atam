@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.catalyst.ata_test.fragments.KudosTabFragment;
 import com.example.catalyst.ata_test.fragments.ReviewsTabFragment;
 import com.example.catalyst.ata_test.fragments.TeamsTabFragment;
+import com.example.catalyst.ata_test.models.Profile;
 import com.example.catalyst.ata_test.models.User;
 
 /**
@@ -18,24 +19,24 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = TabAdapter.class.getSimpleName();
 
     int mNumOfTabs;
-    User mUser;
+    Profile mProfile;
 
-    public TabAdapter(FragmentManager fm, int numOfTabs, User user) {
+    public TabAdapter(FragmentManager fm, int numOfTabs, Profile profile) {
         super(fm);
         mNumOfTabs = numOfTabs;
-        mUser = user;
+        mProfile = profile;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mUser);
+                KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mProfile.getKudos());
                 return kudosFragment;
             case 1:
                 return new ReviewsTabFragment();
             case 2:
-                TeamsTabFragment teamsFragment = TeamsTabFragment.newInstance(mUser);
+                TeamsTabFragment teamsFragment = TeamsTabFragment.newInstance(mProfile.getTeams());
                 return teamsFragment;
             default:
                 return null;

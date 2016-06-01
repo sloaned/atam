@@ -12,7 +12,7 @@ public class NetworkConstants {
 
 
     //TODO: Remove this upon deployment of the server
-    public static final String DEV_NETWORK_ADDRESS = "http://pc30122.catalystsolves.com";
+    public static final String DEV_NETWORK_ADDRESS = "http://pc30120.catalystsolves.com";
 
 
     //ATAM's urls
