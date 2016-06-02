@@ -3,25 +3,23 @@ package com.example.catalyst.ata_test.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 import com.example.catalyst.ata_test.fragments.KudosTabFragment;
 import com.example.catalyst.ata_test.fragments.ReviewsTabFragment;
 import com.example.catalyst.ata_test.fragments.TeamsTabFragment;
 import com.example.catalyst.ata_test.models.Profile;
-import com.example.catalyst.ata_test.models.User;
 
 /**
  * Created by dsloane on 4/29/2016.
  */
-public class TabAdapter extends FragmentStatePagerAdapter {
+public class ProfileTabAdapter extends FragmentStatePagerAdapter {
 
-    private static final String TAG = TabAdapter.class.getSimpleName();
+    private static final String TAG = ProfileTabAdapter.class.getSimpleName();
 
     int mNumOfTabs;
     Profile mProfile;
 
-    public TabAdapter(FragmentManager fm, int numOfTabs, Profile profile) {
+    public ProfileTabAdapter(FragmentManager fm, int numOfTabs, Profile profile) {
         super(fm);
         mNumOfTabs = numOfTabs;
         mProfile = profile;

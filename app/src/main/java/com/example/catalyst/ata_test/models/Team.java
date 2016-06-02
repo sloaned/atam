@@ -1,12 +1,15 @@
 package com.example.catalyst.ata_test.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by dsloane on 4/22/2016.
  */
-public class Team implements Serializable {
+public class Team implements Serializable, Parcelable {
     private String id;
     private String name;
     private boolean active;
@@ -36,4 +39,32 @@ public class Team implements Serializable {
     public void setDescription(String description) {this.description = description;}
     public Assessment getAssessment() {return assessment;}
     public void setAssessment(Assessment assessment) {this.assessment = assessment;}
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(id);
+        out.writeString(name);
+        out.writeString(description);
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Team> CREATOR = new Parcelable.Creator<Team>() {
+        public Team createFromParcel(Parcel in) {
+            return new Team(in);
+        }
+
+        public Team[] newArray(int size) {
+            return new Team[size];
+        }
+    };
+
+    public Team(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
+    }
+
 }

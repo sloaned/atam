@@ -13,6 +13,7 @@ public class JsonConstants {
     public static final String JSON_KUDOS = "kudos";
     public static final String JSON_REVIEWS = "reviews";
     public static final String JSON_TEAMS = "teams";
+    public static final String JSON_TEAM = "team";
 
     public static final String JSON_USER_ID = "id";
     public static final String JSON_USER_FIRST_NAME = "firstName";

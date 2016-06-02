@@ -20,11 +20,13 @@ import com.example.catalyst.ata_test.activities.LoginActivity;
 import com.example.catalyst.ata_test.events.GetCurrentUserEvent;
 import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.events.ProfileEvent;
+import com.example.catalyst.ata_test.events.SearchEvent;
 import com.example.catalyst.ata_test.events.UpdateTeamsEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.models.Kudo;
 import com.example.catalyst.ata_test.models.Profile;
 import com.example.catalyst.ata_test.models.Review;
+import com.example.catalyst.ata_test.models.SearchResult;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
@@ -513,5 +515,84 @@ public class ApiCaller {
 
         AppController.getInstance().addToRequestQueue(req);
     }
-    
+
+
+    public void search(String searchTerm) {
+        String url = DATA_URL + "search/" + searchTerm;
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //TODO: Remove this line of debug code when app hits version 1.0
+                Log.d(TAG, response.toString());
+
+                ArrayList<SearchResult> results = new ArrayList<SearchResult>();
+                try {
+                    JSONArray jsonResults = response.getJSONArray(JsonConstants.JSON_RESULT);
+
+                    for (int i = 0; i < jsonResults.length(); i++) {
+                        SearchResult result = new SearchResult();
+
+                        JSONObject jsonResult = jsonResults.getJSONObject(i);
+                        if (jsonResult.getJSONObject(JsonConstants.JSON_USER) != null) {
+                            JSONObject jsonUser = jsonResult.getJSONObject(JsonConstants.JSON_USER);
+
+                            User user = new User();
+                            user.setId(jsonUser.getString(JsonConstants.JSON_USER_ID));
+                            user.setFirstName(jsonUser.getString(JsonConstants.JSON_USER_FIRST_NAME));
+                            user.setLastName(jsonUser.getString(JsonConstants.JSON_USER_LAST_NAME));
+                            user.setTitle(jsonUser.getString(JsonConstants.JSON_USER_TITLE));
+                            user.setEmail(jsonUser.getString(JsonConstants.JSON_USER_EMAIL));
+                            user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
+
+                            result.setUser(user);
+                        } else if (jsonResult.getJSONObject(JsonConstants.JSON_TEAM) != null) {
+                            JSONObject jsonTeam = jsonResult.getJSONObject(JsonConstants.JSON_TEAM);
+
+                            Team team = new Team();
+
+                            team.setName(jsonTeam.getString(JsonConstants.JSON_TEAM_NAME));
+                            team.setDescription(jsonTeam.getString(JsonConstants.JSON_TEAM_DESCRIPTION));
+                            team.setId(jsonTeam.getString(JsonConstants.JSON_TEAM_ID));
+                            result.setTeam(team);
+                        }
+
+                        results.add(result);
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+                /* activate callback function to view a team activity */
+                EventBus.getDefault().post(new SearchEvent(results));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null) {
+                    Log.e("Volley", "Error. HTTP Status Code:" + networkResponse.statusCode);
+                    Log.e("Volley", "" + networkResponse.data);
+                }
+            }
+
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+
+                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
+
+                headers.put("Cookie:", cookie);
+
+                return headers;
+            }
+        };
+        // avoid data caching on the device, which can cause 500 errors
+        req.setShouldCache(false);
+
+
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
 }

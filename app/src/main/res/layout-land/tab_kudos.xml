@@ -3,37 +3,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fake_kudo"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:id="@+id/reviewer_name"
-            android:text="Dan Sloane"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/kudo_date"
-            android:layout_below="@+id/reviewer_name"
-            android:text="05/13/2016"
-            android:textSize="14sp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/kudo_content"
-            android:layout_below="@+id/kudo_date"
-            android:text="Wow what a great coworker I love them"
-            android:textSize="16sp"/>
-
-    </RelativeLayout>
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

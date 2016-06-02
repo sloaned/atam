@@ -8,40 +8,38 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.models.Team;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by dsloane on 4/27/2016.
+ * Created by dsloane on 6/1/2016.
  */
-public class SearchResultAdapter extends BaseAdapter {
+public class TeamSearchResultAdapter extends BaseAdapter {
 
     private Context mContext;
 
     private LayoutInflater inflater;
-    private List<User> resultList = new ArrayList<User>();
+    private List<Team> teams = new ArrayList<Team>();
 
-    private static final String TAG = DashboardAdapter.class.getSimpleName();
+    private final String TAG = TeamSearchResultAdapter.class.getSimpleName();
 
-    public SearchResultAdapter(Context context, List<User> resultList) {
+    public TeamSearchResultAdapter(Context context, List<Team> teamsList) {
         mContext = context;
-        this.resultList = resultList;
+        teams = teamsList;
     }
 
     public void clear() {
-        resultList.clear();
+        teams.clear();
     }
 
-    @Override
     public int getCount() {
-        return resultList.size();
+        return teams.size();
     }
 
-    @Override
-    public Object getItem(int location) {
-        return resultList.get(location);
+    public Team getItem(int location) {
+        return teams.get(location);
     }
 
     @Override
@@ -51,7 +49,6 @@ public class SearchResultAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         ViewHolder holder = new ViewHolder();
 
         if (inflater == null) {
@@ -59,25 +56,22 @@ public class SearchResultAdapter extends BaseAdapter {
         }
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_search_results, null);
-            holder.name = (TextView) convertView.findViewById(R.id.user_name);
-            holder.title = (TextView) convertView.findViewById(R.id.user_title);
+            convertView = inflater.inflate(R.layout.list_team_results, null);
+            holder.teamName = (TextView) convertView.findViewById(R.id.team_name);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        User u = resultList.get(position);
-        holder.name.setText(u.getFirstName() + " " + u.getLastName());
-        holder.title.setText(u.getTitle());
+
+        Team team = teams.get(position);
+        holder.teamName.setText(team.getName());
 
         return convertView;
     }
 
 
-
     private static class ViewHolder {
-        TextView name;
-        TextView title;
+        TextView teamName;
     }
 }

@@ -10,14 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.adapters.TabAdapter;
+import com.example.catalyst.ata_test.adapters.ProfileTabAdapter;
 import com.example.catalyst.ata_test.events.BioChangeEvent;
 import com.example.catalyst.ata_test.events.ProfileEvent;
 import com.example.catalyst.ata_test.menus.BottomBar;
@@ -42,7 +41,7 @@ public class ProfileFragment extends Fragment {
     private Profile mProfile;
     private ApiCaller caller;
 
-    private TabAdapter adapter;
+    private ProfileTabAdapter adapter;
 
     @Bind(R.id.user_info_area)LinearLayout userInfoArea;
     @Bind(R.id.user_info_text_area) RelativeLayout userInfoTextArea;
@@ -72,9 +71,6 @@ public class ProfileFragment extends Fragment {
         profileTabs.addTab(profileTabs.newTab().setText("REVIEWS"));
         profileTabs.addTab(profileTabs.newTab().setText("TEAMS"));
         profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
-
-
-
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra("User")) {
@@ -133,7 +129,7 @@ public class ProfileFragment extends Fragment {
         }
 
         final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
-        adapter = new TabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), mProfile);
+        adapter = new ProfileTabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), mProfile);
 
         viewPager.setAdapter(adapter);
 

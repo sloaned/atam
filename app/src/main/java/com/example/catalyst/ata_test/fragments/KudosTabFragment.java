@@ -37,11 +37,6 @@ public class KudosTabFragment extends Fragment {
 
         /* set view for the list of kudos */
         listView = (ListView) kudoView.findViewById(android.R.id.list);
-
-        if (kudosList.size() > 0) {
-            RelativeLayout fakeKudo = (RelativeLayout) kudoView.findViewById(R.id.fake_kudo);
-            fakeKudo.setVisibility(View.GONE);
-        }
         adapter = new KudosAdapter(getActivity(), kudosList);
         listView.setAdapter(adapter);
 

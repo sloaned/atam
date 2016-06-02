@@ -25,6 +25,7 @@ import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -114,7 +115,7 @@ public class DashboardFragment extends Fragment {
     public void viewTeam(ViewTeamEvent event) {
         Log.d(TAG, event.getTeam().toString());
         Intent intent = new Intent(getActivity(), TeamActivity.class)
-                .putExtra("Team", event.getTeam());
+                .putExtra("Team", (Serializable) event.getTeam());
         startActivity(intent);
     }
 
