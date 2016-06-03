@@ -1,12 +1,8 @@
 package com.example.catalyst.ata_test.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +11,8 @@ import android.widget.ListView;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.ProfileActivity;
-import com.example.catalyst.ata_test.activities.SearchActivity;
-import com.example.catalyst.ata_test.adapters.TeamSearchResultAdapter;
 import com.example.catalyst.ata_test.adapters.UserSearchResultAdapter;
 import com.example.catalyst.ata_test.events.UpdateSearchEvent;
-import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
 
 import org.greenrobot.eventbus.EventBus;
@@ -85,9 +78,6 @@ public class UserSearchTabFragment extends Fragment {
 
     @Subscribe
     public void onUpdateSearch(UpdateSearchEvent event) {
-
-        Log.d(TAG, "onUpdateSearch in user fragment called!!!!!!!!!");
-        Log.d(TAG, "number of users in event = " + event.getUsers().size());
         userResults = event.getUsers();
 
         /* hacky solution to a problem where notifyDataSetChanged() wasn't working

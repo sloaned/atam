@@ -11,13 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.ProfileActivity;
 import com.example.catalyst.ata_test.activities.TeamActivity;
 import com.example.catalyst.ata_test.adapters.TeamSearchResultAdapter;
 import com.example.catalyst.ata_test.events.UpdateSearchEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.models.Team;
-import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
 
 import org.greenrobot.eventbus.EventBus;
@@ -86,7 +84,6 @@ public class TeamSearchTabFragment extends Fragment {
 
     @Subscribe
     public void onUpdateSearch(UpdateSearchEvent event) {
-        Log.d(TAG, "onUpdateSearch in team fragment called!!!!!!!!!");
         teamResults = event.getTeams();
 
         /* hacky solution to a problem where notifyDataSetChanged() wasn't working
