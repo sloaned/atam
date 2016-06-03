@@ -43,8 +43,6 @@ public class UserSearchTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         userResultView = inflater.inflate(R.layout.tab_team_results, container, false);
 
-        EventBus.getDefault().register(this);
-
         listView = (ListView) userResultView.findViewById(android.R.id.list);
         adapter = new UserSearchResultAdapter(getActivity(), userResults);
         listView.setAdapter(adapter);
@@ -76,6 +74,7 @@ public class UserSearchTabFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -88,9 +87,14 @@ public class UserSearchTabFragment extends Fragment {
     public void onUpdateSearch(UpdateSearchEvent event) {
 
         Log.d(TAG, "onUpdateSearch in user fragment called!!!!!!!!!");
-
+        Log.d(TAG, "number of users in event = " + event.getUsers().size());
         userResults = event.getUsers();
-        adapter.notifyDataSetChanged();
+
+        /* hacky solution to a problem where notifyDataSetChanged() wasn't working
+            after orientation change. So instead we just rebuild/reset the adapter
+         */
+        adapter = new UserSearchResultAdapter(getActivity(), userResults);
+        listView.setAdapter(adapter);
     }
 
 }

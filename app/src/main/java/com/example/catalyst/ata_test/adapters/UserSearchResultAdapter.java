@@ -1,6 +1,7 @@
 package com.example.catalyst.ata_test.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,8 @@ public class UserSearchResultAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         User u = resultList.get(position);
+
+        Log.d(TAG, "now displaying " + u.getFirstName() + " " + u.getLastName());
         holder.name.setText(u.getFirstName() + " " + u.getLastName());
         holder.title.setText(u.getTitle());
 

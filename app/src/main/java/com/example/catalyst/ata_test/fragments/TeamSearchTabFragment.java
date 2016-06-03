@@ -40,7 +40,6 @@ public class TeamSearchTabFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
 
         teamResultView = inflater.inflate(R.layout.tab_team_results, container, false);
 
@@ -76,6 +75,7 @@ public class TeamSearchTabFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -88,7 +88,12 @@ public class TeamSearchTabFragment extends Fragment {
     public void onUpdateSearch(UpdateSearchEvent event) {
         Log.d(TAG, "onUpdateSearch in team fragment called!!!!!!!!!");
         teamResults = event.getTeams();
-        adapter.notifyDataSetChanged();
+
+        /* hacky solution to a problem where notifyDataSetChanged() wasn't working
+            after orientation change. So instead we just rebuild/reset the adapter
+         */
+        adapter = new TeamSearchResultAdapter(getActivity(), teamResults);
+        listView.setAdapter(adapter);
     }
 
     /* open team page when a team is clicked on */

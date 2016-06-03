@@ -42,13 +42,11 @@ import butterknife.ButterKnife;
  * Created by dsloane on 4/26/2016.
  */
 
-// currently only searches for users, not teams/projects
 public class SearchActivity extends AppCompatActivity {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     private SearchTabAdapter adapter;
-   // private ApiCaller caller;
 
     @Bind(R.id.action_logo) ImageView logo;
     @Bind(R.id.tab_layout) TabLayout profileTabs;
@@ -70,14 +68,11 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        EventBus.getDefault().register(this);
         Log.d(TAG, "in onCreate!!!!!");
 
         profileTabs.addTab(profileTabs.newTab().setText("PEOPLE"));
         profileTabs.addTab(profileTabs.newTab().setText("TEAMS"));
         profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
-
-
 
         searchView = (SearchView) findViewById(R.id.action_search);
 
@@ -107,52 +102,25 @@ public class SearchActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
 
-        final String query = intent.getStringExtra(SearchManager.QUERY);
-        searchTerm = query;
+        final String oldQuery = intent.getStringExtra(SearchManager.QUERY);
+        searchTerm = oldQuery;
         searchLength = searchTerm.length();
         Log.d(TAG, "still in onCreate, searchTerm = " + searchTerm);
 
-        searchView.setQuery(query, true);
-        // put the query that was typed in during the calling activity back into the searchbar
-       /* searchView.post(new Runnable() {
-            @Override
-            public void run() {
-                searchView.setQuery(query, true);
-            }
-        }); */
+        searchView.setQuery(oldQuery, true);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
-                /*
-                searchTerm = query;
-                intent.putExtra(SearchManager.QUERY, query);
-                ApiCaller caller = new ApiCaller(getApplicationContext());
-                caller.search(searchTerm);
-                return true;  */
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                Log.d(TAG, "in onQueryTextChange!!!!!, newText = " + newText);
                 intent.putExtra(SearchManager.QUERY, newText);
                 searchTerm = newText;
-                Log.d(TAG, "searchLength = " + searchLength);
 
-           /*     if (( searchTerm.length() > 2 && adapter == null) || (searchTerm.length() == 2 && searchLength == 3 && adapter == null)) {
-                    Log.d(TAG, "searchterm length = " + searchTerm.length() + " and adapter = null!!!!");
-                    savedQuery = bundle.getString("SAVEDQUERY");
-                    Log.d(TAG, "savedQuery = " + savedQuery);
-                    searchLength = searchTerm.length();
-
-                    ApiCaller caller = new ApiCaller(getApplicationContext());
-                    caller.search(savedQuery);
-
-                    return true;
-
-                } else */
                 if (searchTerm.length() > 2 || (searchTerm.length() == 2 && searchLength == 3)) {
                     searchLength = searchTerm.length();
                     search(searchTerm);
@@ -176,10 +144,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-      //  viewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new SearchTabAdapter(getSupportFragmentManager(), profileTabs.getTabCount(), userResults, teamResults);
 
         viewPager.setAdapter(adapter);
@@ -204,38 +168,19 @@ public class SearchActivity extends AppCompatActivity {
                 Log.d(TAG, "tab reselected = " + tab.getText());
             }
         });
-
-
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume!!!!!");
-
-
-
-    }
-
-    @Override
-    public void onPause() {
-        EventBus.getDefault().unregister(this);
-        super.onPause();
-    }
-
 
     public void search(String query) {
-
-        Log.d(TAG, "in search, query = " + query);
-
         userResults.clear();
         teamResults.clear();
         // ignore case when performing queries
         query = query.toLowerCase();
         for (User user : users) {
             String name = user.getFirstName().toLowerCase() + " " + user.getLastName().toLowerCase();
+            Log.d(TAG, "userList in search, name = " + user.getFirstName() + " " + user.getLastName());
             if ((user.getFirstName() != null && user.getLastName() != null) && name.contains(query)) {
                 userResults.add(user);
+                Log.d(TAG, "Match with name " + user.getFirstName() + user.getLastName());
             }
         }
         for (Team team : teams) {
@@ -244,7 +189,7 @@ public class SearchActivity extends AppCompatActivity {
                 teamResults.add(team);
             }
         }
-        adapter.notifyDataSetChanged();
+
         EventBus.getDefault().post(new UpdateSearchEvent(userResults, teamResults));
     }
 
@@ -310,16 +255,14 @@ public class SearchActivity extends AppCompatActivity {
         savedInstanceState.putParcelableArrayList("USERS", users);
         savedInstanceState.putParcelableArrayList("TEAMS", teams);
 
+        // save which tab is selected
         savedInstanceState.putInt("tabState", profileTabs.getSelectedTabPosition());
-
-        Log.d(TAG, "onSaveInstanceState!!!, query = " + searchView.getQuery().toString());
 
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-
 
         super.onRestoreInstanceState(savedInstanceState);
 
@@ -329,15 +272,25 @@ public class SearchActivity extends AppCompatActivity {
         users = savedInstanceState.getParcelableArrayList("USERS");
         teams = savedInstanceState.getParcelableArrayList("TEAMS");
 
+        // stay on same tab as was selected in previous orientation
         TabLayout.Tab tab = profileTabs.getTabAt(savedInstanceState.getInt("tabState"));
         tab.select();
-
-        Log.d(TAG, "in onRestoreInstanceState!!!, searchTerm = " + searchTerm);
-        Log.d(TAG, "adapter = " + adapter);
 
         if (searchLength >= 2) {
             search(searchTerm);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
     }
 
 }
