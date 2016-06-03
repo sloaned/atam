@@ -11,11 +11,14 @@ import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.TeamMemberAdapter;
+import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Team;
 import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.network.ApiCaller;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -47,22 +50,16 @@ public class TeamFragment extends Fragment {
         teamView = bottomBar.getBottomBar(getActivity(), teamView);
 
         Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra("Team")) {
-            team = (Team) intent.getSerializableExtra("Team");
+        if (intent != null && intent.hasExtra("TeamId")) {
+            String teamId = intent.getStringExtra("TeamId");
 
-            teamName.setText(team.getName());
-            teamDescription.setText(team.getDescription());
-
-            memberList = team.getUserList();
-
-            adapter = new TeamMemberAdapter(getActivity(), memberList);
-            teamMemberListView.setAdapter(adapter);
-
+            ApiCaller caller = new ApiCaller(getActivity());
+            caller.getTeamById(teamId);
         }
 
         return teamView;
     }
-/*
+
     @Override
     public void onResume() {
         super.onResume();
@@ -74,5 +71,18 @@ public class TeamFragment extends Fragment {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
-*/
+
+    @Subscribe
+    public void onUpdateTeam(ViewTeamEvent event) {
+
+        team = event.getTeam();
+        teamName.setText(team.getName());
+        teamDescription.setText(team.getDescription());
+
+        memberList = team.getUserList();
+
+        adapter = new TeamMemberAdapter(getActivity(), memberList);
+        teamMemberListView.setAdapter(adapter);
+    }
+
 }

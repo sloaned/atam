@@ -1,7 +1,9 @@
 package com.example.catalyst.ata_test.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -23,6 +25,7 @@ import com.example.catalyst.ata_test.menus.BottomBar;
 import com.example.catalyst.ata_test.models.Profile;
 import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
+import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,6 +44,8 @@ public class ProfileFragment extends Fragment {
     private Profile mProfile;
     private ApiCaller caller;
 
+    private SharedPreferences prefs;
+
     private ProfileTabAdapter adapter;
 
     @Bind(R.id.user_info_area)LinearLayout userInfoArea;
@@ -57,6 +62,8 @@ public class ProfileFragment extends Fragment {
         profileView = inflater.inflate(R.layout.fragment_profile, null);
 
         ButterKnife.bind(this, profileView);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         caller = new ApiCaller(getActivity());
         profileView = bottomBar.getBottomBar(getActivity(), profileView);
 
@@ -73,8 +80,13 @@ public class ProfileFragment extends Fragment {
         profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
 
         Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra("User")) {
-            String userId = intent.getStringExtra("User");
+        if (intent != null && intent.hasExtra("UserId")) {
+            String userId = intent.getStringExtra("UserId");
+            String myId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
+
+            if (!userId.equals(myId)) {
+                editBioButton.setVisibility(View.GONE);
+            }
 
             caller.getProfile(userId);
 

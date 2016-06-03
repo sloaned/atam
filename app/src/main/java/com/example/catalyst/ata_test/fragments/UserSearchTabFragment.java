@@ -46,7 +46,7 @@ public class UserSearchTabFragment extends Fragment {
                 User user = (User) adapter.getItem(position);
 
                 Intent intent = new Intent(getActivity(), ProfileActivity.class)
-                        .putExtra("User", user.getId());
+                        .putExtra("UserId", user.getId());
                 startActivity(intent);
             }
         });

@@ -72,7 +72,9 @@ public class DashboardFragment extends Fragment {
 
                 String teamId = team.getId();
 
-                caller.getTeamById(teamId);
+                Intent intent = new Intent(getActivity(), TeamActivity.class)
+                        .putExtra("TeamId",  teamId);
+                startActivity(intent);
             }
         });
 
@@ -109,14 +111,4 @@ public class DashboardFragment extends Fragment {
         }
         adapter.notifyDataSetChanged();
     }
-
-    /* open team page when a team is clicked on */
-    @Subscribe
-    public void viewTeam(ViewTeamEvent event) {
-        Log.d(TAG, event.getTeam().toString());
-        Intent intent = new Intent(getActivity(), TeamActivity.class)
-                .putExtra("Team", (Serializable) event.getTeam());
-        startActivity(intent);
-    }
-
 }

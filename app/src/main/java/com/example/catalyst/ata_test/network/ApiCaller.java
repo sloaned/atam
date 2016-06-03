@@ -76,8 +76,6 @@ public class ApiCaller {
 
         //To facilitate loging out, the session ID with ATAM is being destroyed client side.
         //This effectively logs the user out.
-
-
         String url = API_URL + "/logout";
 
         StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
@@ -96,7 +94,6 @@ public class ApiCaller {
                 mContext.startActivity(intent);
 
             }
-
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -126,67 +123,6 @@ public class ApiCaller {
             }
         };
         AppController.getInstance().addToRequestQueue(logoutRequest);
-    }
-
-    public void getAllUsers() {
-
-        /* may need to be updated depending on number of employees */
-        String url = DATA_URL + "users?size=3000";
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-                ArrayList<User> users = new ArrayList<User>();
-                try {
-                    //  JSONObject embedded = response.getJSONObject(JsonConstants.JSON_EMBEDDED);
-                    JSONArray userList = response.getJSONArray(JsonConstants.JSON_RESULT);
-
-                    //TODO: Remove this line of debug code when app hits version 1.0
-                    Log.d(TAG, "userList length = " + userList.length());
-
-                    for (int i = 0; i < userList.length(); i++) {
-                        JSONObject jsonUser = userList.getJSONObject(i);
-                        User user = new User();
-                        user.setId(jsonUser.getString(JsonConstants.JSON_USER_ID));
-                        user.setFirstName(jsonUser.getString(JsonConstants.JSON_USER_FIRST_NAME));
-                        user.setLastName(jsonUser.getString(JsonConstants.JSON_USER_LAST_NAME));
-                        user.setTitle(jsonUser.getString(JsonConstants.JSON_USER_TITLE));
-                        user.setEmail(jsonUser.getString(JsonConstants.JSON_USER_EMAIL));
-                        if (!jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION).equals("null")) {
-                            user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
-                        }
-
-                        users.add(user);
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-
-                EventBus.getDefault().post(new InitialSearchEvent(users));
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-
-                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
-
-                headers.put("Cookie:", cookie);
-
-                return headers;
-            }
-        };
-
-        // avoid data caching on the device, which can cause 500 errors
-        req.setShouldCache(false);
-        AppController.getInstance().addToRequestQueue(req);
     }
 
     public void getCurrentUser() {
@@ -336,55 +272,6 @@ public class ApiCaller {
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req);
     }
-/*
-    public void getUserById(String id) {
-        String url = DATA_URL + "users/" + id + "/";
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                //TODO: Remove this line of debug code when app hits version 1.0
-                Log.d(TAG, response.toString());
-
-                User user = new User();
-                try {
-                    JSONObject jsonUser = response.getJSONObject(JsonConstants.JSON_RESULT);
-                    user.setId(jsonUser.getString(JsonConstants.JSON_USER_ID));
-                    user.setFirstName(jsonUser.getString(JsonConstants.JSON_USER_FIRST_NAME));
-                    user.setLastName(jsonUser.getString(JsonConstants.JSON_USER_LAST_NAME));
-                    user.setTitle(jsonUser.getString(JsonConstants.JSON_USER_TITLE));
-                    user.setEmail(jsonUser.getString(JsonConstants.JSON_USER_EMAIL));
-                    user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
-
-                   // EventBus.getDefault().post(new ProfileEvent(user));
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-
-                String cookie = prefs.getString(SharedPreferencesConstants.JSESSIONID, null);
-
-                headers.put("Cookie:", cookie);
-
-                return headers;
-            }
-        };
-
-        // avoid data caching on the device, which can cause 500 errors
-        req.setShouldCache(false);
-        AppController.getInstance().addToRequestQueue(req);
-    } */
 
     public void getTeamsByUser(String id) {
         String url = DATA_URL + "teams/user/" + id;
@@ -461,9 +348,6 @@ public class ApiCaller {
 
                             JSONObject userObject = member.getJSONObject(JsonConstants.JSON_TEAM_MEMBER);
 
-                            //TODO: Remove this line of debug code when app hits version 1.0
-                            Log.d(TAG, "userObject = " + userObject.toString());
-
                             User user = new User();
                             user.setId(userObject.getString(JsonConstants.JSON_USER_ID));
                             user.setFirstName(userObject.getString(JsonConstants.JSON_USER_FIRST_NAME));
@@ -472,14 +356,11 @@ public class ApiCaller {
                             user.setEmail(userObject.getString(JsonConstants.JSON_USER_EMAIL));
                             user.setDescription(userObject.getString(JsonConstants.JSON_USER_DESCRIPTION));
 
-
                             members.add(user);
                         }
 
                         team.setUserList(members);
                     }
-
-
                 } catch (JSONException e) {
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
@@ -495,9 +376,7 @@ public class ApiCaller {
                     Log.e("Volley", "Error. HTTP Status Code:" + networkResponse.statusCode);
                     Log.e("Volley", "" + networkResponse.data);
                 }
-
             }
-
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -512,7 +391,6 @@ public class ApiCaller {
         };
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
-
 
         AppController.getInstance().addToRequestQueue(req);
     }
@@ -592,8 +470,6 @@ public class ApiCaller {
         };
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
-
-
         AppController.getInstance().addToRequestQueue(req);
     }
 

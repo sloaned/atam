@@ -52,8 +52,9 @@ public class TeamSearchTabFragment extends Fragment {
 
                 String teamId = team.getId();
 
-                ApiCaller caller = new ApiCaller(getActivity());
-                caller.getTeamById(teamId);
+                Intent intent = new Intent(getActivity(), TeamActivity.class)
+                        .putExtra("TeamId", teamId);
+                startActivity(intent);
             }
         });
 
@@ -92,14 +93,4 @@ public class TeamSearchTabFragment extends Fragment {
         adapter = new TeamSearchResultAdapter(getActivity(), teamResults);
         listView.setAdapter(adapter);
     }
-
-    /* open team page when a team is clicked on */
-    @Subscribe
-    public void viewTeam(ViewTeamEvent event) {
-        Log.d(TAG, event.getTeam().toString());
-        Intent intent = new Intent(getActivity(), TeamActivity.class)
-                .putExtra("Team", (Serializable) event.getTeam());
-        startActivity(intent);
-    }
-
 }

@@ -114,7 +114,7 @@ public class BottomBar {
         String userId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
 
         Intent intent = new Intent(mContext, ProfileActivity.class)
-                .putExtra("User", userId);
+                .putExtra("UserId", userId);
         mContext.startActivity(intent);
 
         /* make activity transition seamless */
