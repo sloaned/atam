@@ -70,7 +70,6 @@ public class UserSearchResultAdapter extends BaseAdapter {
         }
         User u = resultList.get(position);
 
-        Log.d(TAG, "now displaying " + u.getFirstName() + " " + u.getLastName());
         holder.name.setText(u.getFirstName() + " " + u.getLastName());
         holder.title.setText(u.getTitle());
 
