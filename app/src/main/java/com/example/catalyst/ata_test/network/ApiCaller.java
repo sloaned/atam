@@ -32,6 +32,7 @@ import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.util.JsonConstants;
 import com.example.catalyst.ata_test.util.NetworkConstants;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
+import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -534,7 +535,7 @@ public class ApiCaller {
                         SearchResult result = new SearchResult();
 
                         JSONObject jsonResult = jsonResults.getJSONObject(i);
-                        if (jsonResult.getJSONObject(JsonConstants.JSON_USER) != null) {
+                        if (jsonResult.get(JsonConstants.JSON_USER) != JSONObject.NULL) {
                             JSONObject jsonUser = jsonResult.getJSONObject(JsonConstants.JSON_USER);
 
                             User user = new User();
@@ -546,7 +547,8 @@ public class ApiCaller {
                             user.setDescription(jsonUser.getString(JsonConstants.JSON_USER_DESCRIPTION));
 
                             result.setUser(user);
-                        } else if (jsonResult.getJSONObject(JsonConstants.JSON_TEAM) != null) {
+                        } else if (jsonResult.get(JsonConstants.JSON_TEAM) != JSONObject.NULL) {
+
                             JSONObject jsonTeam = jsonResult.getJSONObject(JsonConstants.JSON_TEAM);
 
                             Team team = new Team();

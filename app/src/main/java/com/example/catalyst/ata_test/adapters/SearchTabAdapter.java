@@ -29,6 +29,7 @@ public class SearchTabAdapter extends FragmentStatePagerAdapter {
         mNumOfTabs = numOfTabs;
         userResults = users;
         teamResults = teams;
+
     }
 
     @Override

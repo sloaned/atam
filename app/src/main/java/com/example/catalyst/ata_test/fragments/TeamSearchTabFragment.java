@@ -1,16 +1,29 @@
 package com.example.catalyst.ata_test.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.catalyst.ata_test.R;
+import com.example.catalyst.ata_test.activities.ProfileActivity;
+import com.example.catalyst.ata_test.activities.TeamActivity;
 import com.example.catalyst.ata_test.adapters.TeamSearchResultAdapter;
+import com.example.catalyst.ata_test.events.UpdateSearchEvent;
+import com.example.catalyst.ata_test.events.ViewTeamEvent;
 import com.example.catalyst.ata_test.models.Team;
+import com.example.catalyst.ata_test.models.User;
+import com.example.catalyst.ata_test.network.ApiCaller;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -27,11 +40,25 @@ public class TeamSearchTabFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
+
         teamResultView = inflater.inflate(R.layout.tab_team_results, container, false);
 
         listView = (ListView) teamResultView.findViewById(android.R.id.list);
         adapter = new TeamSearchResultAdapter(getActivity(), teamResults);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Team team = (Team) adapter.getItem(position);
+
+                String teamId = team.getId();
+
+                ApiCaller caller = new ApiCaller(getActivity());
+                caller.getTeamById(teamId);
+            }
+        });
 
         return teamResultView;
     }
@@ -44,6 +71,33 @@ public class TeamSearchTabFragment extends Fragment {
 
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Subscribe
+    public void onUpdateSearch(UpdateSearchEvent event) {
+        Log.d(TAG, "onUpdateSearch in team fragment called!!!!!!!!!");
+        teamResults = event.getTeams();
+        adapter.notifyDataSetChanged();
+    }
+
+    /* open team page when a team is clicked on */
+    @Subscribe
+    public void viewTeam(ViewTeamEvent event) {
+        Log.d(TAG, event.getTeam().toString());
+        Intent intent = new Intent(getActivity(), TeamActivity.class)
+                .putExtra("Team", (Serializable) event.getTeam());
+        startActivity(intent);
     }
 
 }
