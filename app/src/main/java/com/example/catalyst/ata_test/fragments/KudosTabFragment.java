@@ -3,6 +3,7 @@ package com.example.catalyst.ata_test.fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,13 @@ import android.widget.RelativeLayout;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.KudosAdapter;
+import com.example.catalyst.ata_test.events.AddKudoEvent;
 import com.example.catalyst.ata_test.models.Kudo;
 import com.example.catalyst.ata_test.network.ApiCaller;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -65,7 +70,7 @@ public class KudosTabFragment extends Fragment {
         giveKudosButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                openGiveKudoFragment();
             }
         });
 
@@ -81,6 +86,31 @@ public class KudosTabFragment extends Fragment {
 
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void openGiveKudoFragment() {
+        DialogFragment dialog = GiveKudoFragment.newInstance(userId);
+        if (dialog.getDialog() != null) {
+            dialog.getDialog().setCanceledOnTouchOutside(true);
+        }
+        dialog.show(getFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Subscribe
+    public void onAddKudo(AddKudoEvent event) {
+        caller.getProfile(userId);
     }
 
 

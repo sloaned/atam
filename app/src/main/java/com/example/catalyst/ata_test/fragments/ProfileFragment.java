@@ -115,7 +115,7 @@ public class ProfileFragment extends Fragment {
      */
     public void openEditBioFragment() {
         String bio = userBio.getText().toString();
-        DialogFragment dialog = EditBioFragment.newInstance(bio);
+        DialogFragment dialog = EditBioFragment.newInstance(mProfile.getUser());
         if (dialog.getDialog() != null) {
             dialog.getDialog().setCanceledOnTouchOutside(true);
         }
@@ -125,7 +125,7 @@ public class ProfileFragment extends Fragment {
     /* callback function from editBioFragment to update user bio */
     @Subscribe
     public void changeBio(BioChangeEvent event) {
-        userBio.setText(event.getBio());
+        caller.getProfile(mProfile.getUser().getId());
     }
 
     @Subscribe
@@ -136,8 +136,8 @@ public class ProfileFragment extends Fragment {
 
         username.setText(user.getFirstName() + " " + user.getLastName());
         userTitle.setText(user.getTitle());
-        if (user.getDescription() != null && !user.getDescription().equals("null")) {
-            userBio.setText(user.getDescription());
+        if (user.getProfileDescription() != null && !user.getProfileDescription().equals("null")) {
+            userBio.setText(user.getProfileDescription());
         }
 
         final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
@@ -169,3 +169,24 @@ public class ProfileFragment extends Fragment {
     }
 
 }
+
+
+
+/*
+    Weekend changes:
+
+      - added textAlignment:center to the tablayout in search activity xml pages
+      - added openGiveKudoFragment function in KudosTabFragment
+      - updated kudo model to match kudoApi in server
+      - deleted InitialSearchEvent
+      - updated getProfile json parsing to reflect new kudo model (date, reviewer)
+      - added postKudo call in ApiCaller (gson/json stuff may be wrong)
+      - added addKudoEvent
+      - added addKudoEvent listener in KudosTabFragment that recalls/reloads the profile
+      - updated user model to match User object in server
+      - added full user json parsing in getProfile()
+      - editBioFragment now takes in full user, builds user object on positive button click and calls updateUser
+      - made updateUser call in ApiCaller
+      - removed content from BioChangeEvent
+      - BioChangeEvent listener function in ProfileFragment to recall/reload profile
+ */

@@ -3,7 +3,9 @@ package com.example.catalyst.ata_test.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +13,14 @@ import android.widget.EditText;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.events.BioChangeEvent;
+import com.example.catalyst.ata_test.models.Kudo;
+import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
+import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Date;
 
 /**
  * Created by dsloane on 6/3/2016.
@@ -22,6 +29,7 @@ public class GiveKudoFragment extends DialogFragment {
 
     private static String kudoReceiverId;
     private ApiCaller caller;
+    private SharedPreferences prefs;
 
     public GiveKudoFragment() {}
 
@@ -33,6 +41,7 @@ public class GiveKudoFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         caller = new ApiCaller(getActivity());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         final View giveKudoView = inflater.inflate(R.layout.fragment_give_kudo, null);
         final EditText kudoText = (EditText) giveKudoView.findViewById(R.id.give_kudo_textarea);
@@ -43,6 +52,16 @@ public class GiveKudoFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String kudoComment = kudoText.getText().toString();
+                Date date = new Date();
+                User reviewer = new User();
+                String myId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
+                reviewer.setId(myId);
+
+                Kudo kudo = new Kudo(kudoReceiverId, reviewer, kudoComment, date);
+
+                if (!myId.equals(null) && myId != null && !myId.equals(kudoReceiverId)) {
+                    caller.postKudo(kudo);
+                }
 
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

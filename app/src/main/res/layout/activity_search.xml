@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="80dp"
+        android:textAlignment="center"
         android:background="#a6a6a6"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 

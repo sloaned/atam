@@ -1,20 +1,31 @@
 package com.example.catalyst.ata_test.models;
 
+import java.util.Date;
+
 /**
  * Created by dsloane on 5/10/2016.
  */
 public class Kudo {
-    private User reviewed;
+    private String reviewedId;
     private User reviewer;
-    private String kudo;
-    private String submittedDate;  // should probably be changed to a date
+    private String comment;
+    private Date submittedDate;
 
-    public void setReviewed(User reviewed) {this.reviewed = reviewed;}
-    public User getReviewed() {return reviewed;}
+    public Kudo() {}
+
+    public Kudo(String reviewedId, User reviewer, String comment, Date submittedDate) {
+        this.reviewedId = reviewedId;
+        this.reviewer = reviewer;
+        this.comment = comment;
+        this.submittedDate = submittedDate;
+    }
+
+    public void setReviewed(String reviewedId) {this.reviewedId = reviewedId;}
+    public String getReviewedId() {return reviewedId;}
     public void setReviewer(User reviewer) {this.reviewer = reviewer;}
     public User getReviewer() {return reviewer;}
-    public void setKudo(String kudo) {this.kudo = kudo;}
-    public String getKudo() {return kudo;}
-    public void setSubmittedDate(String date) {this.submittedDate = date;}
-    public String getSubmittedDate() {return submittedDate;}
+    public void setKudo(String comment) {this.comment = comment;}
+    public String getComment() {return comment;}
+    public void setSubmittedDate(Date date) {this.submittedDate = date;}
+    public Date getSubmittedDate() {return submittedDate;}
 }

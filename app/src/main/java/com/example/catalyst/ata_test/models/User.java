@@ -4,6 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by dsloane on 4/22/2016.
@@ -12,19 +17,29 @@ public class User implements Serializable, Parcelable {
     private String id;
     private String firstName;
     private String lastName;
-    private String role;
     private String title;
-    private String description;
+    private String profileDescription;
     private String email;
+    private String avatar;
+    private Boolean isActive;
+    private Date startDate;
+    private Date endDate;
+    private Integer version;
 
     public User() {}
 
-    public User(String id, String first, String last, String role, String desc) {
+    public User(String id, String first, String last, String title, String desc, String email, String avatar, Boolean isActive, Date startDate, Date endDate, Integer version) {
         this.id = id;
         this.firstName = first;
         this.lastName = last;
-        this.role = role;
-        this.description = desc;
+        this.title = title;
+        this.profileDescription = desc;
+        this.email = email;
+        this.avatar = avatar;
+        this.isActive = isActive;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.version = version;
     }
 
     public String getId() {return id;}
@@ -33,24 +48,36 @@ public class User implements Serializable, Parcelable {
     public void setFirstName(String firstName) {this.firstName = firstName;}
     public String getLastName() {return lastName;}
     public void setLastName(String lastName) {this.lastName = lastName;}
-    public String getRole() {return role;}
-    public void setRole(String role) {this.role = role;}
     public String getTitle() {return title;}
     public void setTitle(String title) {this.title = title;}
     public String getEmail() {return email;}
     public void setEmail(String email) {this.email = email;}
-    public String getDescription() {return description;}
-    public void setDescription(String description) {this.description = description;}
+    public String getProfileDescription() {return profileDescription;}
+    public void setProfileDescription(String profileDescription) {this.profileDescription = profileDescription;}
+    public String getAvatar() {return avatar;}
+    public void setAvatar(String avatar) {this.avatar = avatar;}
+    public Boolean isActive() {return isActive;}
+    public void setActive(boolean isActive) {this.isActive = isActive;}
+    public Date getStartDate() {return startDate;}
+    public void setStartDate(Date startDate) {this.startDate = startDate;}
+    public Date getEndDate() {return endDate;}
+    public void setEndDate(Date endDate) {this.endDate = endDate;}
+    public Integer getVersion() {return version;}
+    public void setVersion(Integer version) {this.version = version;}
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(id);
         out.writeString(firstName);
         out.writeString(lastName);
-        out.writeString(role);
-        out.writeString(description);
+        out.writeString(profileDescription);
         out.writeString(title);
         out.writeString(email);
+        out.writeString(avatar);
+        out.writeString(String.valueOf(isActive));
+        out.writeString(startDate.toString());
+        out.writeString(endDate.toString());
+        out.writeInt(version);
     }
 
     public int describeContents() {
@@ -71,9 +98,21 @@ public class User implements Serializable, Parcelable {
         id = in.readString();
         firstName = in.readString();
         lastName = in.readString();
-        role = in.readString();
-        description = in.readString();
+        profileDescription = in.readString();
         title = in.readString();
         email = in.readString();
+        avatar = in.readString();
+        isActive = Boolean.valueOf(in.readString());
+        String startDateString = in.readString();
+        String endDateString = in.readString();
+        version = in.readInt();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        try {
+            startDate = format.parse(startDateString);
+            endDate = format.parse(endDateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:minHeight="80dp"
         android:background="#a6a6a6"
+        android:textAlignment="center"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <android.support.v4.view.ViewPager
