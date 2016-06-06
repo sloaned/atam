@@ -38,6 +38,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.catalyst.ata_test.activities.LoginActivity" />
         </activity>
+
         <activity android:name=".activities.ProfileActivity"
                   android:parentActivityName=".activities.LoginActivity">
                   <meta-data
@@ -70,6 +71,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.catalyst.ata_test.activities.DashboardActivity" />
         </activity>
+
+
+        <service
+            android:name=".services.ATAFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.ATAFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
 
     </application>
 

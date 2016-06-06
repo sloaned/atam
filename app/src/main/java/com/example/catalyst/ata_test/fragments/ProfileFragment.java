@@ -189,4 +189,5 @@ public class ProfileFragment extends Fragment {
       - made updateUser call in ApiCaller
       - removed content from BioChangeEvent
       - BioChangeEvent listener function in ProfileFragment to recall/reload profile
+      - started adding some FCM stuff in the manifest/gradle dependencies/services
  */
