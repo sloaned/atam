@@ -67,8 +67,8 @@ public class KudosAdapter extends BaseAdapter {
         }
         Kudo kudo = kudos.get(position);
         holder.reviewerName.setText(kudo.getReviewer().getFirstName() + " " + kudo.getReviewer().getLastName());
-        holder.kudoDate.setText(kudo.getSubmittedDate());
-        holder.kudoContent.setText(kudo.getKudo());
+        holder.kudoDate.setText(kudo.getSubmittedDate().toString());
+        holder.kudoContent.setText(kudo.getComment());
 
         return convertView;
     }

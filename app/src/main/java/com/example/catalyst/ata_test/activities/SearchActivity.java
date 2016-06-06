@@ -10,20 +10,13 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.adapters.ProfileTabAdapter;
 import com.example.catalyst.ata_test.adapters.SearchTabAdapter;
-import com.example.catalyst.ata_test.adapters.UserSearchResultAdapter;
-import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.events.SearchEvent;
 import com.example.catalyst.ata_test.events.UpdateSearchEvent;
-import com.example.catalyst.ata_test.fragments.TeamSearchTabFragment;
-import com.example.catalyst.ata_test.fragments.UserSearchTabFragment;
 import com.example.catalyst.ata_test.menus.TopBar;
 import com.example.catalyst.ata_test.models.SearchResult;
 import com.example.catalyst.ata_test.models.Team;
@@ -105,7 +98,6 @@ public class SearchActivity extends AppCompatActivity {
         final String oldQuery = intent.getStringExtra(SearchManager.QUERY);
         searchTerm = oldQuery;
         searchLength = searchTerm.length();
-        Log.d(TAG, "still in onCreate, searchTerm = " + searchTerm);
 
         searchView.setQuery(oldQuery, true);
 
