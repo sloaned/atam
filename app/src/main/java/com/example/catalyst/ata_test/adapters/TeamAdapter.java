@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.models.Team;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,45 +17,63 @@ import java.util.List;
  */
 public class TeamAdapter extends BaseAdapter {
 
-    private Context mContext;
-
-    private LayoutInflater inflater;
-    private List<Team> teams = new ArrayList<Team>();
-
+    //Setting up a tag for logging purposes.
     private final String TAG = TeamAdapter.class.getSimpleName();
 
+    //Context declared for getting access to the layout infalter service.
+    private Context mContext;
+
+    //The list holds the data the adapter is using.
+    private List<Team> teams;
+
+    //Constructor.
     public TeamAdapter(Context context, List<Team> teamsList) {
         mContext = context;
         teams = teamsList;
     }
 
+    //This method clears the data the adapter is using.
     public void clear() {
         teams.clear();
     }
 
+    //This method returns the size of the list.
     public int getCount() {
         return teams.size();
     }
 
+    //this method returns a team object form the provided location in the list.
+    @Override
     public Team getItem(int location) {
         return teams.get(location);
     }
 
+    //Since the objects id is a string, this method is useless.
+    //Implementing it make Compiler happy.
     @Override
     public long getItemId(int position) {
-        return position;
+        return -1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = new ViewHolder();
 
-        if (inflater == null) {
-            inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
+        //Declared here per ViewHolder Pattern
+        ViewHolder holder;
 
+        //If the view hasn't been instantiated yet.
         if (convertView == null) {
+
+            //Create a new ViewHolder per the ViewHolder Pattern.
+            holder = new ViewHolder();
+
+            //Declare the Layout Inflater to inflate the view.
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            //Inflate the view.
             convertView = inflater.inflate(R.layout.list_teams, null);
+
+
             holder.teamName = (TextView) convertView.findViewById(R.id.team_name);
             holder.teamDescription = (TextView) convertView.findViewById(R.id.team_description);
 
@@ -71,71 +88,9 @@ public class TeamAdapter extends BaseAdapter {
         return convertView;
     }
 
+    //Android ViewHolder Pattern
     private static class ViewHolder {
         TextView teamName;
         TextView teamDescription;
     }
-    /*
-
-    private Context mContext;
-
-    private LayoutInflater inflater;
-    private List<Kudo> kudos = new ArrayList<Kudo>();
-
-    private final String TAG = KudosAdapter.class.getSimpleName();
-
-    public KudosAdapter(Context context, List<Kudo> kudosList) {
-        mContext = context;
-        kudos = kudosList;
-    }
-
-    public void clear() {
-        kudos.clear();
-    }
-
-    public int getCount() {
-        return kudos.size();
-    }
-
-    public Kudo getItem(int location) {
-        return kudos.get(location);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = new ViewHolder();
-
-        if (inflater == null) {
-            inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_kudos, null);
-            holder.reviewerName = (TextView) convertView.findViewById(R.id.reviewer_name);
-            holder.kudoDate = (TextView) convertView.findViewById(R.id.kudo_date);
-            holder.kudoContent = (TextView) convertView.findViewById(R.id.kudo_content);
-
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        Kudo kudo = kudos.get(position);
-        holder.reviewerName.setText(kudo.getReviewer().getFirstName() + " " + kudo.getReviewer().getLastName());
-        holder.kudoDate.setText(kudo.getSubmittedDate());
-        holder.kudoContent.setText(kudo.getKudo());
-
-        return convertView;
-    }
-
-    private static class ViewHolder {
-        TextView reviewerName;
-        TextView kudoDate;
-        TextView kudoContent;
-    }
-     */
 }

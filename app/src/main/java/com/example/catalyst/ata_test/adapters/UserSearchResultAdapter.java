@@ -1,7 +1,6 @@
 package com.example.catalyst.ata_test.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +44,11 @@ public class UserSearchResultAdapter extends BaseAdapter {
         return resultList.get(location);
     }
 
+    //Since the objects id is a string, this method is useless.
+    //Implementing it make Compiler happy.
     @Override
     public long getItemId(int position) {
-        return position;
+        return -1;
     }
 
     @Override

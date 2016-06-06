@@ -10,20 +10,13 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.adapters.ProfileTabAdapter;
 import com.example.catalyst.ata_test.adapters.SearchTabAdapter;
-import com.example.catalyst.ata_test.adapters.UserSearchResultAdapter;
-import com.example.catalyst.ata_test.events.InitialSearchEvent;
 import com.example.catalyst.ata_test.events.SearchEvent;
 import com.example.catalyst.ata_test.events.UpdateSearchEvent;
-import com.example.catalyst.ata_test.fragments.TeamSearchTabFragment;
-import com.example.catalyst.ata_test.fragments.UserSearchTabFragment;
 import com.example.catalyst.ata_test.menus.TopBar;
 import com.example.catalyst.ata_test.models.SearchResult;
 import com.example.catalyst.ata_test.models.Team;
@@ -44,24 +37,43 @@ import butterknife.ButterKnife;
 
 public class SearchActivity extends AppCompatActivity {
 
+    //Setting up a tag for logging purposes.
     private static final String TAG = SearchActivity.class.getSimpleName();
 
+    //Declare adapter as a class variable.
     private SearchTabAdapter adapter;
 
+    //Using Butterknife to hook the logo
     @Bind(R.id.action_logo) ImageView logo;
+
+    //Using Butterknife to hook the profileTabs
     @Bind(R.id.tab_layout) TabLayout profileTabs;
+
+    //Using Butterknife to hook the View Pager
     @Bind(R.id.pager) ViewPager viewPager;
+
+    //After a database call happens, the results for users are stored in this array.
+    private ArrayList<User> users = new ArrayList<User>();
+
+    //After a database call happens, the results for teams are stored in this array.
+    private ArrayList<Team> teams = new ArrayList<Team>();
+
+    //This pulls data from the users array. This list is edited with each additonal character
+    //add to the search feild after two characters.
     private ArrayList<User> userResults = new ArrayList<User>();
+
+    //This pulls data from the teams array. This list is edited with each additonal character
+    //add to the search feild after two characters.
     private ArrayList<Team> teamResults = new ArrayList<Team>();
 
-    private ArrayList<User> users = new ArrayList<User>();
-    private ArrayList<Team> teams = new ArrayList<Team>();
+    //Search declared a class local variable to be accessed by inner classes and interface instantiation.
     private SearchView searchView;
 
     private String searchTerm;
     private String savedQuery;
     private int searchLength = 0;
 
+    //Basic Android Activity setup.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -284,12 +296,16 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        //Registering the Eventbus
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
+        //Unregisgtering the Eventbus.
         EventBus.getDefault().unregister(this);
+
         super.onPause();
     }
 

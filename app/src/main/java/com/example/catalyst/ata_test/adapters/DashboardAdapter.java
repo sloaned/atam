@@ -1,7 +1,6 @@
 package com.example.catalyst.ata_test.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,68 +17,95 @@ import java.util.List;
  * Created by dsloane on 4/27/2016.
  */
 public class DashboardAdapter extends BaseAdapter {
-    private Context mContext;
 
-    private LayoutInflater inflater;
-    private List<Team> teamList = new ArrayList<Team>();
-
+    //Setting up a tag for logging purposes.
     private static final String TAG = DashboardAdapter.class.getSimpleName();
 
+    //Context declared for getting access to the layout infalter service.
+    private Context mContext;
+
+    //The list holds the data the adapter is using.
+    private List<Team> teamList = new ArrayList<Team>();
+
+    //Constructor. Assigns a value to mContext and the datalist.
     public DashboardAdapter(Context context, List<Team> teamList) {
         mContext = context;
         this.teamList = teamList;
     }
 
+    //This method clears the data the adapter is using.
     public void clear() {
         teamList.clear();
     }
 
+    //This method returns the size of the list.
     @Override
     public int getCount() {
         return teamList.size();
     }
 
+    //Given a position, this method returns the object at that position.
     @Override
     public Object getItem(int location) {
         return teamList.get(location);
     }
 
+    //Since the objects id is a string, this method is useless.
+    //Implementing it make Compiler happy.
     @Override
     public long getItemId(int position) {
-        return position;
+        return -1;
     }
 
+    //Basic android View Setup.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder = new ViewHolder();
+        //Declared here per ViewHolder Pattern.
+        ViewHolder viewHolder;
 
-        if (inflater == null) {
-            inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
+        //If the view hasn't been instantiated yet.
         if (convertView == null) {
+
+            //Create a new View Holder per the ViewHolder Pattern.
+            viewHolder = new ViewHolder();
+
+            //Declare the layout inflater to inflate the view.
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            //Create the view.
             convertView = inflater.inflate(R.layout.list_dashboard, null);
-            holder.name = (TextView) convertView.findViewById(R.id.team_name);
-            holder.id = (TextView) convertView.findViewById(R.id.team_id);
-            convertView.setTag(holder);
+
+            //Find the Textview, and assign it to the view holder.
+            viewHolder.teamNameTV = (TextView) convertView.findViewById(R.id.team_name);
+
+            //Assigns the team name to the ViewHolder to be accessed later.
+            viewHolder.teamName = teamList.get(position).getName();
+
+            //Assigns the ID to the ViewHolder so it can be accessed later.
+            viewHolder.teamId = teamList.get(position).getId();
+
+            //Save the viewHolder
+            convertView.setTag(viewHolder);
         } else {
-            holder = (ViewHolder) convertView.getTag();
+            //If the view already exists, load it from the tag.
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        String s = teamList.get(position).getName();
-        String id = teamList.get(position).getId();
 
-        holder.name.setText(s);
-        holder.id.setText(id);
+        //Assigns the value of the team name to the textview associated with the View.
+        viewHolder.teamNameTV.setText(viewHolder.teamName);
 
+        //return the view.
         return convertView;
+        //TODO: Remove the invisible text view from the XML inside the Dashboard Adapter.
     }
 
 
-
+    //Android ViewHolder pattern.
     private static class ViewHolder {
-        TextView name;
-        TextView id; // invisible textview, so that the team id can be stored and used later to get team details
+        public String teamId; //the team id can be stored and used later to get team details
+        public String teamName; //Stores the team name in the ViewHolder.
+        public TextView teamNameTV; //TextView that displays team name.
     }
 
 }

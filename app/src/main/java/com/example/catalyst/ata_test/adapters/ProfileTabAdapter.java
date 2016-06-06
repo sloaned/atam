@@ -14,11 +14,16 @@ import com.example.catalyst.ata_test.models.Profile;
  */
 public class ProfileTabAdapter extends FragmentStatePagerAdapter {
 
+    //Setting up a tag for logging purposes.
     private static final String TAG = ProfileTabAdapter.class.getSimpleName();
 
-    int mNumOfTabs;
-    Profile mProfile;
+    //Holds the value for the number of tabs.
+    public int mNumOfTabs;
 
+    //Used to hold a profile object.
+    public Profile mProfile;
+
+    //Contructor
     public ProfileTabAdapter(FragmentManager fm, int numOfTabs, Profile profile) {
         super(fm);
         mNumOfTabs = numOfTabs;
@@ -29,11 +34,15 @@ public class ProfileTabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
+                //If the kudo fragment is selected, load the kudos for the user.
                 KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mProfile.getKudos(), mProfile.getUser().getId());
                 return kudosFragment;
             case 1:
+                //If the reviews tab is selected, load the reiviews for said user.
+                //TODO: Load the reviews for said user here.
                 return new ReviewsTabFragment();
             case 2:
+                //If the teams tab is selected, load the teams the user is apart of.
                 TeamsTabFragment teamsFragment = TeamsTabFragment.newInstance(mProfile.getTeams());
                 return teamsFragment;
             default:
@@ -41,6 +50,7 @@ public class ProfileTabAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    //Returns the number of tabs that exisist.
     @Override
     public int getCount() {
         return mNumOfTabs;

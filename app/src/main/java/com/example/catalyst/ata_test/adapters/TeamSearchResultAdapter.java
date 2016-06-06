@@ -42,9 +42,11 @@ public class TeamSearchResultAdapter extends BaseAdapter {
         return teams.get(location);
     }
 
+    //Since the objects id is a string, this method is useless.
+    //Implementing it make Compiler happy.
     @Override
     public long getItemId(int position) {
-        return position;
+        return -1;
     }
 
     @Override

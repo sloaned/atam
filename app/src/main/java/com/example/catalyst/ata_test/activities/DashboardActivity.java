@@ -1,43 +1,31 @@
 package com.example.catalyst.ata_test.activities;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.internal.view.SupportMenu;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.adapters.DashboardAdapter;
-import com.example.catalyst.ata_test.fragments.DashboardFragment;
 import com.example.catalyst.ata_test.menus.TopBar;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/*
+    After the user logs in, they are redirected to this activity.
+ */
 public class DashboardActivity extends AppCompatActivity {
 
+    //Using Butterknife to hook the searchview.
     @Bind(R.id.action_search)SearchView searchView;
+
+    //Using butterknife to hook the listView
     @Bind(R.id.listView) View listView;
+
+    //Using butterknife to hook the Logo.
     @Bind(R.id.action_logo) ImageView logo;
 
     // an invisible layout before the searchbar to prevent the searchbar from automatically
@@ -45,10 +33,11 @@ public class DashboardActivity extends AppCompatActivity {
     @Bind(R.id.focus_layout) LinearLayout focus;
     private TopBar topBar;
 
-
+    //Setting up a tag for logging purposes.
     private static final String TAG = DashboardActivity.class.getSimpleName();
 
-
+    //Basic Android Activity setup.
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
@@ -63,8 +52,13 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        //Calling the super to do the default onResume functionality.
         super.onResume();
+
+        //clears the search bar
         topBar.clearSearch();
+
+        //refocuses the invisible element.
         focus.requestFocus();
     }
 

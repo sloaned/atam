@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.data.TeamMemberContract;
 import com.example.catalyst.ata_test.models.User;
 
 import java.util.ArrayList;
@@ -47,9 +46,11 @@ public class TeamMemberAdapter extends BaseAdapter {
         return memberList.get(location);
     }
 
+    //Since the objects id is a string, this method is useless.
+    //Implementing it make Compiler happy.
     @Override
     public long getItemId(int position) {
-        return position;
+        return -1;
     }
 
     @Override
