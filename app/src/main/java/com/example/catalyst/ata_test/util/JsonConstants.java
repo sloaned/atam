@@ -20,8 +20,12 @@ public class JsonConstants {
     public static final String JSON_USER_LAST_NAME = "lastName";
     public static final String JSON_USER_EMAIL = "email";
     public static final String JSON_USER_TITLE = "title";
-    public static final String JSON_USER_ROLE = "role";
     public static final String JSON_USER_DESCRIPTION = "profileDescription";
+    public static final String JSON_USER_VERSION = "version";
+    public static final String JSON_USER_AVATAR = "avatar";
+    public static final String JSON_USER_ACTIVE = "isActive";
+    public static final String JSON_USER_START_DATE = "startDate";
+    public static final String JSON_USER_END_DATE = "endDate";
 
     public static final String JSON_TEAM_ID = "id";
     public static final String JSON_TEAM_NAME = "name";

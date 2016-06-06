@@ -92,7 +92,7 @@ public class KudosAdapter extends BaseAdapter {
             viewHolder.submittedDate = kudo.getSubmittedDate();
 
             //Stores the content of the Kudo in the ViewHolder object.
-            viewHolder.kudoContent = kudo.getKudo();
+            viewHolder.kudoContent = kudo.getComment();
 
             //Set the holder class as tag on the view, so that it can be loaded.
             convertView.setTag(viewHolder);
@@ -101,7 +101,7 @@ public class KudosAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        //Display the saved Reviewers nameTV in the TextView.
+        //Display the saved Reviewers name in the TextView.
         viewHolder.reviewerNameTV.setText(viewHolder.reviewerName);
 
         //Display the saved Kudos submitted date in the TextView.
