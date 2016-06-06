@@ -78,7 +78,6 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-
         getTeams();
 
         return homeView;
