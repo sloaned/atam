@@ -64,6 +64,9 @@ public class TeamAdapter extends BaseAdapter {
         //If the view hasn't been instantiated yet.
         if (convertView == null) {
 
+            //
+            Team team = teams.get(position);
+
             //Create a new ViewHolder per the ViewHolder Pattern.
             holder = new ViewHolder();
 
@@ -73,24 +76,48 @@ public class TeamAdapter extends BaseAdapter {
             //Inflate the view.
             convertView = inflater.inflate(R.layout.list_teams, null);
 
+            //Find the TextView for team names, and save it to the ViewHolder.
+            holder.teamNameTV = (TextView) convertView.findViewById(R.id.team_name);
 
-            holder.teamName = (TextView) convertView.findViewById(R.id.team_name);
-            holder.teamDescription = (TextView) convertView.findViewById(R.id.team_description);
+            //Find the TextView for team Descriptions, and save it to the ViewHolder.
+            holder.teamDescriptionTV = (TextView) convertView.findViewById(R.id.team_description);
 
+            //Saves the team nameTV to the ViewHolder
+            holder.teamName = team.getName();
+
+            //Saves the team description to ViewHolder
+            holder.teamDescription = team.getDescription();
+
+            //Save The ViewHolder as a tag to view.
             convertView.setTag(holder);
         } else {
+            //If the view already exists, load its details into the holde object.
             holder = (ViewHolder) convertView.getTag();
         }
-        Team team = teams.get(position);
-        holder.teamName.setText(team.getName());
-        holder.teamDescription.setText(team.getDescription());
 
+        //Loads the teame into the Textview to be displayed to the user.
+        holder.teamNameTV.setText(holder.teamName);
+
+        //Loads the team description into the TextView to be displayed to the user.
+        holder.teamDescriptionTV.setText(holder.teamDescription);
+
+        //Save the View Holder.
         return convertView;
     }
 
     //Android ViewHolder Pattern
     private static class ViewHolder {
-        TextView teamName;
-        TextView teamDescription;
+
+        //This value is used here to store the team nameTV.
+        public String teamName;
+
+        //This value is used here to store the team description.
+        public String teamDescription;
+
+        //Holds the TextView for the team nameTV so it can be directly updated.
+        public TextView teamNameTV;
+
+        //Holds the TextView for the team description so it can be directly updated.
+        public TextView teamDescriptionTV;
     }
 }
