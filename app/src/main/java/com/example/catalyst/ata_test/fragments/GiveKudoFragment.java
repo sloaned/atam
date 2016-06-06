@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.events.BioChangeEvent;
@@ -27,7 +28,7 @@ import java.util.Date;
  */
 public class GiveKudoFragment extends DialogFragment {
 
-    private static String kudoReceiverId;
+    private static User mUser;
     private ApiCaller caller;
     private SharedPreferences prefs;
 
@@ -45,10 +46,13 @@ public class GiveKudoFragment extends DialogFragment {
 
         final View giveKudoView = inflater.inflate(R.layout.fragment_give_kudo, null);
         final EditText kudoText = (EditText) giveKudoView.findViewById(R.id.give_kudo_textarea);
+        TextView giveKudoLabel = (TextView) giveKudoView.findViewById(R.id.give_kudo_label);
+
+        giveKudoLabel.setText("Give kudo to " + mUser.getFirstName());
 
         builder.setView(giveKudoView);
 
-        builder.setPositiveButton("Give it!", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String kudoComment = kudoText.getText().toString();
@@ -57,9 +61,9 @@ public class GiveKudoFragment extends DialogFragment {
                 String myId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
                 reviewer.setId(myId);
 
-                Kudo kudo = new Kudo(kudoReceiverId, reviewer, kudoComment, date);
+                Kudo kudo = new Kudo(mUser.getId(), reviewer, kudoComment, date);
 
-                if (!myId.equals(null) && myId != null && !myId.equals(kudoReceiverId)) {
+                if (!myId.equals(null) && myId != null && !myId.equals(mUser.getId())) {
                     caller.postKudo(kudo);
                 }
 
@@ -74,8 +78,8 @@ public class GiveKudoFragment extends DialogFragment {
         return builder.create();
     }
 
-    public static GiveKudoFragment newInstance(String userId) {
-        kudoReceiverId = userId;
+    public static GiveKudoFragment newInstance(User user) {
+        mUser = user;
 
         GiveKudoFragment fragment = new GiveKudoFragment();
         Bundle args = new Bundle();

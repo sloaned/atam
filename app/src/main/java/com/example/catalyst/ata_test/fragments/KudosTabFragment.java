@@ -16,6 +16,7 @@ import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.adapters.KudosAdapter;
 import com.example.catalyst.ata_test.events.AddKudoEvent;
 import com.example.catalyst.ata_test.models.Kudo;
+import com.example.catalyst.ata_test.models.User;
 import com.example.catalyst.ata_test.network.ApiCaller;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
@@ -39,7 +40,7 @@ public class KudosTabFragment extends Fragment {
 
     private ListView listView;
     private static ArrayList<Kudo> kudosList = new ArrayList<Kudo>();
-    private static String userId;
+    private static User mUser;
     private View kudoView;
     private ApiCaller caller;
 
@@ -59,7 +60,7 @@ public class KudosTabFragment extends Fragment {
 
         String myId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
 
-        if (myId.equals(userId)) {
+        if (myId.equals(mUser.getId())) {
             kudosButtonLayout.setVisibility(View.GONE);
         }
         /* set view for the list of kudos */
@@ -77,9 +78,9 @@ public class KudosTabFragment extends Fragment {
         return kudoView;
     }
 
-    public static KudosTabFragment newInstance(ArrayList<Kudo> kudos, String id) {
+    public static KudosTabFragment newInstance(ArrayList<Kudo> kudos, User user) {
         kudosList = kudos;
-        userId = id;
+        mUser = user;
 
         KudosTabFragment fragment = new KudosTabFragment();
         Bundle args = new Bundle();
@@ -89,7 +90,7 @@ public class KudosTabFragment extends Fragment {
     }
 
     public void openGiveKudoFragment() {
-        DialogFragment dialog = GiveKudoFragment.newInstance(userId);
+        DialogFragment dialog = GiveKudoFragment.newInstance(mUser);
         if (dialog.getDialog() != null) {
             dialog.getDialog().setCanceledOnTouchOutside(true);
         }
@@ -110,7 +111,7 @@ public class KudosTabFragment extends Fragment {
 
     @Subscribe
     public void onAddKudo(AddKudoEvent event) {
-        caller.getProfile(userId);
+        caller.getProfile(mUser.getId());
     }
 
 

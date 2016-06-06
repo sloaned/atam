@@ -29,7 +29,7 @@ public class ProfileTabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mProfile.getKudos(), mProfile.getUser().getId());
+                KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mProfile.getKudos(), mProfile.getUser());
                 return kudosFragment;
             case 1:
                 return new ReviewsTabFragment();
