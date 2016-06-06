@@ -5,5 +5,6 @@ package com.example.catalyst.ata_test.events;
  * This class is used by the EventBus library.
  * It is used by the login fragment.
  */
+
 public class GetCurrentUserEvent {
 }
