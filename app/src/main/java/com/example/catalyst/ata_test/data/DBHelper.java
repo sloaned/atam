@@ -102,8 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         cv.put(UserContract.UserEntry.COLUMN_USER_FIRST_NAME, user.getFirstName());
         cv.put(UserContract.UserEntry.COLUMN_USER_LAST_NAME, user.getLastName());
-        cv.put(UserContract.UserEntry.COLUMN_USER_DESCRIPTION, user.getDescription());
-        cv.put(UserContract.UserEntry.COLUMN_USER_ROLE, user.getRole());
+        cv.put(UserContract.UserEntry.COLUMN_USER_DESCRIPTION, user.getProfileDescription());
 
         db.insert(UserContract.UserEntry.TABLE_NAME, null, cv);
 
@@ -203,8 +202,7 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToFirst();
             user.setFirstName(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_FIRST_NAME)));
             user.setLastName(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_LAST_NAME)));
-            user.setDescription(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_DESCRIPTION)));
-            user.setRole(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_ROLE)));
+            user.setProfileDescription(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_DESCRIPTION)));
         }
         res.close();
         db.close();
@@ -221,8 +219,7 @@ public class DBHelper extends SQLiteOpenHelper {
             User user = new User();
             user.setFirstName(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_FIRST_NAME)));
             user.setLastName(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_LAST_NAME)));
-            user.setDescription(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_DESCRIPTION)));
-            user.setRole(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_ROLE)));
+            user.setProfileDescription(res.getString(res.getColumnIndex(UserContract.UserEntry.COLUMN_USER_DESCRIPTION)));
 
             users.add(user);
 
@@ -367,135 +364,5 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return results;
     }
-
-
-    public void setSampleData() {
-        User bob = new User("1", "Bob", "Jenkins", "A hero with mad tennis skillz", "Developer 1");
-        User lucy = new User("2", "Lucy", "Hochneffer", "Fierce but vital", "Developer 2");
-        User cassandra = new User("3", "Cassandra", "Loomberg", "Skilled at databases", "Developer 1");
-        User travis = new User("4", "Travis", "Spindle", "Call me if you want to learn how to dance", "Tech Lead");
-        User heather = new User("5", "Heather", "Carmichael", "once got a hole in one in mini golf", "Developer 1");
-        User blaine = new User("6", "Blaine", "Edwards", "bold and brave", "Developer 1");
-        User brad = new User("7", "Brad", "Larson", "Brad Dad", "Developer 69");
-
-        addUser(bob);
-        addUser(lucy);
-        addUser(cassandra);
-        addUser(travis);
-        addUser(heather);
-        addUser(blaine);
-        addUser(brad);
-
-        ArrayList<User> lunchmeatTeam = new ArrayList<User>();
-        lunchmeatTeam.add(bob);
-        lunchmeatTeam.add(lucy);
-        ArrayList<User> legoTeam = new ArrayList<User>();
-        legoTeam.add(blaine);
-        legoTeam.add(heather);
-        legoTeam.add(lucy);
-        ArrayList<User> waldorfTeam = new ArrayList<User>();
-        waldorfTeam.add(cassandra);
-        waldorfTeam.add(travis);
-        waldorfTeam.add(blaine);
-        waldorfTeam.add(bob);
-
-        Team lunchmeat = new Team("1", "Lunchmeat", true, lunchmeatTeam, "We're here to make lunch.");
-        Team lego = new Team("2", "Lego Team", true, legoTeam, "Making lego art");
-        Team waldorf = new Team("3", "Waldorf", true, waldorfTeam, "Designing an improved Waldorf salad");
-
-        addTeam(lunchmeat);
-        addTeam(lego);
-        addTeam(waldorf);
-
-        Membership m1 = new Membership(1, 1, true);
-        Membership m2 = new Membership(1, 2, true);
-        Membership m3 = new Membership(2, 2, true);
-        Membership m4 = new Membership(2, 5, true);
-        Membership m5 = new Membership(2, 6, true);
-        Membership m6 = new Membership(3, 1, true);
-        Membership m7 = new Membership(3, 3, true);
-        Membership m8 = new Membership(3, 4, true);
-        Membership m9 = new Membership(3, 6, true);
-
-        addTeamMember(m1);
-        addTeamMember(m2);
-        addTeamMember(m3);
-        addTeamMember(m4);
-        addTeamMember(m5);
-        addTeamMember(m6);
-        addTeamMember(m7);
-        addTeamMember(m8);
-        addTeamMember(m9);
-
-
-        Question q1 = new Question(1, "How would you rate their overall communication skills?");
-        Question q2 = new Question(2, "How would you rate their teamwork skills?");
-        Question q3 = new Question(3, "How would you rate their street smarts?");
-        Question q4 = new Question(4, "How would you rate their hair?");
-
-        addQuestion(q1);
-        addQuestion(q2);
-        addQuestion(q3);
-        addQuestion(q4);
-
-        Feedback f1 = new Feedback(1, "4.0", "Quite good");
-        Feedback f2 = new Feedback(2, "3.6", "Not bad");
-        Feedback f3 = new Feedback(3, "1.8", "Embarrassing");
-        Feedback f4 = new Feedback(4, "4.8", "the very finest");
-
-        ArrayList<Feedback> fb = new ArrayList<Feedback>();
-        fb.add(f1);
-        fb.add(f2);
-        fb.add(f3);
-        fb.add(f4);
-
-        Review r1 = new Review(bob, lucy, new Date(), 1, fb);
-        Review r2 = new Review(lucy, bob, new Date(), 1, fb);
-        Review r3 = new Review(blaine, lucy, new Date(), 2, fb);
-        Review r4 = new Review(heather, lucy, new Date(), 2, fb);
-        Review r5 = new Review(blaine, heather, new Date(), 2, fb);
-        Review r6 = new Review(lucy, heather, new Date(), 2, fb);
-        Review r7 = new Review(heather, blaine, new Date(), 2, fb);
-        Review r8 = new Review(lucy, blaine, new Date(), 2, fb);
-        Review r9 = new Review(bob, cassandra, new Date(), 3, fb);
-        Review r10 = new Review(travis, cassandra, new Date(), 3, fb);
-        Review r11 = new Review(blaine, cassandra, new Date(), 3, fb);
-        Review r12 = new Review(cassandra, bob, new Date(), 3, fb);
-        Review r13 = new Review(travis, bob, new Date(), 3, fb);
-        Review r14 = new Review(blaine, bob, new Date(), 3, fb);
-        Review r15 = new Review(bob, travis, new Date(), 3, fb);
-        Review r16 = new Review(blaine, travis, new Date(), 3, fb);
-        Review r17 = new Review(cassandra, travis, new Date(), 3, fb);
-        Review r18 = new Review(cassandra, blaine, new Date(), 3, fb);
-        Review r19 = new Review(bob, blaine, new Date(), 3, fb);
-        Review r20 = new Review(travis, blaine, new Date(), 3, fb);
-
-        addReview(r1);
-        addReview(r2);
-        addReview(r3);
-        addReview(r4);
-        addReview(r5);
-        addReview(r6);
-        addReview(r7);
-        addReview(r8);
-        addReview(r9);
-        addReview(r10);
-        addReview(r11);
-        addReview(r12);
-        addReview(r13);
-        addReview(r14);
-        addReview(r15);
-        addReview(r16);
-        addReview(r17);
-        addReview(r18);
-        addReview(r19);
-        addReview(r20);
-
-
-
-
-
-    }
-
 
 }

@@ -117,7 +117,6 @@ public class SearchActivity extends AppCompatActivity {
         final String oldQuery = intent.getStringExtra(SearchManager.QUERY);
         searchTerm = oldQuery;
         searchLength = searchTerm.length();
-        Log.d(TAG, "still in onCreate, searchTerm = " + searchTerm);
 
         searchView.setQuery(oldQuery, true);
 

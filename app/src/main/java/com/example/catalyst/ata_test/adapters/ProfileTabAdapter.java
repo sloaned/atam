@@ -35,7 +35,8 @@ public class ProfileTabAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 //If the kudo fragment is selected, load the kudos for the user.
-                KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mProfile.getKudos(), mProfile.getUser().getId());
+                KudosTabFragment kudosFragment = KudosTabFragment.newInstance(mProfile.getKudos(), mProfile.getUser());
+
                 return kudosFragment;
             case 1:
                 //If the reviews tab is selected, load the reiviews for said user.
