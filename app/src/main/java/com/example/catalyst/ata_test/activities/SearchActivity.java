@@ -61,18 +61,21 @@ public class SearchActivity extends AppCompatActivity {
     //After a database call happens, the results for teams are stored in this array.
     private ArrayList<Team> teams = new ArrayList<Team>();
 
-    //This pulls data from the users array. This list is edited with each additonal character
+    //This pulls data from the users array. This list is edited with each additional character
     //add to the search feild after two characters.
     private ArrayList<User> userResults = new ArrayList<User>();
 
-    //This pulls data from the teams array. This list is edited with each additonal character
+    //This pulls data from the teams array. This list is edited with each additional character
     //add to the search feild after two characters.
     private ArrayList<Team> teamResults = new ArrayList<Team>();
 
     //Search declared a class local variable to be accessed by inner classes and interface instantiation.
     private SearchView searchView;
 
+    // the current value of the query
     private String searchTerm;
+
+    // the current length of the query
     private int searchLength = 0;
 
     //Basic Android Activity setup.
@@ -256,6 +259,10 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
 
+        /*
+            do a search matching current query to user/team lists. As query is currently
+            two characters long, results lists will be identical to base user/team lists
+         */
         search(searchTerm);
     }
 
@@ -307,7 +314,7 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        //Unregisgtering the Eventbus.
+        //Unregistering the Eventbus.
         EventBus.getDefault().unregister(this);
 
         super.onPause();
