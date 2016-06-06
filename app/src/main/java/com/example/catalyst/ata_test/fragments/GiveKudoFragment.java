@@ -49,7 +49,7 @@ public class GiveKudoFragment extends DialogFragment {
         final EditText kudoText = (EditText) giveKudoView.findViewById(R.id.give_kudo_textarea);
         TextView giveKudoLabel = (TextView) giveKudoView.findViewById(R.id.give_kudo_label);
 
-        giveKudoLabel.setText("Give kudo to " + mUser.getFirstName());
+        giveKudoLabel.setText("Give Kudos to " + mUser.getFirstName());
 
         builder.setView(giveKudoView);
 
