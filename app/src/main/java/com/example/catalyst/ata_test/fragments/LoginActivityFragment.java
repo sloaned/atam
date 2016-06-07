@@ -26,10 +26,6 @@ import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-
-/**
- * A placeholder fragment containing a simple view.
- */
 public class LoginActivityFragment extends Fragment {
 
     private final String TAG = LoginActivityFragment.class.getSimpleName();
@@ -139,6 +135,7 @@ public class LoginActivityFragment extends Fragment {
         //TODO: Remove this line of debug code when app hits version 1.0
         Log.d(TAG, "loginSuccessful, url = " + url);
 
+        // successful login will redirect to the appropriate url
         if (url.contains(NetworkConstants.ATAM_BASE) && !(url.contains(NetworkConstants.OAUTH_LOGIN)) && !(url.contains(NetworkConstants.ATAM_LOGIN))) {
 
             //Grabbing the cookie to get the jsessionid
@@ -152,6 +149,11 @@ public class LoginActivityFragment extends Fragment {
         return false;
     }
 
+    /*
+        EventBus callback function that calls after the logged in user has been
+        identified by the server
+            - opens the Dashboard Activity
+     */
     @Subscribe
     public void getCurrentUserSuccess(GetCurrentUserEvent event) {
 
@@ -185,11 +187,14 @@ public class LoginActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // register the EventBus
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
+        // unregister the EventBus
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
