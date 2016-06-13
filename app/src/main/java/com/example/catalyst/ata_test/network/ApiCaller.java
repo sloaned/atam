@@ -167,7 +167,7 @@ public class ApiCaller {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // should probably have a different callback function in case of error
+                //TODO: should probably have a different callback function in case of error
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         }) {
@@ -177,7 +177,6 @@ public class ApiCaller {
                 return setHeaders();
             }
         };
-
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         // add the request to the request queue
@@ -201,7 +200,7 @@ public class ApiCaller {
         try {
             userObject = new JSONObject(gsonUser);
         } catch (JSONException e) {
-            // should have another callback function here to display error message to user
+            //TODO: should have another callback function here to display error message to user
             Log.e(TAG, "Error: could not create JSONObject from user object");
         }
 
@@ -212,7 +211,7 @@ public class ApiCaller {
                 EventBus.getDefault().post(new BioChangeEvent());
             }
         }, new Response.ErrorListener() {
-            // should have another callback function here to display error message to user
+            //TODO: should have another callback function here to display error message to user
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -223,9 +222,7 @@ public class ApiCaller {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return setHeaders();
             }
-
         };
-
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         // add the request to the request queue
@@ -298,7 +295,6 @@ public class ApiCaller {
 
                         // add the kudo to the kudos list
                         kudos.add(kudo);
-
                     }
 
                     ArrayList<Team> teams = new ArrayList<Team>();
@@ -334,12 +330,12 @@ public class ApiCaller {
                     EventBus.getDefault().post(new ProfileEvent(profile));
 
                 } catch (JSONException e) {
-                    // should have another callback function here to display error message to user
+                    //TODO: should have another callback function here to display error message to user
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
-            // should have another callback function here to display error message to user
+            //TODO: should have another callback function here to display error message to user
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -383,14 +379,14 @@ public class ApiCaller {
                         teams.add(team);
                     }
                 } catch (JSONException e) {
-                    // should have callback function here to display error to user
+                    //TODO: should have callback function here to display error to user
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
 
                 EventBus.getDefault().post(new UpdateTeamsEvent(teams));
             }
         }, new Response.ErrorListener() {
-            // should have callback function here to display error to user
+            //TODO: should have callback function here to display error to user
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -451,7 +447,7 @@ public class ApiCaller {
                         team.setUserList(members);
                     }
                 } catch (JSONException e) {
-                    // should have another function here to display error to user
+                    //TODO: should have another function here to display error to user
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
 
@@ -461,7 +457,7 @@ public class ApiCaller {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // should have another function here to display error to user
+                //TODO: should have another function here to display error to user
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse != null) {
                     Log.e("Volley", "Error. HTTP Status Code:" + networkResponse.statusCode);
@@ -540,7 +536,7 @@ public class ApiCaller {
                         results.add(result);
                     }
                 } catch (JSONException e) {
-                    // should probably have another callback function here to display error message to user
+                    //TODO: should probably have another callback function here to display error message to user
                     Log.e(TAG, "Error: " + e.getMessage());
                 }
 
@@ -548,6 +544,7 @@ public class ApiCaller {
                 EventBus.getDefault().post(new SearchEvent(results));
             }
         }, new Response.ErrorListener() {
+            //TODO: should probably have another callback function here to display error message to user
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
@@ -585,7 +582,7 @@ public class ApiCaller {
         try {
             kudoObject = new JSONObject(gsonKudo);
         } catch (JSONException e) {
-            // should probably have another callback function here to display error message
+            //TODO:  should probably have another callback function here to display error message
             Log.e(TAG, "Error, could not create new JSONObject out of kudo");
         }
 
@@ -598,7 +595,7 @@ public class ApiCaller {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // should probably have another callback function in case of error
+                //TODO:  should probably have another callback function in case of error
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
         }) {
