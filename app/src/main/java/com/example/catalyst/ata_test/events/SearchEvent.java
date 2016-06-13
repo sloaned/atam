@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 /**
  * Created by dsloane on 6/1/2016.
+ * This class is used by the EventBus library.
+ * This class is used by the Search Activity.
  */
 public class SearchEvent {
 

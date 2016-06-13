@@ -76,7 +76,7 @@ public class KudosAdapter extends BaseAdapter {
             //Inflate the view.
             convertView = inflater.inflate(R.layout.list_kudos, null);
 
-            //Assigns the Textview for the reviewers name to the view holder.
+            //Assigns the Textview for the reviewers nameTV to the view holder.
             viewHolder.reviewerNameTV = (TextView) convertView.findViewById(R.id.reviewer_name);
 
             //Assigns the Textview for the date the kudo was posted to the view holder.
@@ -85,7 +85,7 @@ public class KudosAdapter extends BaseAdapter {
             //Assigns the Textview that displays the kudo text to the view holder.
             viewHolder.kudoContentTV = (TextView) convertView.findViewById(R.id.kudo_content);
 
-            //Stores the full name of the reviewer in the ViewHolder.
+            //Stores the full nameTV of the reviewer in the ViewHolder.
             viewHolder.reviewerName = (kudo.getReviewer().getFirstName() + " " + kudo.getReviewer().getLastName());
 
             //Stores the value of the submitted date in the ViewHolder.
@@ -100,7 +100,6 @@ public class KudosAdapter extends BaseAdapter {
             //If the view was already created at one point, assign it to the view holder.
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
 
         //Display the saved Reviewers name in the TextView.
         viewHolder.reviewerNameTV.setText(viewHolder.reviewerName);
@@ -127,7 +126,7 @@ public class KudosAdapter extends BaseAdapter {
         //Holds the content of the Kudo.
         public String kudoContent;
 
-        //TextView that displays the reviewers name.
+        //TextView that displays the reviewers nameTV.
         TextView reviewerNameTV;
 
         //TextView that displays the date the kudo was posted.

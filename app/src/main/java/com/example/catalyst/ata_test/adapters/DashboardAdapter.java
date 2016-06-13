@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.models.Team;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +24,7 @@ public class DashboardAdapter extends BaseAdapter {
     private Context mContext;
 
     //The list holds the data the adapter is using.
-    private List<Team> teamList = new ArrayList<Team>();
+    private List<Team> teamList;
 
     //Constructor. Assigns a value to mContext and the datalist.
     public DashboardAdapter(Context context, List<Team> teamList) {
@@ -46,7 +45,7 @@ public class DashboardAdapter extends BaseAdapter {
 
     //Given a position, this method returns the object at that position.
     @Override
-    public Object getItem(int location) {
+    public Team getItem(int location) {
         return teamList.get(location);
     }
 
@@ -57,7 +56,7 @@ public class DashboardAdapter extends BaseAdapter {
         return -1;
     }
 
-    //Basic android View Setup.
+    //Basic Android View setup.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -79,7 +78,7 @@ public class DashboardAdapter extends BaseAdapter {
             //Find the Textview, and assign it to the view holder.
             viewHolder.teamNameTV = (TextView) convertView.findViewById(R.id.team_name);
 
-            //Assigns the team name to the ViewHolder to be accessed later.
+            //Assigns the team nameTV to the ViewHolder to be accessed later.
             viewHolder.teamName = teamList.get(position).getName();
 
             //Assigns the ID to the ViewHolder so it can be accessed later.
@@ -92,7 +91,7 @@ public class DashboardAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        //Assigns the value of the team name to the textview associated with the View.
+        //Assigns the value of the team nameTV to the textview associated with the View.
         viewHolder.teamNameTV.setText(viewHolder.teamName);
 
         //return the view.
@@ -104,8 +103,8 @@ public class DashboardAdapter extends BaseAdapter {
     //Android ViewHolder pattern.
     private static class ViewHolder {
         public String teamId; //the team id can be stored and used later to get team details
-        public String teamName; //Stores the team name in the ViewHolder.
-        public TextView teamNameTV; //TextView that displays team name.
+        public String teamName; //Stores the team nameTV in the ViewHolder.
+        public TextView teamNameTV; //TextView that displays team nameTV.
     }
 
 }
