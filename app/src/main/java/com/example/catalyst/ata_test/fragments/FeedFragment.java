@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
  */
 public class FeedFragment extends Fragment {
 
+    // used for log statements
     private static final String TAG = FeedFragment.class.getSimpleName();
     private BottomBar bottomBar = new BottomBar();
 
@@ -36,8 +37,10 @@ public class FeedFragment extends Fragment {
 
     private View feedView;
 
+    // basic Android view setup
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // inflate view with feed xml layout
         feedView = inflater.inflate(R.layout.fragment_feed, null);
         ButterKnife.bind(this, feedView);
 
@@ -46,7 +49,7 @@ public class FeedFragment extends Fragment {
         return feedView;
     }
 
-
+// commented out until EventBus is needed
 /*
     @Override
     public void onResume() {

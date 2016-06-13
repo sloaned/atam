@@ -24,38 +24,30 @@ import butterknife.ButterKnife;
  */
 public class SettingsFragment extends DialogFragment {
 
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor mEditor;
-
     private final String TAG = SettingsFragment.class.getSimpleName();
 
-    @Bind(R.id.logout_button)
-    TextView logoutButton;
+    // use ButterKnife to hook the logout button
+    @Bind(R.id.logout_button) TextView logoutButton;
 
-    public SettingsFragment() {
-    }
+    public SettingsFragment() {}
 
+    // basic Android view setup
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
+        // inflate the view with the xml layout
         final View settingsView = inflater.inflate(R.layout.fragment_settings, null);
 
         ButterKnife.bind(this, settingsView);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mEditor = prefs.edit();
-
+        // call logout function when logout button is clicked
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mEditor.putString(SharedPreferencesConstants.JSESSIONID, null).apply();
-
                 new ApiCaller(getActivity()).logout();
-
             }
         });
 
@@ -64,15 +56,12 @@ public class SettingsFragment extends DialogFragment {
         return builder.create();
     }
 
+    // custom constructor for this dialog fragment
     public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

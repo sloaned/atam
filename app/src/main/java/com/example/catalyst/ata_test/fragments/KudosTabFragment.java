@@ -35,18 +35,31 @@ public class KudosTabFragment extends Fragment {
 
     private final String TAG = KudosTabFragment.class.getSimpleName();
 
+    // use ButterKnife to hook the area of the view containing the kudos button
     @Bind(R.id.give_kudos_button_layout) RelativeLayout kudosButtonLayout;
+    // use ButterKnife to hook the kudos button itself
     @Bind(R.id.give_kudos_button) Button giveKudosButton;
 
+    // view for the list of kudos
     private ListView listView;
+    // list for the kudos
     private static ArrayList<Kudo> kudosList = new ArrayList<Kudo>();
+    // this profile's user, used here to send to the GiveKudosFragment
     private static User mUser;
+
+    // view for this fragment
     private View kudoView;
+
+    // instance of the network calling class
     private ApiCaller caller;
 
+    // adapter for the list of kudos
     private KudosAdapter adapter;
+
+    // local storage instance
     private SharedPreferences prefs;
 
+    // basic Android view setup
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -55,11 +68,17 @@ public class KudosTabFragment extends Fragment {
 
         ButterKnife.bind(this, kudoView);
 
+        // instantiate instances of local storage and of network calling class
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         caller = new ApiCaller(getActivity());
 
+        // id of the logged in user
         String myId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
 
+        /*
+            If this is the logged in user's own profile, remove the "Give Kudos" button,
+            as they should not be able to give themselves kudos
+         */
         if (myId.equals(mUser.getId())) {
             kudosButtonLayout.setVisibility(View.GONE);
         }
@@ -78,6 +97,7 @@ public class KudosTabFragment extends Fragment {
         return kudoView;
     }
 
+    // custome constructor for this fragment
     public static KudosTabFragment newInstance(ArrayList<Kudo> kudos, User user) {
         kudosList = kudos;
         mUser = user;
@@ -89,8 +109,9 @@ public class KudosTabFragment extends Fragment {
         return fragment;
     }
 
+    // open the "Give Kudos" dialog fragment on button click
     public void openGiveKudoFragment() {
-        DialogFragment dialog = GiveKudoFragment.newInstance(mUser);
+        DialogFragment dialog = GiveKudosFragment.newInstance(mUser);
         if (dialog.getDialog() != null) {
             dialog.getDialog().setCanceledOnTouchOutside(true);
         }
@@ -100,15 +121,20 @@ public class KudosTabFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // register the EventBus
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
+        // unregister the EventBus
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
+    // EventBus callback function after kudos has been posted to the server
+    //      - reloads user profile with new kudos
     @Subscribe
     public void onAddKudo(AddKudoEvent event) {
         caller.getProfile(mUser.getId());

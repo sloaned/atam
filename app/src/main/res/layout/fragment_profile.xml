@@ -11,11 +11,11 @@
             android:layout_height="match_parent"
             android:id="@+id/user_info_area"
             android:orientation="horizontal"
-            android:layout_weight="13">
+            android:layout_weight="14">
 
             <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:src="@drawable/defaultuser"
                 android:id="@+id/profile_pic"
                 android:layout_weight="1"
@@ -33,8 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/user_name"
-                    android:text="User Name"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"/>
@@ -52,8 +51,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Developer 1"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:textColor="#a6a6a6"
                     android:layout_below="@+id/user_name"
                     android:id="@+id/user_title"
@@ -68,10 +66,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="10dp"
                     android:id="@+id/user_bio"
-                    android:text="I eat tacos and watch reruns of The A-Team."
-                    android:textSize="16sp" />
-
-
+                    android:textSize="20sp" />
 
             </RelativeLayout>
 
@@ -92,7 +87,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/pager"
             android:background="#ffffcc"
-            android:layout_weight="7"/>
+            android:layout_weight="6"/>
 
         <include layout="@layout/bottom_bar" />
 
