@@ -81,12 +81,15 @@ public class TeamFragment extends Fragment {
     public void onUpdateTeam(ViewTeamEvent event) {
 
         team = event.getTeam();
+        // display the team's name
         teamName.setText(team.getName());
+        // display the team description
         teamDescription.setText(team.getDescription());
 
         memberList = team.getUserList();
-
+        // create an adapter to display the team members
         adapter = new TeamMemberAdapter(getActivity(), memberList);
+        // set the adapter
         teamMemberListView.setAdapter(adapter);
     }
 
