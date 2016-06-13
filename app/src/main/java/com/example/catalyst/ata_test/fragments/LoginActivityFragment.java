@@ -156,9 +156,6 @@ public class LoginActivityFragment extends Fragment {
      */
     @Subscribe
     public void getCurrentUserSuccess(GetCurrentUserEvent event) {
-
-        Log.d(TAG, "in getCurrentUserSuccess!!!!");
-
         Intent homePage = new Intent(getActivity(), DashboardActivity.class);
         startActivity(homePage);
     }
