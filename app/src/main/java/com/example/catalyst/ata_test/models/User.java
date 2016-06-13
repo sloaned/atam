@@ -4,30 +4,69 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by dsloane on 4/22/2016.
+ *
  */
 public class User implements Serializable, Parcelable {
+
+    //Id of the user in the database
     private String id;
+
+    //Variable for the first name.
     private String firstName;
+
+    //Variable for the last name.
     private String lastName;
+
+    //Professional title, i.e. Developer 1, Analyst 3
     private String title;
+
+    //Users displayed Bio
     private String profileDescription;
+
+    //Users Email
     private String email;
+
+    //A url to the users avatar
     private String avatar;
+
+    //Is this user currently working at the company
     private Boolean isActive;
+
+    //The users hire date
     private String startDate;
+
+    //The user last day working for catalyst.
     private String endDate;
+
+    //Version load from the database.
     private Integer version;
 
+    //Constructors.
     public User() {}
+    public User(Parcel in) {
+        id = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        profileDescription = in.readString();
+        title = in.readString();
+       /* email = in.readString();
+        avatar = in.readString();
+        isActive = Boolean.valueOf(in.readString());
+        String startDateString = in.readString();
+        String endDateString = in.readString();
+        version = in.readInt();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        try {
+            startDate = format.parse(startDateString);
+            endDate = format.parse(endDateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }  */
 
+    }
     public User(String id, String first, String last, String title, String desc, String email, String avatar,
                 Boolean isActive, String startDate, String endDate, Integer version) {
         this.id = id;
@@ -43,6 +82,7 @@ public class User implements Serializable, Parcelable {
         this.version = version;
     }
 
+    //Getters and setters
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
     public String getFirstName() {return firstName;}
@@ -85,9 +125,10 @@ public class User implements Serializable, Parcelable {
         if (version != null) {
             out.writeInt(version);
         }
-
     }
 
+    //A pointless Overide.
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -101,26 +142,4 @@ public class User implements Serializable, Parcelable {
             return new User[size];
         }
     };
-
-    public User(Parcel in) {
-        id = in.readString();
-        firstName = in.readString();
-        lastName = in.readString();
-        profileDescription = in.readString();
-        title = in.readString();
-       /* email = in.readString();
-        avatar = in.readString();
-        isActive = Boolean.valueOf(in.readString());
-        String startDateString = in.readString();
-        String endDateString = in.readString();
-        version = in.readInt();
-        DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-        try {
-            startDate = format.parse(startDateString);
-            endDate = format.parse(endDateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }  */
-
-    }
 }
