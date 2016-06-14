@@ -19,12 +19,17 @@ import android.widget.ProgressBar;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.events.GetCurrentUserEvent;
+import com.example.catalyst.ata_test.models.FCMToken;
 import com.example.catalyst.ata_test.network.ApiCaller;
+import com.example.catalyst.ata_test.services.ATAFirebaseInstanceIDService;
 import com.example.catalyst.ata_test.util.NetworkConstants;
 import com.example.catalyst.ata_test.util.SharedPreferencesConstants;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginActivityFragment extends Fragment {
 
@@ -156,13 +161,18 @@ public class LoginActivityFragment extends Fragment {
      */
     @Subscribe
     public void getCurrentUserSuccess(GetCurrentUserEvent event) {
+        String fcmToken = prefs.getString(SharedPreferencesConstants.FCM_TOKEN, null);
+        String userId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
+        Log.d(TAG, "FCM token = " + fcmToken);
+        List<String> stringTokens = new ArrayList<String>();
+        stringTokens.add(fcmToken);
+        FCMToken token = new FCMToken(userId, stringTokens);
+
+        caller.sendFCMTokenToServer(userId, token);
+
         Intent homePage = new Intent(getActivity(), DashboardActivity.class);
         startActivity(homePage);
     }
-    /*
-    public String editCookieString(String cookies) {
-        return cookies.replace("JSESSIONID=", "");
-    } */
 
     //Getters and setter for testing.
     public void setCookieManager(CookieManager cookieManager) {

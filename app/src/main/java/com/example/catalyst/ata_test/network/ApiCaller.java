@@ -24,6 +24,7 @@ import com.example.catalyst.ata_test.events.ProfileEvent;
 import com.example.catalyst.ata_test.events.SearchEvent;
 import com.example.catalyst.ata_test.events.UpdateTeamsEvent;
 import com.example.catalyst.ata_test.events.ViewTeamEvent;
+import com.example.catalyst.ata_test.models.FCMToken;
 import com.example.catalyst.ata_test.models.Kudo;
 import com.example.catalyst.ata_test.models.Profile;
 import com.example.catalyst.ata_test.models.Review;
@@ -60,8 +61,6 @@ public class ApiCaller {
     // used for logging statements
     public static final String TAG = ApiCaller.class.getSimpleName();
 
-    private static final String API_URL = NetworkConstants.ATAM_BASE; // change to your own computer name
-
     // the calling activity
     private Context mContext;
 
@@ -86,7 +85,7 @@ public class ApiCaller {
 
         //To facilitate logging out, the session ID with ATAM is being destroyed client side.
         //This effectively logs the user out.
-        String url = API_URL + "/logout";
+        String url = NetworkConstants.ATAM_LOGOUT;
 
         StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
 
@@ -143,7 +142,7 @@ public class ApiCaller {
         get the user object of the currently logged in user
      */
     public void getCurrentUser() {
-        String url = API_URL + "/users/current";
+        String url = NetworkConstants.ATAM_CURRENT_USER_URL;
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -189,7 +188,7 @@ public class ApiCaller {
      */
     public void updateUser(User user) {
 
-        String url = API_URL + "/users/" + user.getId();
+        String url = NetworkConstants.ATAM_USERS_URL + "/" + user.getId();
 
         // create new Gson object for translating user object into JSON
         Gson gson = new Gson();
@@ -233,7 +232,7 @@ public class ApiCaller {
         get full profile object for a given user
      */
     public void getProfile(String id) {
-        String url = API_URL + "/users/" + id + "/profile";
+        String url = NetworkConstants.ATAM_USERS_URL + "/" + id + "/profile";
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -358,7 +357,7 @@ public class ApiCaller {
         get list of all teams a given user is on
      */
     public void getTeamsByUser(String id) {
-        String url = API_URL + "/teams/user/" + id;
+        String url = NetworkConstants.ATAM_TEAMS_BY_USER_URL + "/" + id;
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -409,7 +408,7 @@ public class ApiCaller {
         get full team object for a given team, complete with team members
      */
     public void getTeamById(String id) {
-        String url = API_URL + "/teams/" + id;
+        String url = NetworkConstants.ATAM_TEAMS_URL + "/" + id;
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -481,7 +480,7 @@ public class ApiCaller {
         network call to search for users and teams
      */
     public void search(String searchTerm) {
-        String url = API_URL + "/search/" + searchTerm;
+        String url = NetworkConstants.ATAM_SEARCH_URL + "/" + searchTerm;
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -571,7 +570,7 @@ public class ApiCaller {
         add a new kudo to the database
      */
     public void postKudo(Kudo kudo) {
-        String url = API_URL + "/kudos";
+        String url = NetworkConstants.ATAM_KUDOS_URL;
 
         // create Gson object to translate the kudo object into a JSONObject for network transport
         Gson gson = new Gson();
@@ -605,6 +604,47 @@ public class ApiCaller {
                 return setHeaders();
             }
         };
+        // avoid data caching on the device, which can cause 500 errors
+        req.setShouldCache(false);
+        // add the request to the request queue
+        AppController.getInstance().addToRequestQueue(req);
+    }
+
+    public void sendFCMTokenToServer(String userId, FCMToken token) {
+        String url = NetworkConstants.ATAM_ADD_TOKEN_URL + "/" + userId;
+
+        // create new Gson object for translating token object into JSON
+        Gson gson = new Gson();
+        // translate token into JSON string
+        String gsonToken = gson.toJson(token);
+        JSONObject tokenObject = null;
+        // translate JSON string into JSON object
+        try {
+            tokenObject = new JSONObject(gsonToken);
+        } catch (JSONException e) {
+            //TODO: should have another callback function here to display error message to user
+            Log.e(TAG, "Error: could not create JSONObject from token object");
+        }
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, tokenObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println("updated token successfully in server");
+            }
+        }, new Response.ErrorListener() {
+            //TODO: should have another callback function here to display error message to user
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        }) {
+            // add jsession id to header
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+
         // avoid data caching on the device, which can cause 500 errors
         req.setShouldCache(false);
         // add the request to the request queue

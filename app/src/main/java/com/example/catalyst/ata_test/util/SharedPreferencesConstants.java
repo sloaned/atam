@@ -14,4 +14,7 @@ public class SharedPreferencesConstants {
     //This is the Key to the logged in users ID. Should be removed form SP upon loggout.
     public static final String USER_ID = "userid";
 
+    // This is the Firebase Cloud Messaging ID that is generated when the app is installed
+    public static final String FCM_TOKEN = "fcmtoken";
+
 }

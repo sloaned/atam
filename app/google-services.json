@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "924492642515",
+    "project_id": "atam-37c4f"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924492642515:android:886fcccfd3e84dcc",
+        "android_client_info": {
+          "package_name": "com.example.catalyst.ata_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoZHLQkHrHR_M-Nh99toacX-_P4PlIacM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
