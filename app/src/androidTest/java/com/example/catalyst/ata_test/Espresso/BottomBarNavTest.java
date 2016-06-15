@@ -30,8 +30,8 @@ public class BottomBarNavTest {
     public void goToProfile() {
         onView(withId(R.id.my_profile_button))
                 .perform(click());
-
-        String username = "User Name";
+        //String username = "User Name";
+        String username = "Daniel Sloane";
 
         onView(withId(R.id.user_name))
                 .check(matches(withText(username)));
@@ -61,13 +61,13 @@ public class BottomBarNavTest {
 
     @Test
     public void leaveAndReturnToDashboard() {
-        onView(withId(R.id.my_profile_button))
+        onView(withId(R.id.feed_button))
                 .perform(click());
 
-        String username = "User Name";
+        String notifications = "Notifications";
 
-        onView(withId(R.id.user_name))
-                .check(matches(withText(username)));
+        onView(withId(R.id.feed_title))
+                .check(matches(withText(notifications)));
 
         onView(withId(R.id.home_button))
                 .perform(click());

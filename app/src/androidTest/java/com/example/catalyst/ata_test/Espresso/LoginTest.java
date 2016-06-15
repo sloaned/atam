@@ -29,11 +29,12 @@ import static android.support.test.espresso.web.webdriver.DriverAtoms.findElemen
 import static android.support.test.espresso.web.webdriver.DriverAtoms.webClick;
 
 /**
- * Created by Jmiller on 5/3/2016.
+ * Created by dsloane on 6/15/2016.
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class LoginLogoutTest {
+public class LoginTest {
+
 
     public static final int waitingTestTime = 1000;
 
@@ -48,15 +49,10 @@ public class LoginLogoutTest {
     };
 
     @Test
-    public void checkForWebView() {
-        onView(withId(R.id.loginView)).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void loginThenLogout() {
+    public void login() {
 
 
-       onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "username"))
+        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "username"))
                 .perform(DriverAtoms.webKeys("atamldap"));
 
         onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "password"))
@@ -76,10 +72,6 @@ public class LoginLogoutTest {
 
         //Checks to make sure the bottom bar is there.
         onView(withId(R.id.settings_icon)).perform(click());
-
-        onView(withId(R.id.logout_button)).perform(click());
-
-        onView(withId(R.id.loginView)).check(matches(isDisplayed()));
 
     }
 
