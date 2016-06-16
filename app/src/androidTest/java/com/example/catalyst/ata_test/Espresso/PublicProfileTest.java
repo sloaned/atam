@@ -23,6 +23,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.espresso.web.sugar.Web.onWebView;
@@ -68,7 +69,7 @@ public class PublicProfileTest {
             Login.logout();
         }
     };
-
+/*
 
     @Test
     public void checkThatEditBioButtonIsNotVisible() {
@@ -78,16 +79,14 @@ public class PublicProfileTest {
 
     @Test
     public void checkThaGiveKudosButtonIsVisible() {
-        /*onView(withId(R.id.edit_bio_button))
-                .check(doesNotExist()); */
-
         onView(withId(R.id.give_kudos_button))
                 .check(matches(isDisplayed()));
-    }
+    } */
 
     @Test
     public void giveKudos() {
 
+        // count how many kudos there are now
         final int[] oldCounts = new int[1];
         onView(withId(R.id.kudos_list)).check(matches(new TypeSafeMatcher<View>() {
             @Override
@@ -117,6 +116,7 @@ public class PublicProfileTest {
         onView(withText("Submit"))
                 .perform(click());
 
+        onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 3000));
         final int[] newCounts = new int[1];
         onView(withId(R.id.kudos_list)).check(matches(new TypeSafeMatcher<View>() {
             @Override
@@ -134,6 +134,7 @@ public class PublicProfileTest {
             }
         }));
 
+        System.out.println("oldCount = " + oldCounts[0] + ", newCount = " + newCounts[0]);
         assert((oldCounts[0] + 1) == newCounts[0]);
 
     }
