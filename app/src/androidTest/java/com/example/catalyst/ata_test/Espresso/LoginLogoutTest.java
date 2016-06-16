@@ -55,7 +55,6 @@ public class LoginLogoutTest {
     @Test
     public void loginThenLogout() {
 
-
        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "username"))
                 .perform(DriverAtoms.webKeys("atamldap"));
 
@@ -72,7 +71,7 @@ public class LoginLogoutTest {
                 .perform(webClick());
 
         //Esspresso Equivilent of Thread.Sleep()
-        onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 5000));
+        onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 3000));
 
         //Checks to make sure the bottom bar is there.
         onView(withId(R.id.settings_icon)).perform(click());
@@ -83,45 +82,4 @@ public class LoginLogoutTest {
 
     }
 
-/*
-    public static ViewAction waitId(final int viewId, final long millis) {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return isRoot();
-            }
-
-            @Override
-            public String getDescription() {
-                return "wait for a specific view with id <" + viewId + "> during " + millis + " millis.";
-            }
-
-            @Override
-            public void perform(final UiController uiController, final View view) {
-                uiController.loopMainThreadUntilIdle();
-                final long startTime = System.currentTimeMillis();
-                final long endTime = startTime + millis;
-                final Matcher<View> viewMatcher = withId(viewId);
-
-                do {
-                    for (View child : TreeIterables.breadthFirstViewTraversal(view)) {
-                        // found view with required ID
-                        if (viewMatcher.matches(child)) {
-                            return;
-                        }
-                    }
-
-                    uiController.loopMainThreadForAtLeast(50);
-                }
-                while (System.currentTimeMillis() < endTime);
-
-//                // timeout happens
-//                throw new PerformException.Builder()
-//                        .withActionDescription(this.getDescription())
-//                        .withViewDescription(HumanReadables.describe(view))
-//                        .withCause(new TimeoutException())
-//                        .build();
-            }
-        };
-    } */
 }

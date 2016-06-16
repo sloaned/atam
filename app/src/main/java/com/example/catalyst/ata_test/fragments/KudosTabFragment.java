@@ -83,7 +83,7 @@ public class KudosTabFragment extends Fragment {
             kudosButtonLayout.setVisibility(View.GONE);
         }
         /* set view for the list of kudos */
-        listView = (ListView) kudoView.findViewById(android.R.id.list);
+        listView = (ListView) kudoView.findViewById(R.id.kudos_list);
         adapter = new KudosAdapter(getActivity(), kudosList);
         listView.setAdapter(adapter);
 
