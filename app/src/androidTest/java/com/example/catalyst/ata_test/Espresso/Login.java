@@ -32,49 +32,10 @@ import static android.support.test.espresso.web.webdriver.DriverAtoms.webClick;
  * Created by dsloane on 6/15/2016.
  */
 @RunWith(AndroidJUnit4.class)
-@LargeTest
-public class LoginTest {
+public class Login {
 
 
     public static final int waitingTestTime = 1000;
-
-    @Rule
-    public ActivityTestRule<LoginActivity> mLoginPage = new ActivityTestRule<LoginActivity>(LoginActivity.class, false, true) {
-        @Override
-        protected void afterActivityLaunched() {
-            // Enable JS!
-            onWebView(withId(R.id.loginView)).forceJavascriptEnabled();
-
-        }
-    };
-
-    @Test
-    public void loginTest() {
-
-
-        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "username"))
-                .perform(DriverAtoms.webKeys("atamldap"));
-
-        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "password"))
-                .perform(DriverAtoms.webKeys("yIJintO2F7DitSY7spnB"));
-
-
-
-        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "submit-btn"))
-                .perform(webClick());
-
-        //Commented this line of code out because OAuth quit asking for authorization.
-        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "authorize"))
-                .perform(webClick());
-
-        //Esspresso Equivilent of Thread.Sleep()
-        onView(isRoot()).perform(waitId(R.id.bottom_bar, 5000));
-
-        //Checks to make sure the bottom bar is there.
-        //onView(withId(R.id.settings_icon)).perform(click());
-
-    }
-
 
     public static ViewAction waitId(final int viewId, final long millis) {
         return new ViewAction() {

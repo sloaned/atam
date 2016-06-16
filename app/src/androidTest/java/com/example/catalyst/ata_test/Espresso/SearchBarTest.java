@@ -5,18 +5,14 @@ import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.activities.LoginActivity;
-import com.example.catalyst.ata_test.activities.SearchActivity;
 
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -26,6 +22,7 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.web.sugar.Web.onWebView;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
 /**
  * Created by dsloane on 6/15/2016.
@@ -38,15 +35,20 @@ public class SearchBarTest {
 
         @Override
         protected void afterActivityLaunched() {
+
+            if (!(getActivity() instanceof LoginActivity)) {
+                Login.logout();
+            }
+
             // Enable JS!
             onWebView(withId(R.id.loginView)).forceJavascriptEnabled();
 
-            LoginTest.login();
+            Login.login();
         }
 
         @Override
         protected void afterActivityFinished() {
-            LoginTest.logout();
+            Login.logout();
         }
 
     };
@@ -70,7 +72,8 @@ public class SearchBarTest {
                 .perform(click());
         onView(isAssignableFrom(EditText.class)).perform(typeText("ata mobile"));
 
-        // check that we're on the search page
+        // check that we're on the s earch page
+        onView(withText("PEOPLE")).perform(click());
         onView(withText("TEAMS")).perform(click());
 
         String expectedResult = "ATA Mobile";
@@ -93,6 +96,7 @@ public class SearchBarTest {
         onView(isAssignableFrom(EditText.class)).perform(typeText("sloane"));
 
         // check that we're on the search page
+        onView(withText("TEAMS")).perform(click());
         onView(withText("PEOPLE")).perform(click());
 
         String expectedResult = "Daniel Sloane";
