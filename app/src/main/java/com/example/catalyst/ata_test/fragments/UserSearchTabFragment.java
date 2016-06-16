@@ -37,9 +37,9 @@ public class UserSearchTabFragment extends Fragment {
     // basic Android view setup
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        userResultView = inflater.inflate(R.layout.tab_team_results, container, false);
+        userResultView = inflater.inflate(R.layout.tab_user_results, container, false);
 
-        listView = (ListView) userResultView.findViewById(android.R.id.list);
+        listView = (ListView) userResultView.findViewById(R.id.user_result_list);
         // set adapter with list of team results
         adapter = new UserSearchResultAdapter(getActivity(), userResults);
         listView.setAdapter(adapter);

@@ -46,7 +46,7 @@ public class TeamSearchTabFragment extends Fragment {
 
         teamResultView = inflater.inflate(R.layout.tab_team_results, container, false);
 
-        listView = (ListView) teamResultView.findViewById(android.R.id.list);
+        listView = (ListView) teamResultView.findViewById(R.id.team_result_list);//(android.R.id.list);
 
         // set adapter with list of team results
         adapter = new TeamSearchResultAdapter(getActivity(), teamResults);

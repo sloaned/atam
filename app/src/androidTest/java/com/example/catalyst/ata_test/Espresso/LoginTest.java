@@ -49,7 +49,7 @@ public class LoginTest {
     };
 
     @Test
-    public void login() {
+    public void loginTest() {
 
 
         onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "username"))
@@ -71,7 +71,7 @@ public class LoginTest {
         onView(isRoot()).perform(waitId(R.id.bottom_bar, 5000));
 
         //Checks to make sure the bottom bar is there.
-        onView(withId(R.id.settings_icon)).perform(click());
+        //onView(withId(R.id.settings_icon)).perform(click());
 
     }
 
@@ -115,5 +115,33 @@ public class LoginTest {
 //                        .build();
             }
         };
+    }
+
+    public static void login() {
+        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "username"))
+                .perform(DriverAtoms.webKeys("atamldap"));
+
+        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.NAME, "password"))
+                .perform(DriverAtoms.webKeys("yIJintO2F7DitSY7spnB"));
+
+
+
+        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "submit-btn"))
+                .perform(webClick());
+
+        //Commented this line of code out because OAuth quit asking for authorization.
+        onWebView(withId(R.id.loginView)).withElement(findElement(Locator.ID, "authorize"))
+                .perform(webClick());
+
+        //Esspresso Equivilent of Thread.Sleep()
+        onView(isRoot()).perform(waitId(R.id.bottom_bar, 5000));
+    }
+
+    public static void logout() {
+        onView(withId(R.id.settings_icon)).perform(click());
+
+        onView(withId(R.id.logout_button)).perform(click());
+
+        onView(withId(R.id.loginView)).check(matches(isDisplayed()));
     }
 }
