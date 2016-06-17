@@ -67,7 +67,7 @@ public class LoginLogoutTest {
                 .perform(webClick());
 
         //Esspresso Equivilent of Thread.Sleep()
-        onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 3000));
+        onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 5000));
 
         //Checks to make sure the bottom bar is there.
         onView(withId(R.id.settings_icon)).perform(click());
