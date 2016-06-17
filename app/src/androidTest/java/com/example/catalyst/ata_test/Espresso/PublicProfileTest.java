@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.catalyst.ata_test.Login;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.LoginActivity;
 
@@ -18,17 +19,17 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.espresso.web.sugar.Web.onWebView;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.not;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 
 /**
  * Created by dsloane on 6/16/2016.
@@ -56,6 +57,8 @@ public class PublicProfileTest {
             // check that we're on the search page
             onView(withText("TEAMS")).perform(click());
             onView(withText("PEOPLE")).perform(click());
+            onView(withText("TEAMS")).perform(click());
+            onView(withText("PEOPLE")).perform(click());
 
             // click on the result
             onData(anything())
@@ -69,22 +72,46 @@ public class PublicProfileTest {
             Login.logout();
         }
     };
-/*
+
 
     @Test
     public void checkThatEditBioButtonIsNotVisible() {
+        onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 5000));
         onView(withId(R.id.edit_bio_button))
                 .check(matches(not(isDisplayed())));
     }
 
     @Test
-    public void checkThaGiveKudosButtonIsVisible() {
+    public void checkThatGiveKudosButtonIsVisible() {
+        onView(isRoot()).perform(Login.waitId(R.id.give_kudos_button, 5000));
         onView(withId(R.id.give_kudos_button))
                 .check(matches(isDisplayed()));
-    } */
+    }
+
+    @Test
+    public void swipeBetweenTabs() {
+
+        onView(isRoot()).perform(Login.waitId(R.id.kudos_layout, 5000));
+
+        onView(withId(R.id.kudos_layout))
+                .check(matches(isDisplayed()));
+
+        onView(withId(R.id.pager))
+                .perform(swipeLeft());
+
+        onView(withId(R.id.reviews_layout))
+                .check(matches(isDisplayed()));
+
+        onView(withId(R.id.pager))
+                .perform(swipeLeft());
+
+        onView(withId(R.id.teams_layout))
+                .check(matches(isDisplayed()));
+    }
 
     @Test
     public void giveKudos() {
+        onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 5000));
 
         // count how many kudos there are now
         final int[] oldCounts = new int[1];
@@ -117,6 +144,8 @@ public class PublicProfileTest {
                 .perform(click());
 
         onView(isRoot()).perform(Login.waitId(R.id.bottom_bar, 3000));
+
+        // count number of kudos again
         final int[] newCounts = new int[1];
         onView(withId(R.id.kudos_list)).check(matches(new TypeSafeMatcher<View>() {
             @Override
@@ -134,7 +163,7 @@ public class PublicProfileTest {
             }
         }));
 
-        System.out.println("oldCount = " + oldCounts[0] + ", newCount = " + newCounts[0]);
+        // check that one kudo has been added
         assert((oldCounts[0] + 1) == newCounts[0]);
 
     }

@@ -4,6 +4,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
+import com.example.catalyst.ata_test.Login;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.LoginActivity;
 
@@ -22,7 +23,6 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.web.sugar.Web.onWebView;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
 /**
  * Created by dsloane on 6/15/2016.
@@ -73,6 +73,8 @@ public class SearchBarTest {
         onView(isAssignableFrom(EditText.class)).perform(typeText("ata mobile"));
 
         // check that we're on the s earch page
+        onView(withText("PEOPLE")).perform(click());
+        onView(withText("TEAMS")).perform(click());
         onView(withText("PEOPLE")).perform(click());
         onView(withText("TEAMS")).perform(click());
 

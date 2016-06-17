@@ -1,4 +1,4 @@
-package com.example.catalyst.ata_test.Espresso;
+package com.example.catalyst.ata_test;
 
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
@@ -95,7 +95,7 @@ public class Login {
                 .perform(webClick());
 
         //Esspresso Equivilent of Thread.Sleep()
-        onView(isRoot()).perform(waitId(R.id.bottom_bar, 5000));
+        onView(isRoot()).perform(waitId(R.id.bottom_bar, 3000));
     }
 
     public static void logout() {

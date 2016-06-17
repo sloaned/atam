@@ -3,6 +3,7 @@ package com.example.catalyst.ata_test.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.catalyst.ata_test.Login;
 import com.example.catalyst.ata_test.R;
 import com.example.catalyst.ata_test.activities.LoginActivity;
 

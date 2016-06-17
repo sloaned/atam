@@ -6,13 +6,14 @@ import android.support.test.runner.AndroidJUnit4;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.espresso.web.sugar.Web.onWebView;
 import static android.support.test.espresso.action.ViewActions.pressBack;
 
+import com.example.catalyst.ata_test.Login;
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.DashboardActivity;
 import com.example.catalyst.ata_test.activities.LoginActivity;
 
 import org.junit.Rule;
@@ -51,7 +52,7 @@ public class BottomBarNavTest {
     public void goToProfile() {
         onView(withId(R.id.my_profile_button))
                 .perform(click());
-        //String username = "User Name";
+        onView(isRoot()).perform(Login.waitId(R.id.user_name, 5000));
         String username = "Daniel Sloane";
 
         onView(withId(R.id.user_name))
