@@ -4,6 +4,8 @@ import com.example.catalyst.ata_test.models.Profile;
 
 /**
  * Created by dsloane on 5/31/2016.
+ * This class is used by the EventBus library.
+ * Used by the profile fragment.
  */
 public class ProfileEvent {
 

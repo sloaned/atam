@@ -37,51 +37,76 @@ import butterknife.ButterKnife;
 
 public class SearchActivity extends AppCompatActivity {
 
+    //Setting up a tag for logging purposes.
     private static final String TAG = SearchActivity.class.getSimpleName();
 
+    //Declare adapter as a class variable.
     private SearchTabAdapter adapter;
 
+    //Using Butterknife to hook the logo
     @Bind(R.id.action_logo) ImageView logo;
+
+    //Using ButterKnife to hook the cancel search button
+    @Bind(R.id.action_cancel_search) TextView cancelSearch;
+
+    //Using Butterknife to hook the profileTabs
     @Bind(R.id.tab_layout) TabLayout profileTabs;
+
+    //Using Butterknife to hook the View Pager
     @Bind(R.id.pager) ViewPager viewPager;
+
+    //After a database call happens, the results for users are stored in this array.
+    private ArrayList<User> users = new ArrayList<User>();
+
+    //After a database call happens, the results for teams are stored in this array.
+    private ArrayList<Team> teams = new ArrayList<Team>();
+
+    //This pulls data from the users array. This list is edited with each additional character
+    //add to the search feild after two characters.
     private ArrayList<User> userResults = new ArrayList<User>();
+
+    //This pulls data from the teams array. This list is edited with each additional character
+    //add to the search feild after two characters.
     private ArrayList<Team> teamResults = new ArrayList<Team>();
 
-    private ArrayList<User> users = new ArrayList<User>();
-    private ArrayList<Team> teams = new ArrayList<Team>();
+    //Search declared a class local variable to be accessed by inner classes and interface instantiation.
     private SearchView searchView;
 
+    // the current value of the query
     private String searchTerm;
-    private String savedQuery;
+
+    // the current length of the query
     private int searchLength = 0;
 
+    //Basic Android Activity setup.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        Log.d(TAG, "in onCreate!!!!!");
-
+        // add two tabs and give them labels
         profileTabs.addTab(profileTabs.newTab().setText("PEOPLE"));
         profileTabs.addTab(profileTabs.newTab().setText("TEAMS"));
+
+        // center the tabs horizontally
         profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
 
         searchView = (SearchView) findViewById(R.id.action_search);
 
+        // add top bar to the view and give the logo functionality as another home button
         TopBar topBar = new TopBar();
         logo = topBar.setLogo(this, logo);
 
-        final Bundle bundle = savedInstanceState;
-
+        // keep searchbar maximized
         searchView.setIconifiedByDefault(false);
+
+        // add query hint to search bar ("Search for users and teams...")
         searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
 
+        /* set font size for search bar */
         SearchView.SearchAutoComplete search_text = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.text_small));
-
-
-        TextView cancelSearch = (TextView) findViewById(R.id.action_cancel_search);
 
         /* called when cancel button next to search bar is pressed.
              Closes search activity and returns to previous activity
@@ -93,89 +118,116 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        /* intent passed from calling activity. Declared final so it can be used
+             in the onQueryTextListener
+         */
         final Intent intent = getIntent();
 
-        final String oldQuery = intent.getStringExtra(SearchManager.QUERY);
-        searchTerm = oldQuery;
-        searchLength = searchTerm.length();
-        Log.d(TAG, "still in onCreate, searchTerm = " + searchTerm);
+        // set searchTerm to current value of the query passed in the intent
+        searchTerm = intent.getStringExtra(SearchManager.QUERY);
 
-        searchView.setQuery(oldQuery, true);
+        // set length of current query (used to determine whether to perform a new search or not)
+        searchLength = searchTerm.length();
+
+        // place current query into the searchbar
+        searchView.setQuery(searchTerm, true);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                /* hitting enter button has no effect on search */
                 return false;
             }
 
+            // perform search and filter results as user types and deletes
             @Override
             public boolean onQueryTextChange(String newText) {
 
+                /* change the intent's saved query string as user types/deletes */
                 intent.putExtra(SearchManager.QUERY, newText);
+
+                /* change search term as user types/deletes */
                 searchTerm = newText;
 
+                /* if current search term is currently greater than two characters (or this action was deleting back to two characters),
+                    then we already have base lists of users/teams to filter from, and do not need to perform another network call. We
+                    can simply search the existing lists of users/teams
+                 */
                 if (searchTerm.length() > 2 || (searchTerm.length() == 2 && searchLength == 3)) {
+                    // keep track of how many characters are currently entered
                     searchLength = searchTerm.length();
                     search(searchTerm);
                     return true;
-                } else if (searchTerm.length() == 2 && searchLength == 1) {
+                } /* Two new characters have just been typed. Perform a network call to search based on those two characters, and
+                    populate base user/team lists with the results
+                 */
+                else if (searchTerm.length() == 2 && searchLength == 1) {
+                    // keep track of how many characters are currently entered
                     searchLength = searchTerm.length();
-                    savedQuery = searchTerm;
+
+                   // savedQuery = searchTerm;
                     ApiCaller caller = new ApiCaller(getApplicationContext());
                     caller.search(searchTerm);
                     return true;
                 }
 
-                searchLength = searchTerm.length();
+                /* otherwise, there are fewer than two characters entered. Clear all data and results. */
+
                 users.clear();
                 teams.clear();
                 userResults.clear();
                 teamResults.clear();
 
+                // keep track of how many characters are currently entered
+                searchLength = searchTerm.length();
+
+                // have EventBus tell tab fragments to update lists
                 EventBus.getDefault().post(new UpdateSearchEvent(userResults, teamResults));
                 return false;
             }
         });
 
+        // create new adapter for the search tabs and pass in the lists of results
         adapter = new SearchTabAdapter(getSupportFragmentManager(), profileTabs.getTabCount(), userResults, teamResults);
 
+        // set the adapter
         viewPager.setAdapter(adapter);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
-
 
         profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab unselected = " + tab.getText());
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab reselected = " + tab.getText());
             }
         });
     }
 
+    // perform local search based on filtering down the current user/team lists
     public void search(String query) {
+        // clear current results lists before repopulating them
         userResults.clear();
         teamResults.clear();
         // ignore case when performing queries
         query = query.toLowerCase();
+
+        // match query with user names in list
         for (User user : users) {
             String name = user.getFirstName().toLowerCase() + " " + user.getLastName().toLowerCase();
-            Log.d(TAG, "userList in search, name = " + user.getFirstName() + " " + user.getLastName());
             if ((user.getFirstName() != null && user.getLastName() != null) && name.contains(query)) {
                 userResults.add(user);
-                Log.d(TAG, "Match with name " + user.getFirstName() + user.getLastName());
             }
         }
+
+        // match query with team names in list
         for (Team team : teams) {
             String name = team.getName().toLowerCase();
             if (team.getName() != null && name.contains(query)) {
@@ -186,48 +238,20 @@ public class SearchActivity extends AppCompatActivity {
         EventBus.getDefault().post(new UpdateSearchEvent(userResults, teamResults));
     }
 
+    /* called when network search has completed.
+        populates base user/team lists and calls initial search function
+     */
     @Subscribe
     public void onSearchEvent(SearchEvent event) {
 
-        Log.d(TAG, "in onSearchEvent!!!");
-
-        Log.d(TAG, "adapter = " + adapter);
-        if (adapter == null) {
-            Log.d(TAG, "adapter was null!!!!!!");
-            viewPager = (ViewPager) findViewById(R.id.pager);
-            adapter = new SearchTabAdapter(getSupportFragmentManager(), profileTabs.getTabCount(), userResults, teamResults);
-
-            viewPager.setAdapter(adapter);
-
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
-
-
-            profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    viewPager.setCurrentItem(tab.getPosition());
-                    Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
-                }
-
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-                    Log.d(TAG, "tab unselected = " + tab.getText());
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-                    Log.d(TAG, "tab reselected = " + tab.getText());
-                }
-            });
-
-        }
-
-
+        /* clear base lists of users/teams before repopulating them */
         users.clear();
         teams.clear();
 
+        /*
+            search result will contain either a user or a team. Add to appropriate list
+         */
         for (SearchResult result : event.getResults()) {
-            Log.d(TAG, "onSearchEvent " + result.toString());
             if (result.getUser() != null) {
                 users.add(result.getUser());
             } else if (result.getTeam() != null) {
@@ -235,6 +259,10 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
 
+        /*
+            do a search matching current query to user/team lists. As query is currently
+            two characters long, results lists will be identical to base user/team lists
+         */
         search(searchTerm);
     }
 
@@ -243,8 +271,9 @@ public class SearchActivity extends AppCompatActivity {
      */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        // save current info to restore when activity resumes after orientation change
         savedInstanceState.putString("QUERY", searchView.getQuery().toString());
-        savedInstanceState.putString("SAVEDQUERY", savedQuery);
         savedInstanceState.putParcelableArrayList("USERS", users);
         savedInstanceState.putParcelableArrayList("TEAMS", teams);
 
@@ -259,9 +288,9 @@ public class SearchActivity extends AppCompatActivity {
 
         super.onRestoreInstanceState(savedInstanceState);
 
+        // restore info from previous orientation
         searchTerm = savedInstanceState.getString("QUERY");
         searchLength = searchTerm.length();
-        savedQuery = savedInstanceState.getString("SAVEDQUERY");
         users = savedInstanceState.getParcelableArrayList("USERS");
         teams = savedInstanceState.getParcelableArrayList("TEAMS");
 
@@ -269,6 +298,7 @@ public class SearchActivity extends AppCompatActivity {
         TabLayout.Tab tab = profileTabs.getTabAt(savedInstanceState.getInt("tabState"));
         tab.select();
 
+        // perform search if current query is long enough
         if (searchLength >= 2) {
             search(searchTerm);
         }
@@ -277,13 +307,16 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        //Registering the Eventbus
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
+        //Unregistering the Eventbus.
         EventBus.getDefault().unregister(this);
+
         super.onPause();
     }
-
 }

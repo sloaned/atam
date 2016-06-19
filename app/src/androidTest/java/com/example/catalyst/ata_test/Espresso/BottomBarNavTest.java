@@ -6,11 +6,15 @@ import android.support.test.runner.AndroidJUnit4;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static android.support.test.espresso.web.sugar.Web.onWebView;
+import static android.support.test.espresso.action.ViewActions.pressBack;
 
+import com.example.catalyst.ata_test.Login;
 import com.example.catalyst.ata_test.R;
-import com.example.catalyst.ata_test.activities.DashboardActivity;
+import com.example.catalyst.ata_test.activities.LoginActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,15 +27,33 @@ import org.junit.runner.RunWith;
 public class BottomBarNavTest {
 
     @Rule
-    public ActivityTestRule<DashboardActivity> mActivityRule = new ActivityTestRule<>(DashboardActivity.class);
+    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<LoginActivity>(LoginActivity.class) {
+        @Override
+        protected void afterActivityLaunched() {
+
+            if (!(getActivity() instanceof LoginActivity)) {
+                Login.logout();
+            }
+
+            // Enable JS!
+            onWebView(withId(R.id.loginView)).forceJavascriptEnabled();
+
+            Login.login();
+        }
+
+        @Override
+        protected void afterActivityFinished() {
+            Login.logout();
+        }
+    };
 
 
     @Test
     public void goToProfile() {
         onView(withId(R.id.my_profile_button))
                 .perform(click());
-
-        String username = "User Name";
+        onView(isRoot()).perform(Login.waitId(R.id.user_name, 5000));
+        String username = "Daniel Sloane";
 
         onView(withId(R.id.user_name))
                 .check(matches(withText(username)));
@@ -57,17 +79,20 @@ public class BottomBarNavTest {
 
         onView(withId(R.id.logout_button))
                 .check(matches(withText(logout)));
+
+        onView(withId(R.id.logout_button))
+                .perform(pressBack());
     }
 
     @Test
     public void leaveAndReturnToDashboard() {
-        onView(withId(R.id.my_profile_button))
+        onView(withId(R.id.feed_button))
                 .perform(click());
 
-        String username = "User Name";
+        String notifications = "Notifications";
 
-        onView(withId(R.id.user_name))
-                .check(matches(withText(username)));
+        onView(withId(R.id.feed_title))
+                .check(matches(withText(notifications)));
 
         onView(withId(R.id.home_button))
                 .perform(click());

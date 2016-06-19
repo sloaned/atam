@@ -41,20 +41,29 @@ public class ProfileFragment extends Fragment {
     private static final String TAG = ProfileFragment.class.getSimpleName();
     private BottomBar bottomBar = new BottomBar();
     private View profileView;
+
+    // the profile of the user
     private Profile mProfile;
+
+    // network caller to get the user profile
     private ApiCaller caller;
 
     private SharedPreferences prefs;
 
     private ProfileTabAdapter adapter;
 
-    @Bind(R.id.user_info_area)LinearLayout userInfoArea;
-    @Bind(R.id.user_info_text_area) RelativeLayout userInfoTextArea;
+    // use ButterKnife to bind UI elements to the view
+        // user's profile picture
     @Bind(R.id.profile_pic) ImageView profilePic;
+        // user's name
     @Bind(R.id.user_name) TextView username;
+        // user's title
     @Bind(R.id.user_title) TextView userTitle;
+        // button to allow the user to edit their own bio (removed if this isn't their profile)
     @Bind(R.id.edit_bio_button) ImageView editBioButton;
+        // user's bio/profile description
     @Bind(R.id.user_bio) TextView userBio;
+        // the tabs for kudos/reviews/teams
     @Bind(R.id.tab_layout) TabLayout profileTabs;
 
     @Override
@@ -65,6 +74,8 @@ public class ProfileFragment extends Fragment {
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         caller = new ApiCaller(getActivity());
+
+        // add the bottom bar to the view
         profileView = bottomBar.getBottomBar(getActivity(), profileView);
 
         editBioButton.setOnClickListener(new View.OnClickListener() {
@@ -74,26 +85,30 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        // add the three tabs
         profileTabs.addTab(profileTabs.newTab().setText("KUDOS"));
         profileTabs.addTab(profileTabs.newTab().setText("REVIEWS"));
         profileTabs.addTab(profileTabs.newTab().setText("TEAMS"));
+        // horizontally center the tabs
         profileTabs.setTabGravity(TabLayout.GRAVITY_FILL);
 
+        // get intent from calling activity
         Intent intent = getActivity().getIntent();
+        // get id of user from intent
         if (intent != null && intent.hasExtra("UserId")) {
             String userId = intent.getStringExtra("UserId");
+            // get id of logged in user
             String myId = prefs.getString(SharedPreferencesConstants.USER_ID, null);
 
+            // if this is not the logged in user's own profile, remove the edit bio button
             if (!userId.equals(myId)) {
                 editBioButton.setVisibility(View.GONE);
             }
 
+            // call the server to get the
             caller.getProfile(userId);
 
         }
-
-
-
 
         return profileView;
     }
@@ -101,17 +116,21 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // register the EventBus
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
+        // unregister the EventBus
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
     /*
         called when edit bio button is clicked
+        - opens the edit bio dialog fragment
      */
     public void openEditBioFragment() {
         String bio = userBio.getText().toString();
@@ -128,46 +147,56 @@ public class ProfileFragment extends Fragment {
         caller.getProfile(mProfile.getUser().getId());
     }
 
+    /*
+        EventBus callback function that runs after the call to get the profile from
+        the server has finished
+            - updates the view with the user info, and sets up the tab fragments
+     */
     @Subscribe
     public void getProfile(ProfileEvent event) {
         mProfile= event.getProfile();
 
         User user = mProfile.getUser();
 
+        // display the user's info
         username.setText(user.getFirstName() + " " + user.getLastName());
         userTitle.setText(user.getTitle());
         if (user.getProfileDescription() != null && !user.getProfileDescription().equals("null")) {
             userBio.setText(user.getProfileDescription());
         }
 
+        // the viewPager containing the kudos/review/team fragments, which will be tied to the tabs
         final ViewPager viewPager = (ViewPager) profileView.findViewById(R.id.pager);
+
+        // define adapter to specify what fragments to open on tab clicks
         adapter = new ProfileTabAdapter(getActivity().getSupportFragmentManager(), profileTabs.getTabCount(), mProfile);
 
+        // set the adapter
         viewPager.setAdapter(adapter);
 
+        // bind the viewPager to the tabs
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
 
-
+        // describes what should happen when different tabs are clicked
         profileTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                // open the page that corresponds with the clicked tab
                 viewPager.setCurrentItem(tab.getPosition());
-                Log.d(TAG, "tab selected = " + tab.getText() + ", position = " + tab.getPosition() + ", viewpager current item = " + viewPager.getCurrentItem());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab unselected = " + tab.getText());
+                // do nothing
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab reselected = " + tab.getText());
+                // do nothing
             }
         });
 
     }
-
 }
 
 

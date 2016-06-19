@@ -26,9 +26,13 @@ public class TeamsTabFragment extends Fragment {
 
     private final String TAG = TeamsTabFragment.class.getSimpleName();
 
+    // listview for the teams
     private ListView listView;
     private ApiCaller caller;
+    // list of teams
     private static ArrayList<Team> teamsList = new ArrayList<Team>();
+
+    // view for this fragment
     private View teamView;
 
     private TeamAdapter adapter;
@@ -36,15 +40,18 @@ public class TeamsTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // inflate view with xml layout
         teamView = inflater.inflate(R.layout.tab_teams, container, false);
         listView = (ListView) teamView.findViewById(android.R.id.list);
 
+        // instantiate adapter with list of teams
         adapter = new TeamAdapter(getActivity(), teamsList);
         listView.setAdapter(adapter);
 
         return teamView;
     }
 
+    // custom constructor for tab fragment
     public static TeamsTabFragment newInstance(ArrayList<Team> teams) {
         teamsList = teams;
 

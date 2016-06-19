@@ -12,13 +12,31 @@ import java.util.Locale;
 
 /**
  * Created by dsloane on 4/22/2016.
+ *
  */
 public class User implements Serializable, Parcelable {
+
+    //Id of the user in the database
     private String id;
+
+    //Variable for the first name.
     private String firstName;
+
+    //Variable for the last name.
     private String lastName;
+<<<<<<< HEAD
     private String title;
     private String profileDescription;
+=======
+
+    //Professional title, i.e. Developer 1, Analyst 3
+    private String title;
+
+    //Users displayed Bio
+    private String profileDescription;
+
+    //Users Email
+>>>>>>> 4b1dd3d5679fe04d4aefbcfaf9027c4bd4c20dc4
     private String email;
     private String avatar;
     private Boolean isActive;
@@ -26,9 +44,50 @@ public class User implements Serializable, Parcelable {
     private Date endDate;
     private Integer version;
 
-    public User() {}
+    //A url to the users avatar
+    private String avatar;
 
+    //Is this user currently working at the company
+    private Boolean isActive;
+
+    //The users hire date
+    private String startDate;
+
+    //The user last day working for catalyst.
+    private String endDate;
+
+    //Version load from the database.
+    private Integer version;
+
+    //Constructors.
+    public User() {}
+    public User(Parcel in) {
+        id = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        profileDescription = in.readString();
+        title = in.readString();
+       /* email = in.readString();
+        avatar = in.readString();
+        isActive = Boolean.valueOf(in.readString());
+        String startDateString = in.readString();
+        String endDateString = in.readString();
+        version = in.readInt();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        try {
+            startDate = format.parse(startDateString);
+            endDate = format.parse(endDateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }  */
+
+<<<<<<< HEAD
     public User(String id, String first, String last, String title, String desc, String email, String avatar, Boolean isActive, Date startDate, Date endDate, Integer version) {
+=======
+    }
+    public User(String id, String first, String last, String title, String desc, String email, String avatar,
+                Boolean isActive, String startDate, String endDate, Integer version) {
+>>>>>>> 4b1dd3d5679fe04d4aefbcfaf9027c4bd4c20dc4
         this.id = id;
         this.firstName = first;
         this.lastName = last;
@@ -42,6 +101,7 @@ public class User implements Serializable, Parcelable {
         this.version = version;
     }
 
+    //Getters and setters
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
     public String getFirstName() {return firstName;}
@@ -58,10 +118,17 @@ public class User implements Serializable, Parcelable {
     public void setAvatar(String avatar) {this.avatar = avatar;}
     public Boolean isActive() {return isActive;}
     public void setActive(boolean isActive) {this.isActive = isActive;}
+<<<<<<< HEAD
     public Date getStartDate() {return startDate;}
     public void setStartDate(Date startDate) {this.startDate = startDate;}
     public Date getEndDate() {return endDate;}
     public void setEndDate(Date endDate) {this.endDate = endDate;}
+=======
+    public String getStartDate() {return startDate;}
+    public void setStartDate(String startDate) {this.startDate = startDate;}
+    public String getEndDate() {return endDate;}
+    public void setEndDate(String endDate) {this.endDate = endDate;}
+>>>>>>> 4b1dd3d5679fe04d4aefbcfaf9027c4bd4c20dc4
     public Integer getVersion() {return version;}
     public void setVersion(Integer version) {this.version = version;}
 
@@ -75,11 +142,25 @@ public class User implements Serializable, Parcelable {
         out.writeString(email);
         out.writeString(avatar);
         out.writeString(String.valueOf(isActive));
+<<<<<<< HEAD
         out.writeString(startDate.toString());
         out.writeString(endDate.toString());
         out.writeInt(version);
+=======
+        if (startDate != null && !startDate.equals(null)) {
+            out.writeString(startDate.toString());
+        }
+        if (endDate != null && !endDate.equals(null)) {
+            out.writeString(endDate.toString());
+        }
+        if (version != null) {
+            out.writeInt(version);
+        }
+>>>>>>> 4b1dd3d5679fe04d4aefbcfaf9027c4bd4c20dc4
     }
 
+    //A pointless Overide.
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -93,6 +174,7 @@ public class User implements Serializable, Parcelable {
             return new User[size];
         }
     };
+<<<<<<< HEAD
 
     public User(Parcel in) {
         id = in.readString();
@@ -115,4 +197,6 @@ public class User implements Serializable, Parcelable {
         }
 
     }
+=======
+>>>>>>> 4b1dd3d5679fe04d4aefbcfaf9027c4bd4c20dc4
 }

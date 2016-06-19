@@ -5,16 +5,30 @@ import java.util.Date;
 
 /**
  * Created by dsloane on 4/22/2016.
+ *
  */
 public class Review {
-    private User reviewer;
-    private User reviewed;
-    private Date submittedDate;
-    private ArrayList<Feedback> feedback;
+
+    //Keep track of teams reviewer average.
+    //Reviews are displayed to the user
+    //as an average of all the reviews a
+    //single team has given a user.
     private int teamId;
 
-    public Review() {}
+    //This is the object representing the individual leaving the review.
+    private User reviewer;
 
+    //This is the object representing the user being reviewed.
+    private User reviewed;
+
+    //Date the review was submitted.
+    private Date submittedDate;
+
+    //A list of feedback objects
+    private ArrayList<Feedback> feedback;
+
+    //Constructors
+    public Review() {}
     public Review(User reviewer, User reviewed, Date submittedDate, int teamId, ArrayList<Feedback> fb) {
         this.reviewer = reviewer;
         this.reviewed = reviewed;
@@ -23,7 +37,7 @@ public class Review {
         feedback = fb;
     }
 
-
+    //Getters and setters
     public User getReviewer() {return reviewer;}
     public void setReviewer(User reviewer) {this.reviewer = reviewer;}
     public User getReviewed() {return reviewed;}

@@ -15,8 +15,7 @@
         android:allowBackup="true"
         android:supportsRtl="true"
         android:theme="@style/NoActionBarAppTheme"
-        android:icon="@drawable/ata"
-        >
+        android:icon="@drawable/ata">
 
         <activity
             android:name=".activities.LoginActivity"
